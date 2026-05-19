@@ -1,3 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+
+/* Reveal Animation */
+.reveal-hidden {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 700ms ease, transform 700ms ease;
+}
+
+.reveal-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
