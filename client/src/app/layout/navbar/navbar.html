@@ -1,0 +1,61 @@
+<nav class="bg-black text-white px-8 py-4 flex items-center justify-between relative">
+
+    <!-- Left Side -->
+    <div class="flex items-center gap-10">
+
+        <!-- Logo Name -->
+        <div class="flex items-center gap-4 text-xl font-bold">
+            <img src="logo.png" alt="MyProfile Logo" class="md:w-10 md:h-10 w-8 h-8">
+            <div class="md:text-2xl text-xl"><span class="text-purple-600">My</span>Profile</div>
+        </div>
+
+        <!-- Desktop Navigation -->
+        <div class="hidden md:flex items-center gap-6">
+            <a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
+                class="relative group font-medium px-3 py-2 transition duration-300 hover:text-purple-300">
+                Home
+                <span
+                    class="absolute left-0 -bottom-1 w-0 h-[2px] bg-purple-300 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+
+            <a routerLink="/about" routerLinkActive="active-link"
+                class="relative group font-medium px-3 py-2 transition duration-300 hover:text-purple-300">
+                About
+                <span
+                    class="absolute left-0 -bottom-1 w-0 h-[2px] bg-purple-300 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Right Side -->
+    <div class="flex items-center gap-4">
+
+        <!-- Login Button -->
+        <button
+            class="md:text-base text-sm bg-purple-600 hover:bg-purple-500 text-white font-medium md:px-4 md:py-2 px-3 py-1 rounded-lg transition duration-300 shadow-md hover:shadow-purple-500/50 cursor-pointer">
+            Login
+        </button>
+
+        <!-- Hamburger Icon -->
+        <button class="md:hidden text-2xl cursor-pointer transition-transform duration-300" [class.rotate-90]="menuOpen"
+            (click)="toggleMenu()">
+            {{ menuOpen ? '✕' : '☰' }}
+        </button>
+    </div>
+
+    <!-- Mobile Navigation -->
+    <div class="mobile-menu absolute top-full left-0 w-full bg-black border-purple-900 flex flex-col md:hidden"
+        [class.open]="menuOpen">
+
+        <a routerLink="/home" (click)="closeMenu()" routerLinkActive="mobile-active-link"
+            [routerLinkActiveOptions]="{ exact: true }"
+            class="px-6 py-3 font-medium hover:bg-purple-0 hover:text-white hover:px-12 transition duration-300">
+            Home
+        </a>
+
+        <a routerLink="/about" (click)="closeMenu()" routerLinkActive="mobile-active-link"
+            class="px-6 py-3 font-medium hover:bg-purple-400 hover:text-white hover:px-12 transition duration-300">
+            About
+        </a>
+    </div>
+</nav>

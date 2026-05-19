@@ -1,0 +1,37 @@
+/* Open Close Menu */
+.mobile-menu {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 700ms ease-in-out, opacity 700ms ease-in-out;
+}
+
+.mobile-menu.open {
+    max-height: 160px;
+    opacity: 1;
+}
+
+.mobile-menu a {
+    transition: padding-left 300ms ease-in-out;
+}
+
+.mobile-menu a:hover {
+    padding-left: 3rem;
+}
+
+/* Desktop Active Link */
+.active-link {
+    color: rgb(168 85 247);
+}
+
+.active-link span {
+    width: 100% !important;
+    background-color: rgb(168 85 247) !important;
+}
+
+/* Mobile Active Link */
+.mobile-active-link {
+    background-color: rgb(139, 23, 248);
+    padding-left: 3rem;
+    color: white;
+}
