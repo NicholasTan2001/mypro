@@ -11,33 +11,53 @@
 
     <div class=" flex flex-col items-center justify-center">
 
+        <!-- Login Title-->
         <h1 reveal class="font-bold md:text-2xl text-xl mb-8">Login <span class="text-purple-600">My</span>Profile
         </h1>
 
+        <!-- Login Form-->
         <div reveal class="login-card flex flex-col bg-white rounded-lg p-6 md:w-120 w-full">
 
             <h2 class="text-center font-bold md:text-xl text-base text-purple-600">Login Now</h2>
 
-            <form class="flex flex-col gap-4 p-4">
+            <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 p-4">
 
-                <app-input label="Identity Number" type="text" placeholder="010118145248" inputmode="numeric"
-                    pattern="[0-9]*" maxlength="12" />
+                <app-input [(model)]="form.IdentityNumber" label="Identity Number" type="text"
+                    placeholder="010118145248" maxlength="12" inputmode="numeric">
+                </app-input>
 
-                <app-input label="Password" type="password" placeholder="Qwer1234." />
+                <p *ngIf="identityNumberError" class="text-red-500 md:text-sm text-xs font-medium">
+                    {{ identityNumberError }}
+                </p>
+
+                <app-input [(model)]="form.Password" label="Password" type="password" placeholder="Qwer1234.">
+                </app-input>
+
+                <p *ngIf="passwordError" class="text-red-500 md:text-sm text-xs font-medium">
+                    {{ passwordError }}
 
                 <div class="flex md:flex-row flex-col md:gap-5 gap-6 md:justify-between items-end">
+
                     <div class="flex flex-col w-full gap-1 md:w-3/4 font-medium">
-                        <label class="md:text-sm text-xs text-gray-400 font-medium">Country</label>
-                        <select class="border border-gray-600 text-white rounded-lg p-2 md:text-base text-sm cursor-pointer
-                      focus:border-white focus:ring-2 focus:ring-purple-500/50 transition duration-300 w-full">
-                            <option value="malaysia">🇲🇾 Malaysia</option>
-                            <option value="coming-soon" disabled class="text-gray-500 font-medium">Coming
-                                Soon ...
-                            </option>
+
+                        <label class="md:text-base text-sm text-gray-400 font-medium">
+                            Country
+                        </label>
+
+                        <select [(ngModel)]="form.Country" name="Country"
+                            class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer">
+
+                            <option value="Malaysia">🇲🇾 Malaysia</option>
+                            <option value="coming-soon" disabled>Coming Soon ...</option>
+
                         </select>
+
                     </div>
 
-                    <app-button type="submit" label="Login" class="flex flex-col w-full md:w-1/4" />
+                    <app-button type="submit" [label]="isLoading ? 'Loading...' : 'Login'"
+                        class=" flex flex-col w-full md:w-1/4">
+                    </app-button>
+
                 </div>
 
                 <app-button label="Register Now" routerLink="/register" class="flex flex-col mt-5 w-full" />
