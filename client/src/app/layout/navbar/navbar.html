@@ -1,4 +1,4 @@
-<nav class="bg-black text-white px-8 py-4 flex items-center justify-between relative">
+<nav class="bg-black text-white px-8 py-4 flex items-center justify-between relative z-10">
 
     <!-- Left Side -->
     <div class="flex items-center gap-10">
@@ -6,7 +6,9 @@
         <!-- Logo Name -->
         <div class="flex items-center gap-4 text-xl font-bold">
             <img src="logo.png" alt="MyProfile Logo" class="md:w-10 md:h-10 w-8 h-8">
-            <div class="md:text-2xl text-xl"><span class="text-purple-600">My</span>Profile</div>
+            <a routerLink="/home" class="md:text-2xl text-xl font-bold no-underline text-white">
+                <span class="text-purple-600">My</span>Profile
+            </a>
         </div>
 
         <!-- Desktop Navigation -->
@@ -31,10 +33,7 @@
     <div class="flex items-center gap-4">
 
         <!-- Login Button -->
-        <button
-            class="md:text-base text-sm bg-purple-600 hover:bg-purple-500 text-white font-medium md:px-4 md:py-2 px-3 py-1 rounded-lg transition duration-300 shadow-md hover:shadow-purple-500/50 cursor-pointer">
-            Login
-        </button>
+        <app-button routerLink="/login" label="Login" />
 
         <!-- Hamburger Icon -->
         <button class="md:hidden text-2xl cursor-pointer transition-transform duration-300" [class.rotate-90]="menuOpen"

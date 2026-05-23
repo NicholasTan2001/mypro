@@ -1,4 +1,5 @@
-import { Directive, ElementRef, OnInit, OnDestroy } from '@angular/core';
+import { Directive, ElementRef, OnInit, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Directive({
   selector: '[reveal]',
@@ -7,28 +8,38 @@ import { Directive, ElementRef, OnInit, OnDestroy } from '@angular/core';
 export class Reveal implements OnInit, OnDestroy {
   private observer!: IntersectionObserver;
 
-  constructor(private el: ElementRef) { }
+  constructor(
+    private el: ElementRef,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { }
 
   ngOnInit() {
-    this.el.nativeElement.classList.add('reveal-hidden');
+    if (!isPlatformBrowser(this.platformId)) return;
 
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            this.el.nativeElement.classList.add('reveal-visible');
-            this.observer.unobserve(this.el.nativeElement);
-          }
-        });
-      },
-      { threshold: 0.2 }
-    );
+    const el = this.el.nativeElement;
 
-    this.observer.observe(this.el.nativeElement);
+    el.classList.add('reveal-hidden');
+
+    requestAnimationFrame(() => {
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              el.classList.add('reveal-visible');
+              this.observer.unobserve(el);
+            }
+          });
+        },
+        { threshold: 0.2 }
+      );
+
+      this.observer.observe(el);
+    });
   }
 
   ngOnDestroy() {
-    this.observer.disconnect();
+    if (this.observer) {
+      this.observer.disconnect();
+    }
   }
 }
-

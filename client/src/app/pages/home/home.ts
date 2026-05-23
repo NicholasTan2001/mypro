@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { GlobeComponent } from '../../component/globe/globe';
+import { Globe } from '../../component/globe/globe';
 import { Reveal } from '../../directive/reveal';
+import { Button } from '../../component/button/button';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [GlobeComponent, Reveal],
+  imports: [Globe, Reveal, Button, RouterLink],
   standalone: true,
   templateUrl: './home.html',
   styleUrl: './home.css',

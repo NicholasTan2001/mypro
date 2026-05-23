@@ -1,12 +1,12 @@
-import { Component, OnInit, ElementRef, ViewChild, OnDestroy } from '@angular/core';
-
+import { Component, OnInit, ElementRef, ViewChild, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 
 @Component({
   selector: 'app-globe',
   standalone: true,
   templateUrl: './globe.html',
 })
-export class GlobeComponent implements OnInit, OnDestroy {
+export class Globe implements OnInit, OnDestroy {
   @ViewChild('globeCanvas', { static: true }) canvasRef!: ElementRef<HTMLCanvasElement>;
 
   private scale = 220;
@@ -15,17 +15,22 @@ export class GlobeComponent implements OnInit, OnDestroy {
   private lastPos: [number, number] | null = null;
   private velocity = [0, 0];
   private animFrame = 0;
-  private world: any = null;
+
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
 
   ngOnInit() {
+    if (!isPlatformBrowser(this.platformId)) return; // 👈 SSR guard
     this.initGlobe();
   }
 
   ngOnDestroy() {
-    cancelAnimationFrame(this.animFrame);
+    if (isPlatformBrowser(this.platformId) && this.animFrame) {
+      cancelAnimationFrame(this.animFrame); // 👈 guarded
+    }
   }
 
   private async initGlobe() {
+    // Dynamic imports inside browser-only block
     const [d3, topojson] = await Promise.all([
       import('https://cdn.jsdelivr.net/npm/d3@7/+esm' as any),
       import('https://cdn.jsdelivr.net/npm/topojson-client@3/+esm' as any)
@@ -46,6 +51,69 @@ export class GlobeComponent implements OnInit, OnDestroy {
 
     const data = await fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json').then(r => r.json());
     const countries = topojson.feature(data, data.objects.countries);
+
+    const malaysia = { lat: 4.2105, lng: 109.4208, name: 'Malaysia' };
+    const project = (lat: number, lng: number) => projection([lng, lat]);
+
+    let particles: { x: number, y: number, size: number, alpha: number, speed: number }[] = [];
+    let sparkTimer = 0;
+
+    const addSparks = (x: number, y: number) => {
+      for (let i = 0; i < 6; i++) {
+        particles.push({
+          x: x + (Math.random() - 0.5) * 10,
+          y: y + (Math.random() - 0.5) * 10,
+          size: Math.random() * 3 + 1,
+          alpha: 1,
+          speed: Math.random() * 1.5 + 0.5,
+        });
+      }
+    };
+
+    const drawMalaysia = () => {
+      const point = project(malaysia.lat, malaysia.lng);
+      if (!point) return;
+      const [x, y] = point;
+
+      const visible = d3.geoDistance([malaysia.lng, malaysia.lat], [-rotation[0], -rotation[1]]) < Math.PI / 2;
+      if (!visible) return;
+
+      const pingSize = (Date.now() % 1500) / 1500;
+      ctx.beginPath();
+      ctx.arc(x, y, pingSize * 18, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(250, 204, 21, ${1 - pingSize})`;
+      ctx.lineWidth = 1.5; ctx.stroke();
+
+      const pingSize2 = ((Date.now() + 750) % 1500) / 1500;
+      ctx.beginPath();
+      ctx.arc(x, y, pingSize2 * 18, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(250, 204, 21, ${1 - pingSize2})`;
+      ctx.lineWidth = 1; ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#facc15'; ctx.fill();
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1; ctx.stroke();
+
+      ctx.font = '500 11px sans-serif';
+      ctx.fillStyle = '#facc15';
+      ctx.fillText('Malaysia', x + 7, y - 7);
+
+      sparkTimer++;
+      if (sparkTimer % 20 === 0) addSparks(x, y);
+
+      particles = particles.filter(p => p.alpha > 0.05);
+      particles.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(250, 204, 21, ${p.alpha})`;
+        ctx.fill();
+        p.y -= p.speed;
+        p.x += (Math.random() - 0.5) * 0.5;
+        p.alpha -= 0.03;
+        p.size *= 0.97;
+      });
+    };
 
     const draw = () => {
       ctx.clearRect(0, 0, W, H);
@@ -73,79 +141,6 @@ export class GlobeComponent implements OnInit, OnDestroy {
       shine.addColorStop(1, 'transparent');
       ctx.beginPath(); path({ type: 'Sphere' });
       ctx.fillStyle = shine; ctx.fill();
-    };
-
-    const malaysia = { lat: 4.2105, lng: 109.4208, name: 'Malaysia' };
-
-    const project = (lat: number, lng: number) => {
-      const p = projection([lng, lat]);
-      return p;
-    };
-
-    let particles: { x: number, y: number, size: number, alpha: number, speed: number }[] = [];
-    let sparkTimer = 0;
-
-    const addSparks = (x: number, y: number) => {
-      for (let i = 0; i < 6; i++) {
-        particles.push({
-          x: x + (Math.random() - 0.5) * 10,
-          y: y + (Math.random() - 0.5) * 10,
-          size: Math.random() * 3 + 1,
-          alpha: 1,
-          speed: Math.random() * 1.5 + 0.5,
-        });
-      }
-    };
-
-    const drawMalaysia = () => {
-      const point = project(malaysia.lat, malaysia.lng);
-      if (!point) return;
-
-      const [x, y] = point;
-
-      const visible = d3.geoDistance([malaysia.lng, malaysia.lat], [-rotation[0], -rotation[1]]) < Math.PI / 2;
-      if (!visible) return;
-
-      const pingSize = (Date.now() % 1500) / 1500;
-      ctx.beginPath();
-      ctx.arc(x, y, pingSize * 18, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(250, 204, 21, ${1 - pingSize})`;
-      ctx.lineWidth = 1.5;
-      ctx.stroke();
-
-      const pingSize2 = ((Date.now() + 750) % 1500) / 1500;
-      ctx.beginPath();
-      ctx.arc(x, y, pingSize2 * 18, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(250, 204, 21, ${1 - pingSize2})`;
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = '#facc15';
-      ctx.fill();
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      ctx.font = '500 11px sans-serif';
-      ctx.fillStyle = '#facc15';
-      ctx.fillText('Malaysia', x + 7, y - 7);
-
-      sparkTimer++;
-      if (sparkTimer % 20 === 0) addSparks(x, y);
-
-      particles = particles.filter(p => p.alpha > 0.05);
-      particles.forEach(p => {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(250, 204, 21, ${p.alpha})`;
-        ctx.fill();
-        p.y -= p.speed;
-        p.x += (Math.random() - 0.5) * 0.5;
-        p.alpha -= 0.03;
-        p.size *= 0.97;
-      });
     };
 
     const animate = () => {
@@ -178,10 +173,21 @@ export class GlobeComponent implements OnInit, OnDestroy {
     });
     canvas.addEventListener('mouseup', () => { this.dragging = false; canvas.style.cursor = 'grab'; });
     canvas.addEventListener('mouseleave', () => { this.dragging = false; canvas.style.cursor = 'grab'; });
+
+    canvas.addEventListener('touchstart', e => { e.preventDefault(); this.dragging = true; this.lastPos = getPos(e); this.velocity = [0, 0]; }, { passive: false });
+    canvas.addEventListener('touchmove', e => {
+      e.preventDefault();
+      if (!this.dragging || !this.lastPos) return;
+      const pos = getPos(e);
+      const dx = pos[0] - this.lastPos[0], dy = pos[1] - this.lastPos[1];
+      this.velocity = [dx * 0.3, dy * 0.3];
+      rotation[0] += dx * 0.3; rotation[1] -= dy * 0.3;
+      rotation[1] = Math.max(-90, Math.min(90, rotation[1]));
+      this.lastPos = pos;
+    }, { passive: false });
+    canvas.addEventListener('touchend', () => { this.dragging = false; });
+    canvas.addEventListener('touchcancel', () => { this.dragging = false; });
+
     animate();
-
-
   }
-
-
 }

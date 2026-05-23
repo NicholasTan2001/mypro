@@ -1,3 +1,9 @@
+/* p,h1 Colour */
+h1,
+p {
+    color: #ffffff;
+}
+
 /* Gradient Text */
 .gradient-text {
     background: linear-gradient(90deg, #9333ea, #ffffff, #9333ea);
@@ -123,4 +129,21 @@
     100% {
         transform: rotate(180deg);
     }
+}
+
+/* Country Card */
+.country-card {
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease-in-out,
+        transform 0.3s ease-in-out,
+        border-color 0.3s ease-in-out;
+}
+
+.country-card:hover {
+    box-shadow: 0 0 10px #d9cae8,
+        0 0 20px #af86d4,
+        0 0 40px #3e0870;
+    transform: scale(1.05);
+    transition: all 0.3s ease-in-out;
 }

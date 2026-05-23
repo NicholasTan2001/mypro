@@ -12,17 +12,19 @@
     <div class="min-h-screen bg-[#000000] text-white">
 
         <header>
-            <app-navbar></app-navbar>
+            <app-navbar />
         </header>
 
         <main class="max-w-7xl mx-auto py-15 px-15">
 
             <router-outlet></router-outlet>
 
+            <app-scrolltop />
+
         </main>
 
         <footer>
-            <app-footer></app-footer>
+            <app-footer />
         </footer>
 
     </div>

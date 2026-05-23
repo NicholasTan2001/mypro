@@ -1,0 +1,18 @@
+/* p,h1 Colour */
+h1,
+p {
+    color: #ffffff;
+}
+
+/* Image Animation */
+.image-animation {
+    border-radius: 10px;
+    transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.image-animation:hover {
+    box-shadow: 0 0 20px #fff,
+        0 0 30px #9333ea,
+        0 0 80px #530b97;
+    transform: scale(1.05);
+}
