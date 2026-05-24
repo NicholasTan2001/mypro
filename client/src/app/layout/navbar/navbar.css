@@ -29,9 +29,24 @@
     background-color: rgb(168 85 247) !important;
 }
 
+.active-link-2 {
+    color: rgb(247, 85, 85);
+}
+
+.active-link-2 span {
+    width: 100% !important;
+    background-color: rgb(247, 85, 85) !important;
+}
+
 /* Mobile Active Link */
 .mobile-active-link {
     background-color: rgb(139, 23, 248);
+    padding-left: 3rem;
+    color: white;
+}
+
+.mobile-active-link-2 {
+    background-color: rgb(247, 85, 85);
     padding-left: 3rem;
     color: white;
 }

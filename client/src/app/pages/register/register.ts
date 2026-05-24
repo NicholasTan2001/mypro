@@ -8,6 +8,7 @@ import { Button } from "../../component/button/button";
 import { firstValueFrom } from "rxjs";
 import { CommonModule } from "@angular/common";
 import { Reveal } from "../../directive/reveal";
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-register',
@@ -33,10 +34,15 @@ export class Register {
   passwordError: string = '';
   confirmPasswordError: string = '';
 
+  registerSuccess: boolean = false;
+
   isLoading: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router) { }
-
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private cd: ChangeDetectorRef
+  ) { }
   async onSubmit() {
 
     this.isLoading = true;
@@ -120,7 +126,10 @@ export class Register {
       if (response) {
 
         this.isLoading = false;
-        this.router.navigate(['/login']);
+        this.registerSuccess = true;
+        this.cd.detectChanges();
+
+        return;
 
       }
 
@@ -135,4 +144,12 @@ export class Register {
 
     }
   }
+
+  loginPage() {
+
+    this.router.navigate(['/login']);
+
+  }
+
+
 }

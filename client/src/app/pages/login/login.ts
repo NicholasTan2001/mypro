@@ -4,9 +4,9 @@ import { Router, RouterLink } from '@angular/router';
 import { Reveal } from '../../directive/reveal';
 import { InputComponent } from '../../component/input/input';
 import { CommonModule } from "@angular/common";
-import { HttpClient } from '@angular/common/http';
-import { firstValueFrom } from "rxjs";
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../services/auth.service';
+import { firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
@@ -16,7 +16,6 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-
 export class Login {
 
   form = {
@@ -26,84 +25,61 @@ export class Login {
   };
 
   isLoading: boolean = false;
-
   identityNumberError: string = '';
   passwordError: string = '';
 
   constructor(
-    private http: HttpClient,
+    private authService: AuthService,
     private router: Router,
     private cd: ChangeDetectorRef
   ) { }
 
   async onSubmit() {
-
     this.isLoading = true;
-
     this.identityNumberError = '';
     this.passwordError = '';
 
     try {
-
       if (!this.form.IdentityNumber) {
-
         this.identityNumberError = 'Identity number is required.';
+        this.isLoading = false;
         return;
-
       }
 
       if (!/^\d{12}$/.test(this.form.IdentityNumber)) {
-
         this.identityNumberError = 'Valid identity number is required.';
+        this.isLoading = false;
         return;
-
       }
 
       if (!this.form.Password) {
-
         this.passwordError = 'Password is required.';
+        this.isLoading = false;
         return;
-
       }
 
       if (this.form.Password.length < 8) {
-
         this.passwordError = 'Password must be at least 8 characters long.';
+        this.isLoading = false;
         return;
-
       }
 
-      const response = await firstValueFrom(
-        this.http.post(
-          'http://localhost:5284/api/users/login',
-          this.form,
-          {
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          }
-        )
-      );
-      console.log('LOGIN SUCCESS', response);
+      const response = await firstValueFrom(this.authService.login(this.form));
+      this.authService.setToken(response.token, response.user);
 
-      this.router.navigate(['/home']);
-
+      this.router.navigate(['/myprofile']);
 
     } catch (error: any) {
 
-      this.isLoading = false;
-
-      const message = error?.error?.message;
-
+      const message = error?.error?.message || 'Login failed. Please try again.';
       this.passwordError = message;
-
+      this.isLoading = false;
       this.cd.detectChanges();
-
-      return;
 
     } finally {
 
       this.isLoading = false;
+
     }
   }
 }

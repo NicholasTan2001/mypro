@@ -16,6 +16,12 @@
             <ul>
                 <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/home">Home</a></li>
                 <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/about">About</a></li>
+                @if (isUser){
+
+                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/myprofile">MyProfile</a></li>
+                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/setting">Settings</a></li>
+
+                }
             </ul>
         </div>
 

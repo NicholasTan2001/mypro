@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { ApiService } from './services/api';
 import { Navbar } from './layout/navbar/navbar';
 import { Footer } from './layout/footer/footer';
-
+import { AuthService } from './services/auth.service'
 import { RouterOutlet } from '@angular/router';
 import { Scrolltop } from './component/scrolltop/scrolltop';
 
@@ -16,9 +15,11 @@ import { Scrolltop } from './component/scrolltop/scrolltop';
 })
 export class App implements OnInit {
 
-  constructor(private apiService: ApiService) { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
+
+    this.authService.loadUserFromStorage();
   }
 
 }

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-footer',
@@ -8,4 +9,16 @@ import { RouterLink } from '@angular/router';
   templateUrl: './footer.html',
   styleUrl: './footer.css',
 })
-export class Footer { }
+export class Footer {
+
+  isUser: boolean = false;
+
+  constructor(private authService: AuthService) { }
+
+  ngOnInit() {
+    this.authService.currentUser$.subscribe(user => {
+      this.isUser = user;
+
+    });
+  }
+}
