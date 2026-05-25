@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Button } from '../../component/button/button';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
+import { LogoutService } from '../../services/logout.service';
 
 @Component({
   selector: 'app-navbar',
@@ -15,10 +16,9 @@ import { CommonModule } from '@angular/common';
 export class Navbar {
 
   isUser: boolean = false;
-
   menuOpen = false;
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService, private logoutService: LogoutService) { }
 
   ngOnInit() {
     this.authService.currentUser$.subscribe(user => {
@@ -36,6 +36,8 @@ export class Navbar {
   }
 
   logout() {
+
+    this.logoutService.showLogoutSuccess();
     this.authService.logout();
   }
 }

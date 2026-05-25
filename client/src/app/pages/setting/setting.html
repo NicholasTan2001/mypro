@@ -10,10 +10,43 @@
 <body>
 
     <div class=" flex flex-col items-center justify-center">
-        <h1 reveal class="font-bold md:text-2xl text-xl mb-8"><span class="text-purple-600">My</span>Profile Settings
-        </h1>
-    </div>
+        <div class=" flex flex-col items-center justify-center">
+            <h1 reveal class="font-bold md:text-2xl text-xl mb-8"><span class="text-purple-600">My</span>Profile
+                Settings
+            </h1>
+        </div>
 
+        <div reveal class="setting-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
+
+            <h2 class="font-bold md:text-xl text-base text-red-500">Delete Account</h2>
+
+            <p class="text-black font-medium md:text-base text-sm mt-3 leading-relaxed text-justify">Are you sure you
+                want to
+                delete your
+                account? If you are
+                certain, please confirm your decision by
+                entering your current account password below. Once confirmed, click the "Confirm" button to proceed.
+                Please note that this action is irreversible and will permanently remove your profile and all associated
+                data. Thank you for being a part of MyProfile.</p>
+
+            <form (ngSubmit)="onSubmit()" class="flex flex-row md:justify-between items-end gap-6 mt-3">
+
+                <app-input class="w-full" [(model)]="form.Password" label="Password" type="password"
+                    placeholder="Qwer1234.">
+                </app-input>
+
+                <app-button type="submit" [label]="isLoading ? 'Loading...' : 'Confirm'"
+                    class=" flex flex-col md:w-1/5">
+                </app-button>
+
+            </form>
+
+            <p *ngIf="passwordError" class="text-red-500 md:text-sm text-xs font-medium mt-2">
+                {{ passwordError }}
+            </p>
+
+        </div>
+    </div>
 
 </body>
 

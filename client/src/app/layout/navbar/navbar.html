@@ -12,7 +12,7 @@
         </div>
 
         <!-- Desktop Navigation -->
-        <div class="hidden md:flex items-center gap-6">
+        <div class="hidden lg:flex items-center gap-6">
             <a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
                 class="relative group font-medium px-3 py-2 transition duration-300 hover:text-purple-300">
                 Home
@@ -51,7 +51,6 @@
     <div class="flex items-center gap-4">
 
         <!-- Login / Logout Button -->
-
         @if (isUser){
         <app-button label="Logout" variant="danger" (click)="logout()" />
 
@@ -62,14 +61,14 @@
         }
 
         <!-- Hamburger Icon -->
-        <button class="md:hidden text-2xl cursor-pointer transition-transform duration-300" [class.rotate-90]="menuOpen"
+        <button class="lg:hidden text-2xl cursor-pointer transition-transform duration-300" [class.rotate-90]="menuOpen"
             (click)="toggleMenu()">
             {{ menuOpen ? '✕' : '☰' }}
         </button>
     </div>
 
     <!-- Mobile Navigation -->
-    <div class="mobile-menu absolute top-full left-0 w-full bg-black border-purple-900 flex flex-col md:hidden"
+    <div class="mobile-menu absolute top-full left-0 w-full bg-black border-purple-900 flex flex-col lg:hidden"
         [class.open]="menuOpen">
 
         <a routerLink="/home" (click)="closeMenu()" routerLinkActive="mobile-active-link"
@@ -83,11 +82,17 @@
             About
         </a>
 
+
         @if (isUser){
 
         <a routerLink="/myprofile" (click)="closeMenu()" routerLinkActive="mobile-active-link-2"
             class="px-6 py-3 font-medium hover:bg-red-400 hover:text-white hover:px-12 transition duration-300">
             MyProfile
+        </a>
+
+        <a routerLink="/setting" (click)="closeMenu()" routerLinkActive="mobile-active-link-2"
+            class="px-6 py-3 font-medium hover:bg-red-400 hover:text-white hover:px-12 transition duration-300">
+            Settings
         </a>
 
         }

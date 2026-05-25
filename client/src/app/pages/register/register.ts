@@ -43,8 +43,8 @@ export class Register {
     private router: Router,
     private cd: ChangeDetectorRef
   ) { }
-  async onSubmit() {
 
+  async onSubmit() {
     this.isLoading = true;
 
     this.identityNumberError = '';
@@ -56,59 +56,51 @@ export class Register {
     try {
 
       if (!this.form.IdentityNumber) {
-
         this.identityNumberError = 'Identity number is required.';
+        this.isLoading = false;
         return;
-
       }
 
       if (!/^\d{12}$/.test(this.form.IdentityNumber)) {
-
-        this.identityNumberError = 'Valid indentity number is required.';
+        this.identityNumberError = 'Valid identity number is required.';
+        this.isLoading = false;
         return;
-
       }
 
       if (!this.form.Name) {
-
         this.nameError = 'Name is required.';
+        this.isLoading = false;
         return;
-
       }
 
       if (!this.form.Age) {
-
         this.ageError = 'Age is required.';
+        this.isLoading = false;
         return;
-
       }
 
       if (Number(this.form.Age) <= 0 || Number(this.form.Age) > 120 || isNaN(Number(this.form.Age))) {
-
         this.ageError = 'Valid age is required.';
+        this.isLoading = false;
         return;
-
       }
 
       if (!this.form.Password) {
-
         this.passwordError = 'Password is required.';
+        this.isLoading = false;
         return;
-
       }
 
       if (this.form.Password.length < 8) {
-
         this.passwordError = 'Password must be at least 8 characters long.';
+        this.isLoading = false;
         return;
-
       }
 
       if (this.form.Password !== this.form.ConfirmPassword) {
-
         this.confirmPasswordError = 'Passwords do not match.';
+        this.isLoading = false;
         return;
-
       }
 
       const response = await firstValueFrom(
@@ -124,24 +116,21 @@ export class Register {
       );
 
       if (response) {
-
         this.isLoading = false;
         this.registerSuccess = true;
+
         this.cd.detectChanges();
-
-        return;
-
       }
 
     } catch (error: any) {
-
-      alert('Registration failed');
       this.isLoading = false;
 
-    } finally {
+      console.log('Register error:', error);
 
-      this.isLoading = false;
+      const message = error?.error?.message || 'Registration failed. Please try again.';
+      this.identityNumberError = message;
 
+      this.cd.detectChanges();
     }
   }
 

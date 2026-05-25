@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Button } from '../../component/button/button';
 import { Router, RouterLink } from '@angular/router';
 import { Reveal } from '../../directive/reveal';
@@ -8,6 +8,8 @@ import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
+import { LogoutService } from '../../services/logout.service';
+import { DeleteAcccountService } from '../../services/delete-account.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +18,7 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class Login {
+export class Login implements OnInit {
 
   form = {
     IdentityNumber: '',
@@ -24,6 +26,8 @@ export class Login {
     Country: 'Malaysia'
   };
 
+  deleteAccountSuccess: boolean = false;
+  logoutSuccess: boolean = false;
   isLoading: boolean = false;
   identityNumberError: string = '';
   passwordError: string = '';
@@ -31,10 +35,25 @@ export class Login {
   constructor(
     private authService: AuthService,
     private router: Router,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private logoutService: LogoutService,
+    private deleteAccountService: DeleteAcccountService
   ) { }
 
+  ngOnInit() {
+
+    this.logoutService.logoutSuccess$.subscribe(success => {
+      this.logoutSuccess = success;
+    });
+
+    this.deleteAccountService.deleteAccountSuccess$.subscribe(success => {
+      this.deleteAccountSuccess = success;
+    })
+
+  }
+
   async onSubmit() {
+
     this.isLoading = true;
     this.identityNumberError = '';
     this.passwordError = '';
@@ -66,7 +85,6 @@ export class Login {
 
       const response = await firstValueFrom(this.authService.login(this.form));
       this.authService.setToken(response.token, response.user);
-
       this.router.navigate(['/myprofile']);
 
     } catch (error: any) {
@@ -81,5 +99,19 @@ export class Login {
       this.isLoading = false;
 
     }
+  }
+
+  closeLogout() {
+
+    this.logoutSuccess = false;
+    this.logoutService.hideLogoutSuccess();
+
+  }
+
+  closeDeleteAccount() {
+
+    this.deleteAccountSuccess = false;
+    this.deleteAccountService.hideDeleteAccountSuccess();
+
   }
 }

@@ -66,6 +66,45 @@
 
         </div>
 
+        <!-- Successfully Logout Modal -->
+        <div *ngIf="logoutSuccess">
+            <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
+                <div class="bg-white login-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
+
+                    <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
+
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Logout!</h2>
+
+                    <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
+                        Remember login back to update your latest personal information.
+                    </p>
+
+                    <app-button label="Yes, I will" (click)="closeLogout()" />
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Successfully Delete Account Modal -->
+        <div *ngIf="deleteAccountSuccess">
+            <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
+                <div class="bg-white login-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
+
+                    <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
+
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Deleted Account!
+                    </h2>
+
+                    <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
+                        Please register back account if you miss us.
+                    </p>
+
+                    <app-button label="Yes, I will" (click)="closeDeleteAccount()" />
+
+                </div>
+            </div>
+        </div>
+
     </div>
 
 </body>

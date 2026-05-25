@@ -176,3 +176,4 @@ C:\myAngular.Net\myProfile\server\obj\Debug\net8.0\server.pdb
 C:\myAngular.Net\myProfile\server\obj\Debug\net8.0\server.genruntimeconfig.cache
 C:\myAngular.Net\myProfile\server\obj\Debug\net8.0\ref\server.dll
 C:\myAngular.Net\myProfile\server\bin\Debug\net8.0\BCrypt-Net-Next.dll
+C:\myAngular.Net\myProfile\server\bin\Debug\net8.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

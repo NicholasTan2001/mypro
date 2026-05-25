@@ -22,3 +22,23 @@ export class AuthGuardService implements CanActivate {
     return false;
   }
 }
+
+@Injectable({ providedIn: 'root' })
+export class PublicGuardService implements CanActivate {
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) { }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    if (!isPlatformBrowser(this.platformId)) return true;
+
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/myprofile']);
+      return false;
+    }
+
+    return true;
+  }
+}

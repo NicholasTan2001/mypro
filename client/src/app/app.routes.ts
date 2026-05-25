@@ -6,14 +6,15 @@ import { Register } from './pages/register/register';
 import { Myprofile } from './pages/myprofile/myprofile'
 import { Setting } from './pages/setting/setting';
 
-import { AuthGuardService } from './services/auth.guard';
+import { AuthGuardService, PublicGuardService } from './services/auth.guard';
+
 
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
     { path: 'about', component: About },
     { path: 'home', component: Home },
-    { path: 'login', component: Login },
-    { path: 'register', component: Register },
+    { path: 'login', component: Login, canActivate: [PublicGuardService] },
+    { path: 'register', component: Register, canActivate: [PublicGuardService] },
     {
         path: 'myprofile',
         component: Myprofile,
