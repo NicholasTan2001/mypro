@@ -8,110 +8,89 @@
 </head>
 
 <body>
-
     <div class=" flex flex-col items-center justify-center">
 
         <!-- Register Title-->
-        <h1 reveal class="font-bold md:text-2xl text-xl mb-8">Register <span class="text-purple-600">My</span>Profile
+        <h1 reveal class="font-bold md:text-2xl text-xl mb-12">Register <span class="text-purple-600">My</span>Profile
         </h1>
 
         <!-- Register Form-->
         <div reveal class="register-card flex flex-col bg-white rounded-lg p-6 md:w-120 w-full">
-
-            <h2 class="text-center font-bold md:text-xl text-base text-black">Register Now</h2>
-
-            <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 p-4">
-
+            <h2 class="text-center font-bold md:text-lg text-base text-black">Register Now</h2>
+            <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 mt-3">
                 <app-input [(model)]="form.IdentityNumber" label="Identity Number" type="text"
                     placeholder="010118145248" maxlength="12" inputmode="numeric">
                 </app-input>
-
                 <p *ngIf="identityNumberError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ identityNumberError }}
                 </p>
-
                 <app-input [(model)]="form.Name" label="Full Name" type="text" placeholder="John Doe">
                 </app-input>
-
                 <p *ngIf="nameError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ nameError }}
                 </p>
-
                 <app-input [(model)]="form.Age" label="Age" type="text" placeholder="25" inputmode="numeric">
                 </app-input>
-
                 <p *ngIf="ageError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ ageError }}
                 </p>
-
+                <app-input [(model)]="form.Email" label="Email" type="text" placeholder="Users_123@gmail.com "
+                    inputmode="numeric">
+                </app-input>
+                <p *ngIf=" emailError" class="text-red-500 md:text-sm text-xs font-medium">
+                    {{ emailError }}
+                </p>
+                <app-input [(model)]="form.PhoneNumber" label="Phone Number" type="text" placeholder="0121231231"
+                    maxlength="10">
+                </app-input>
+                <p *ngIf="phoneNumberError" class="text-red-500 md:text-sm text-xs font-medium">
+                    {{ phoneNumberError }}
+                </p>
                 <app-input [(model)]="form.Password" label="Password" type="password" placeholder="Qwer1234.">
                 </app-input>
-
                 <p *ngIf="passwordError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ passwordError }}
                 </p>
-
                 <app-input [(model)]="form.ConfirmPassword" label="Confirm Password" type="password"
                     placeholder="Qwer1234.">
                 </app-input>
-
                 <p *ngIf="confirmPasswordError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ confirmPasswordError }}
                 </p>
-
                 <div class="flex md:flex-row flex-col md:gap-5 gap-6 md:justify-between items-end">
-
                     <div class="flex flex-col w-full gap-1 md:w-3/4 font-medium">
-
                         <label class="md:text-base text-sm text-gray-400 font-medium">
                             Country
                         </label>
-
                         <select [(ngModel)]="form.Country" name="Country"
-                            class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer">
-
+                            class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white">
                             <option value="Malaysia">🇲🇾 Malaysia</option>
                             <option value="coming-soon" disabled>Coming Soon ...</option>
-
                         </select>
-
                     </div>
-
                     <app-button type="submit" [label]="isLoading ? 'Loading...' : 'Register'"
                         class=" flex flex-col w-full md:w-1/4">
                     </app-button>
-
                 </div>
-
                 <app-button label="Back to Login" routerLink="/login" class="flex flex-col mt-5 w-full">
                 </app-button>
-
             </form>
-
         </div>
 
         <!-- Sucessfully Register Modal -->
         <div *ngIf="registerSuccess">
-
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
-
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-
                     <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Registered!</h2>
-
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
                         Your account has been registered successfully. Try login now.
                     </p>
-
                     <app-button label="Login Now" (click)="loginPage()" />
-
                 </div>
             </div>
         </div>
-
     </div>
-
 </body>
 
 </html>

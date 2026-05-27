@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
+
 export class DeleteAcccountService {
+
   private deleteAccountSuccessSubject = new BehaviorSubject<boolean>(false);
   public deleteAccountSuccess$ = this.deleteAccountSuccessSubject.asObservable();
 
@@ -13,4 +15,5 @@ export class DeleteAcccountService {
   hideDeleteAccountSuccess() {
     this.deleteAccountSuccessSubject.next(false);
   }
+
 }

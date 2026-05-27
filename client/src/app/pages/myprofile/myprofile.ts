@@ -22,21 +22,16 @@ export class Myprofile implements OnInit {
   ngOnInit() {
     const user = this.authService.getCurrentUser();
     if (user) {
-
       this.name = user.name;
-
     }
-
     this.authService.freshLogin$.subscribe(isFreshLogin => {
       this.loginSuccess = isFreshLogin;
     });
   }
 
   closeModal() {
-
     this.loginSuccess = false;
     this.authService.clearFreshLogin();
-
   }
 
 }

@@ -5,6 +5,7 @@ import { Component, Input, Output, EventEmitter } from '@angular/core';
   standalone: true,
   templateUrl: './input.html'
 })
+
 export class InputComponent {
 
   @Input() label: string = '';
@@ -12,14 +13,13 @@ export class InputComponent {
   @Input() placeholder: string = '';
   @Input() inputmode: string = '';
   @Input() maxlength: string = '';
-
   @Input() model: any;
   @Output() modelChange = new EventEmitter<any>();
 
   onInput(event: Event) {
     const value = (event.target as HTMLInputElement).value;
-
     this.model = value;
     this.modelChange.emit(value);
   }
+
 }

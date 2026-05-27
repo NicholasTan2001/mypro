@@ -8,4 +8,5 @@ import { Reveal } from '../../directive/reveal';
   templateUrl: './about.html',
   styleUrl: './about.css',
 })
+
 export class About { }

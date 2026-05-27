@@ -2,7 +2,9 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 @Injectable({ providedIn: 'root' })
+
 export class LogoutService {
+
   private logoutSuccessSubject = new BehaviorSubject<boolean>(false);
   public logoutSuccess$ = this.logoutSuccessSubject.asObservable();
 
@@ -13,4 +15,5 @@ export class LogoutService {
   hideLogoutSuccess() {
     this.logoutSuccessSubject.next(false);
   }
+
 }

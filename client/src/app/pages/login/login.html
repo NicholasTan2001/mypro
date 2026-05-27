@@ -8,79 +8,79 @@
 </head>
 
 <body>
-
     <div class=" flex flex-col items-center justify-center">
 
         <!-- Login Title-->
-        <h1 reveal class="font-bold md:text-2xl text-xl mb-8">Login <span class="text-purple-600">My</span>Profile
+        <h1 reveal class="font-bold md:text-2xl text-xl mb-12">Login <span class="text-purple-600">My</span>Profile
         </h1>
 
         <!-- Login Form-->
-        <div reveal class="login-card flex flex-col bg-white rounded-lg p-6 md:w-120 w-full">
-
-            <h2 class="text-center font-bold md:text-xl text-base text-purple-600">Login Now</h2>
-
-            <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 p-4">
-
+        <div reveal class="login-card flex flex-col bg-white rounded-lg p-6 md:w-120 w-full mb-12">
+            <h2 class="text-center font-bold md:text-lg text-base text-purple-600">Login Now</h2>
+            <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 mt-3">
                 <app-input [(model)]="form.IdentityNumber" label="Identity Number" type="text"
                     placeholder="010118145248" maxlength="12" inputmode="numeric">
                 </app-input>
-
                 <p *ngIf="identityNumberError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ identityNumberError }}
                 </p>
-
                 <app-input [(model)]="form.Password" label="Password" type="password" placeholder="Qwer1234.">
                 </app-input>
-
                 <p *ngIf="passwordError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ passwordError }}
-
+                </p>
                 <div class="flex md:flex-row flex-col md:gap-5 gap-6 md:justify-between items-end">
-
                     <div class="flex flex-col w-full gap-1 md:w-3/4 font-medium">
-
                         <label class="md:text-base text-sm text-gray-400 font-medium">
                             Country
                         </label>
-
                         <select [(ngModel)]="form.Country" name="Country"
-                            class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer">
-
+                            class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white">
                             <option value="Malaysia">🇲🇾 Malaysia</option>
                             <option value="coming-soon" disabled>Coming Soon ...</option>
-
                         </select>
-
                     </div>
-
                     <app-button type="submit" [label]="isLoading ? 'Loading...' : 'Login'"
                         class=" flex flex-col w-full md:w-1/4">
                     </app-button>
-
                 </div>
-
                 <app-button label="Register Now" routerLink="/register" class="flex flex-col mt-5 w-full" />
-
             </form>
+        </div>
 
+        <!-- Reset Password Form-->
+        <div reveal class="login-card flex flex-col bg-white rounded-lg p-6 md:w-180 w-full">
+            <h2 class="font-bold md:text-lg text-base text-purple-600">Reset Password
+            </h2>
+            <p class="text-black font-medium md:text-base text-sm mt-3 leading-relaxed text-justify mb-3">Forgot your
+                password? No worries. We will send a temporary password to the email address linked to your
+                account. Please provide your identification number below for verification purposes.
+                If you no longer remember the email address associated with this account, you may contact the website
+                administrator for further assistance.
+            </p>
+            <form (ngSubmit)="onSubmit2()" class="flex flex-row items-end justify-between gap-4">
+                <app-input [(model)]="form2.IdentityNumber" label="Identity Number" type="text"
+                    placeholder="010118145248" maxlength="12" inputmode="numeric" class="w-full">
+                </app-input>
+                <app-button type="submit" [label]="isLoading2 ? 'Loading...' : 'Send'">
+                </app-button>
+            </form>
+            <p *ngIf="identityNumberError2" class="text-red-500 md:text-sm text-xs font-medium mt-3">
+                {{ identityNumberError2 }}
+            </p>
         </div>
 
         <!-- Successfully Logout Modal -->
-        <div *ngIf="logoutSuccess">
+        <div *ngIf=" logoutSuccess">
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white login-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
-
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Logout!</h2>
-
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Logout!
+                    </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
                         Remember login back to update your latest personal information.
                     </p>
-
                     <app-button label="Yes, I will" (click)="closeLogout()" />
-
                 </div>
             </div>
         </div>
@@ -89,24 +89,32 @@
         <div *ngIf="deleteAccountSuccess">
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white login-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
-
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-
                     <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Deleted Account!
                     </h2>
-
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
                         Please register back account if you miss us.
                     </p>
-
                     <app-button label="Yes, I will" (click)="closeDeleteAccount()" />
-
                 </div>
             </div>
         </div>
 
+        <!-- Successfully Reset Password Modal -->
+        <div *ngIf="resetPasswordSuccess">
+            <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
+                <div class="bg-white login-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
+                    <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Sent!
+                    </h2>
+                    <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
+                        Please check your email now.
+                    </p>
+                    <app-button label="Yes, I will" (click)="closeResetPassword()" />
+                </div>
+            </div>
+        </div>
     </div>
-
 </body>
 
 </html>

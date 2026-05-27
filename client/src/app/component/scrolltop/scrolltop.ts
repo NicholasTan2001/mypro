@@ -8,11 +8,13 @@ import { CommonModule } from '@angular/common';
   templateUrl: './scrolltop.html',
   styleUrl: './scrolltop.css',
 })
+
 export class Scrolltop {
 
   isVisible = false;
 
   @HostListener('window:scroll')
+
   onScroll() {
     this.isVisible = window.scrollY > 300;
   }
@@ -20,4 +22,5 @@ export class Scrolltop {
   scrollToTop() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
+
 }

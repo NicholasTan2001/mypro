@@ -5,7 +5,9 @@ import { isPlatformBrowser } from '@angular/common';
   selector: '[reveal]',
   standalone: true,
 })
+
 export class Reveal implements OnInit, OnDestroy {
+
   private observer!: IntersectionObserver;
 
   constructor(
@@ -15,11 +17,8 @@ export class Reveal implements OnInit, OnDestroy {
 
   ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) return;
-
     const el = this.el.nativeElement;
-
     el.classList.add('reveal-hidden');
-
     requestAnimationFrame(() => {
       this.observer = new IntersectionObserver(
         (entries) => {
@@ -32,7 +31,6 @@ export class Reveal implements OnInit, OnDestroy {
         },
         { threshold: 0.2 }
       );
-
       this.observer.observe(el);
     });
   }
@@ -42,4 +40,5 @@ export class Reveal implements OnInit, OnDestroy {
       this.observer.disconnect();
     }
   }
+
 }

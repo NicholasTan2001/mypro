@@ -8,46 +8,90 @@
 </head>
 
 <body>
-
     <div class=" flex flex-col items-center justify-center">
+
+        <!-- Settings Title-->
         <div class=" flex flex-col items-center justify-center">
-            <h1 reveal class="font-bold md:text-2xl text-xl mb-8"><span class="text-purple-600">My</span>Profile
+            <h1 reveal class="font-bold md:text-2xl text-xl mb-12"><span class="text-purple-600">My</span>Profile
                 Settings
             </h1>
         </div>
 
+        <!-- Change Password Form-->
+        <div reveal class="setting-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
+            <h2 class="font-bold md:text-lg text-base text-black">Change Account Password</h2>
+            <p class="text-black font-medium md:text-base text-sm mt-3 leading-relaxed text-justify"> Are you sure you
+                want to change your account password? If so, please enter your current password, your new password, and
+                confirm your new password below. For security purposes, your previous password will no longer be valid
+                after the change. Please make sure to remember your new password for future logins.</p>
+            <form (ngSubmit)="onSubmit2()" class="flex flex-col md:justify-between gap-4 mt-3">
+                <app-input class="w-full" [(model)]="form2.Password" label="Password" type="password"
+                    placeholder="Qwer1234.">
+                </app-input>
+                <p *ngIf="passwordError2" class="text-red-500 md:text-sm text-xs font-medium">
+                    {{ passwordError2 }}
+                </p>
+                <app-input class="w-full" [(model)]="form2.NewPassword" label="New Password" type="password"
+                    placeholder="Qwer1234.">
+                </app-input>
+                <p *ngIf="newPasswordError" class="text-red-500 md:text-sm text-xs font-medium">
+                    {{ newPasswordError }}
+                </p>
+                <app-input class="w-full" [(model)]="form2.ConfirmNewPassword" label="Confirm New Password"
+                    type="password" placeholder="Qwer1234.">
+                </app-input>
+                <p *ngIf="confirmNewPasswordError" class="text-red-500 md:text-sm text-xs font-medium">
+                    {{ confirmNewPasswordError }}
+                </p>
+                <div class="flex mt-1 justify-end">
+                    <app-button type="submit" [label]="isLoading2 ? 'Loading...' : 'Confirm'">
+                    </app-button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Delete Account Form-->
         <div reveal class="setting-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
-
-            <h2 class="font-bold md:text-xl text-base text-red-500">Delete Account</h2>
-
-            <p class="text-black font-medium md:text-base text-sm mt-3 leading-relaxed text-justify">Are you sure you
+            <h2 class="font-bold md:text-lg text-base text-red-500">Delete Account</h2>
+            <p class="text-black font-medium md:text-base text-sm mt-3 leading-relaxed text-justify">Are you sure
+                you
                 want to
                 delete your
                 account? If you are
                 certain, please confirm your decision by
                 entering your current account password below. Once confirmed, click the "Confirm" button to proceed.
-                Please note that this action is irreversible and will permanently remove your profile and all associated
+                Please note that this action is irreversible and will permanently remove your profile and all
+                associated
                 data. Thank you for being a part of MyProfile.</p>
-
-            <form (ngSubmit)="onSubmit()" class="flex flex-row md:justify-between items-end gap-6 mt-3">
+            <form (ngSubmit)="onSubmit()" class="flex flex-row justify-between items-end gap-6 mt-3">
 
                 <app-input class="w-full" [(model)]="form.Password" label="Password" type="password"
                     placeholder="Qwer1234.">
                 </app-input>
-
-                <app-button type="submit" [label]="isLoading ? 'Loading...' : 'Confirm'"
+                <app-button type="submit" [label]="isLoading ? 'Loading...' : 'Confirm'" variant="danger"
                     class=" flex flex-col md:w-1/5">
                 </app-button>
-
             </form>
-
-            <p *ngIf="passwordError" class="text-red-500 md:text-sm text-xs font-medium mt-2">
+            <p *ngIf="passwordError" class="text-red-500 md:text-sm text-xs font-medium mt-4">
                 {{ passwordError }}
             </p>
+        </div>
 
+        <!-- Sucessfully Update Password Modal -->
+        <div *ngIf="updatePasswordSuccess">
+            <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
+                <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
+                    <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Updated New
+                        Password!</h2>
+                    <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
+                        Your password for this account is changed a new one. Try login with new password now.
+                    </p>
+                    <app-button label="Login with New Password" (click)="loginPage()" />
+                </div>
+            </div>
         </div>
     </div>
-
 </body>
 
 </html>

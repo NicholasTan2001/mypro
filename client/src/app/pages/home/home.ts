@@ -14,6 +14,7 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
+
 export class Home implements OnInit {
 
   malaysiaUsers: number = 0;
@@ -29,10 +30,8 @@ export class Home implements OnInit {
       const response: any = await firstValueFrom(
         this.http.get('http://localhost:5284/api/users/malaysia')
       );
-
       this.malaysiaUsers = response.malaysiaUsers + 10000;
       this.cd.detectChanges();
-
     } catch (error) {
       console.error('Failed to fetch user count:', error);
     }

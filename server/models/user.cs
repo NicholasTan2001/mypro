@@ -21,5 +21,11 @@ namespace MyProfile.Models
         [JsonPropertyName("Country")]
         public string? Country { get; set; }
 
+        [JsonPropertyName("Email")]
+        public string? Email { get; set; }
+
+        [JsonPropertyName("PhoneNumber")]
+        public string? PhoneNumber { get; set; }
+
     }
 }

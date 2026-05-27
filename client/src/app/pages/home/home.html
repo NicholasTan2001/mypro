@@ -11,16 +11,12 @@
 
     <!-- Logo Section -->
     <div reveal class=" flex flex-col text-center">
-
         <img src="logo.png" alt="MyProfile Logo" class="md:w-32 w-25 mx-auto mb-5 cursor-pointer logo-animation">
-
         <h1 class="md:text-4xl text-3xl font-bold mb-20 gradient-text">MyProfile</h1>
-
     </div>
 
     <!-- MyProfile Explaination 1 -->
     <div reveal class="flex md:flex-row flex-col gap-20 items-center justify-center mb-20">
-
         <div class="text-center w-full md:w-3/4">
             <h1 reveal class="font-bold md:text-2xl text-xl mb-4">What is <span
                     class="text-purple-600">My</span>Profile?
@@ -33,86 +29,69 @@
                 and achievements. Whether you're a student, professional, or freelancer. MyProfile helps you
                 present yourself in the best light to public.</p>
         </div>
-
         <div reveal class="flex justify-center w-3/5 md:w-2/3 cursor-pointer">
             <img src="image_1.png" alt="Image 1"
                 class="glow-image w-full max-w-xs md:max-w-sm h-auto rounded-lg object-contain">
         </div>
-
     </div>
 
     <!-- MyProfile Explaination 2 -->
     <div class="flex md:flex-row flex-col gap-20 items-center justify-center mb-20">
-
         <div reveal class="flex justify-center w-3/5 md:w-2/3 cursor-pointer order-2 md:order-1">
             <div class="image-wrapper">
                 <img src="image_2.png" alt="Image 2"
                     class="protected-image w-full max-w-xs md:max-w-sm h-auto rounded-full">
             </div>
         </div>
-
         <div reveal class="text-center w-full md:w-3/4  order-1 md:order-2">
-
             <h1 reveal class="font-bold md:text-2xl text-xl mb-4">Why choose <span
                     class="text-purple-600">My</span>Profile?
             </h1>
-
             <p reveal class="font-medium md:text-base text-sm leading-relaxed text-justify">
                 In the future, MyProfile aims to become a professional international platform that enables the public to
                 learn more about you and your professional backgrounds. The platform will also serve as a trusted
                 source of authentic information, allowing important individuals and organizations worldwide to access
                 reliable your profiles and details.
             </p>
-
         </div>
-
     </div>
 
     <!-- MyProfile Locations -->
     <div class="flex flex-col text-center items-center justify-center">
-
         <h1 reveal class="font-bold md:text-2xl text-xl mb-4"><span class="text-purple-600">My</span>Profile is
             available in?
         </h1>
-
         <app-globe reveal class="mb-4" />
-
         <div reveal
-            class="border-2 border-purple-900 rounded-2xl p-8 shadow-lg shadow-purple-300 md:w-4/5 w-full mb-10">
+            class="border-2 border-purple-900 rounded-2xl p-8 shadow-lg shadow-purple-300 md:w-4/5 w-full mb-12">
             <div class="grid md:grid-cols-3 grid-cols-2 gap-5">
                 <div class="country-card  rounded-lg p-5 flex flex-col items-center justify-center">
                     <img src="malaysia.png" alt="MalaysiaFlag" class="rounded-lg">
-
                     <h3 class="font-bold md:text-xl text-lg leading-relaxed mt-5 text-red-500">
                         {{ malaysiaUsers}}+
                     </h3>
-
                     <p class="font-medium md:text-lg text-base leading-relaxed mt-2">
-                        accounts in Malaysia
+                        in Malaysia
                     </p>
                 </div>
                 <div class="country-card rounded-lg p-5 flex flex-col items-center justify-center">
-
                     <p class="font-medium md:text-lg text-base leading-relaxed  mt-5">
                         Coming Soon ...
                     </p>
                 </div>
             </div>
         </div>
-
-        <p reveal class="font-medium md:text-base text-sm leading-relaxed text-justify mb-10">
+        <p reveal class="font-medium md:text-base text-sm leading-relaxed text-justify mb-12">
             MyProfile is a secure and trusted platform approved and recognized by the respective government authorities
             in each country where it operates. It is widely adopted by users, including government institutions and
             partner organizations, ensuring reliability and credibility across both public and private sectors. All
             profiles undergo verification and compliance checks to ensure users are protected and the information shared
             remains safe, accurate, and trustworthy.
         </p>
-
     </div>
 
     <!-- About Us -->
     <app-button reveal routerLink="/about" label="About Us" class="flex flex-col items-center justify-center" />
-
 </body>
 
 </html>

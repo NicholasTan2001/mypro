@@ -4,7 +4,9 @@ import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from
 import { AuthService } from './auth.service';
 
 @Injectable({ providedIn: 'root' })
+
 export class AuthGuardService implements CanActivate {
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -13,18 +15,19 @@ export class AuthGuardService implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (!isPlatformBrowser(this.platformId)) return true;
-
     if (this.authService.isLoggedIn()) {
       return true;
     }
-
     this.router.navigate(['/login']);
     return false;
   }
+
 }
 
 @Injectable({ providedIn: 'root' })
+
 export class PublicGuardService implements CanActivate {
+
   constructor(
     private authService: AuthService,
     private router: Router,
@@ -33,12 +36,11 @@ export class PublicGuardService implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     if (!isPlatformBrowser(this.platformId)) return true;
-
     if (this.authService.isLoggedIn()) {
       this.router.navigate(['/myprofile']);
       return false;
     }
-
     return true;
   }
+
 }

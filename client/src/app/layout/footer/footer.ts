@@ -9,6 +9,7 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './footer.html',
   styleUrl: './footer.css',
 })
+
 export class Footer {
 
   isUser: boolean = false;
@@ -18,7 +19,7 @@ export class Footer {
   ngOnInit() {
     this.authService.currentUser$.subscribe(user => {
       this.isUser = user;
-
     });
   }
+
 }

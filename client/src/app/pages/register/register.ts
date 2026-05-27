@@ -17,6 +17,7 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
+
 export class Register {
 
   form = {
@@ -25,7 +26,9 @@ export class Register {
     Age: '',
     Password: '',
     ConfirmPassword: '',
-    Country: 'Malaysia'
+    Country: 'Malaysia',
+    Email: '',
+    PhoneNumber: '',
   };
 
   identityNumberError: string = '';
@@ -33,9 +36,9 @@ export class Register {
   ageError: string = '';
   passwordError: string = '';
   confirmPasswordError: string = '';
-
+  phoneNumberError: string = '';
+  emailError: string = '';
   registerSuccess: boolean = false;
-
   isLoading: boolean = false;
 
   constructor(
@@ -46,63 +49,74 @@ export class Register {
 
   async onSubmit() {
     this.isLoading = true;
-
     this.identityNumberError = '';
     this.nameError = '';
     this.ageError = '';
     this.passwordError = '';
     this.confirmPasswordError = '';
-
+    this.emailError = '';
+    this.phoneNumberError = '';
     try {
-
       if (!this.form.IdentityNumber) {
         this.identityNumberError = 'Identity number is required.';
         this.isLoading = false;
         return;
       }
-
       if (!/^\d{12}$/.test(this.form.IdentityNumber)) {
         this.identityNumberError = 'Valid identity number is required.';
         this.isLoading = false;
         return;
       }
-
       if (!this.form.Name) {
         this.nameError = 'Name is required.';
         this.isLoading = false;
         return;
       }
-
       if (!this.form.Age) {
         this.ageError = 'Age is required.';
         this.isLoading = false;
         return;
       }
-
       if (Number(this.form.Age) <= 0 || Number(this.form.Age) > 120 || isNaN(Number(this.form.Age))) {
         this.ageError = 'Valid age is required.';
         this.isLoading = false;
         return;
       }
-
+      if (!this.form.Email) {
+        this.ageError = 'Email is required.';
+        this.isLoading = false;
+        return;
+      }
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.Email)) {
+        this.emailError = 'Valid email is required.';
+        this.isLoading = false;
+        return;
+      }
+      if (!this.form.PhoneNumber) {
+        this.phoneNumberError = 'Phone number is required.';
+        this.isLoading = false;
+        return;
+      }
+      if (!/^\d{10}$/.test(this.form.PhoneNumber)) {
+        this.phoneNumberError = 'Valid phone number is required.';
+        this.isLoading = false;
+        return;
+      }
       if (!this.form.Password) {
         this.passwordError = 'Password is required.';
         this.isLoading = false;
         return;
       }
-
       if (this.form.Password.length < 8) {
         this.passwordError = 'Password must be at least 8 characters long.';
         this.isLoading = false;
         return;
       }
-
       if (this.form.Password !== this.form.ConfirmPassword) {
         this.confirmPasswordError = 'Passwords do not match.';
         this.isLoading = false;
         return;
       }
-
       const response = await firstValueFrom(
         this.http.post(
           'http://localhost:5284/api/users/register',
@@ -114,31 +128,22 @@ export class Register {
           }
         )
       );
-
       if (response) {
         this.isLoading = false;
         this.registerSuccess = true;
-
         this.cd.detectChanges();
       }
-
     } catch (error: any) {
       this.isLoading = false;
-
       console.log('Register error:', error);
-
       const message = error?.error?.message || 'Registration failed. Please try again.';
       this.identityNumberError = message;
-
       this.cd.detectChanges();
     }
   }
 
   loginPage() {
-
     this.router.navigate(['/login']);
-
   }
-
 
 }

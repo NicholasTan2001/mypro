@@ -23,7 +23,6 @@ export class Navbar {
   ngOnInit() {
     this.authService.currentUser$.subscribe(user => {
       this.isUser = user;
-
     });
   }
 
@@ -36,8 +35,8 @@ export class Navbar {
   }
 
   logout() {
-
     this.logoutService.showLogoutSuccess();
     this.authService.logout();
   }
+
 }

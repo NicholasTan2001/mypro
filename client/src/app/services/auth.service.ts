@@ -15,21 +15,19 @@ interface LoginResponse {
 }
 
 @Injectable({ providedIn: 'root' })
+
 export class AuthService {
+
   private apiUrl = 'http://localhost:5284/api/users';
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
-
   private freshLoginSubject = new BehaviorSubject<boolean>(false);
   public freshLogin$ = this.freshLoginSubject.asObservable();
-
   constructor(
     private http: HttpClient,
     private router: Router,
     @Inject(PLATFORM_ID) private platformId: Object
-  ) {
-
-  }
+  ) { }
 
   login(form: any): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(`${this.apiUrl}/login`, form);
@@ -41,7 +39,6 @@ export class AuthService {
 
   setToken(token: string, user: any) {
     if (!isPlatformBrowser(this.platformId)) return;
-
     localStorage.setItem('authToken', token);
     localStorage.setItem('user', JSON.stringify(user));
     this.currentUserSubject.next(user);
@@ -50,7 +47,6 @@ export class AuthService {
 
   getToken(): string | null {
     if (!isPlatformBrowser(this.platformId)) return null;
-
     return localStorage.getItem('authToken');
   }
 
@@ -60,13 +56,11 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     if (!isPlatformBrowser(this.platformId)) return false;
-
     return !!localStorage.getItem('authToken');
   }
 
   loadUserFromStorage() {
     if (!isPlatformBrowser(this.platformId)) return;
-
     const token = localStorage.getItem('authToken');
     const user = localStorage.getItem('user');
     if (token && user) {
@@ -85,4 +79,5 @@ export class AuthService {
     this.currentUserSubject.next(null);
     this.router.navigate(['/login']);
   }
+
 }
