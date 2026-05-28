@@ -80,4 +80,10 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
+  updateCurrentUser(user: any) {
+    if (!isPlatformBrowser(this.platformId)) return;
+    this.currentUserSubject.next(user);
+    localStorage.setItem('user', JSON.stringify(user));
+  }
+
 }

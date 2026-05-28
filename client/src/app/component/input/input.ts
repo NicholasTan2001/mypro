@@ -13,6 +13,7 @@ export class InputComponent {
   @Input() placeholder: string = '';
   @Input() inputmode: string = '';
   @Input() maxlength: string = '';
+  @Input() readonly: boolean = false;
   @Input() model: any;
   @Output() modelChange = new EventEmitter<any>();
 

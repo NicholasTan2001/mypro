@@ -73,6 +73,7 @@ public class UsersController : ControllerBase
             {
                 user.Id,
                 user.Name,
+                user.Age,
                 user.IdentityNumber,
                 user.Country,
                 user.Email,
@@ -206,6 +207,42 @@ MyProfile Team
         {
             Console.WriteLine($"Email sending failed: {ex.Message}");
         }
+    }
+
+    [HttpPut("update-profile")]
+    [Authorize]
+    public async Task<ActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        if (!string.IsNullOrEmpty(request.Name))
+        {
+            user.Name = request.Name;
+        }
+        if (request.Age.HasValue && request.Age > 0)
+        {
+            user.Age = request.Age.Value;
+        }
+        if (!string.IsNullOrEmpty(request.Email))
+        {
+            user.Email = request.Email;
+        }
+        if (!string.IsNullOrEmpty(request.PhoneNumber))
+        {
+            user.PhoneNumber = request.PhoneNumber;
+
+        }
+        if (!string.IsNullOrEmpty(request.Country))
+        {
+            user.Country = request.Country;
+        }
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Profile updated successfully.", user });
     }
 
 }
