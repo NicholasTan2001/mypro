@@ -7,6 +7,10 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+if (builder.Environment.IsDevelopment())
+{
+    builder.Configuration.AddUserSecrets<Program>();
+}
 
 builder.Services.AddControllers();
 
@@ -25,9 +29,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngular",
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200")
-                  .AllowAnyHeader()
-                  .AllowAnyMethod();
+            policy.WithOrigins("http://localhost:4200",
+            "http://192.168.1.6:4200",
+            "http://192.168.1.*")
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });
 });
 
@@ -53,6 +59,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+app.Urls.Add("http://0.0.0.0:5284");
 // Configure the HTTP request pipeline.
 
 if (app.Environment.IsDevelopment())

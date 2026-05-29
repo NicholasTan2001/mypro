@@ -1,0 +1,8 @@
+# Don't commit appsettings with secrets
+appsettings.Development.json
+appsettings.json
+appsettings.*.json
+!appsettings.Example.json
+
+# Ignore user secrets
+**/Properties/launchSettings.json
