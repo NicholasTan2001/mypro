@@ -1,3 +1,8 @@
+/*h1 Colour*/
+h1 {
+    color: white;
+}
+
 /* MyProfile Card */
 .myProfile-card {
     box-shadow: 0 0 40px rgba(227, 224, 224, 0.8),

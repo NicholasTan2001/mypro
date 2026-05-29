@@ -10,6 +10,7 @@ import { AuthService } from '../../services/auth.service';
 import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { DeleteAcccountService } from '../../services/delete-account.service';
+import { API_CONFIG } from '../../config/api.config';
 
 @Component({
   selector: 'app-setting',
@@ -72,7 +73,7 @@ export class Setting implements OnInit {
       }
       const response = await firstValueFrom(
         this.http.post(
-          'http://localhost:5284/api/users/delete-account',
+          `${API_CONFIG.usersEndpointBase}/delete-account`,
           {
             identityNumber: this.identityNumber,
             password: this.form.Password
@@ -137,7 +138,7 @@ export class Setting implements OnInit {
       }
       const response = await firstValueFrom(
         this.http.post(
-          'http://localhost:5284/api/users/change-password',
+          `${API_CONFIG.usersEndpointBase}/change-password`,
           {
             identityNumber: this.identityNumber,
             password: this.form2.Password,

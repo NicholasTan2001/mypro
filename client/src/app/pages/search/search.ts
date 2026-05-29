@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
+import { API_CONFIG } from '../../config/api.config';
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
@@ -60,7 +61,7 @@ export class Search {
     try {
       const response: any = await firstValueFrom(
         this.http.get(
-          `http://localhost:5284/api/users/search?name=${encodeURIComponent(searchTerm)}`
+          `${API_CONFIG.usersEndpointBase}/search?name=${encodeURIComponent(searchTerm)}`
         )
       );
       if (response.users && response.users.length > 0) {

@@ -6,6 +6,7 @@ import { RouterLink } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
+import { API_CONFIG } from '../../config/api.config';
 
 @Component({
   selector: 'app-home',
@@ -28,7 +29,7 @@ export class Home implements OnInit {
   async fetchMalaysiaUserCount() {
     try {
       const response: any = await firstValueFrom(
-        this.http.get('http://localhost:5284/api/users/malaysia')
+        this.http.get(`${API_CONFIG.usersEndpointBase}/malaysia`)
       );
       this.malaysiaUsers = response.malaysiaUsers + 10000;
       this.cd.detectChanges();

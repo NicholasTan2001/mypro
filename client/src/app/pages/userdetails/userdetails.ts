@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { Reveal } from '../../directive/reveal';
 import { firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
+import { API_CONFIG } from '../../config/api.config';
 
 @Component({
   selector: 'app-userdetails',
@@ -33,7 +34,7 @@ export class UserDetails implements OnInit {
   async loadUserDetail(userId: string) {
     try {
       const response: any = await firstValueFrom(
-        this.http.get(`http://localhost:5284/api/users/${userId}`)
+        this.http.get(`${API_CONFIG.usersEndpointBase}/${userId}`)
       );
 
       if (response) {

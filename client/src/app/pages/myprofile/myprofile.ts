@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { InputComponent } from '../../component/input/input';
 import { ChangeDetectorRef } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { API_CONFIG } from '../../config/api.config';
 
 interface UpdateProfileResponse {
   message: string;
@@ -128,7 +129,7 @@ export class Myprofile implements OnInit {
       }
       const response = await firstValueFrom(
         this.http.put<UpdateProfileResponse>(
-          'http://localhost:5284/api/users/update-profile',
+          `${API_CONFIG.usersEndpointBase}/update-profile`,
           {
             identityNumber: this.form.IdentityNumber,
             name: this.form.Name,

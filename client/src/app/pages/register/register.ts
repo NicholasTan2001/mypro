@@ -9,6 +9,7 @@ import { firstValueFrom } from "rxjs";
 import { CommonModule } from "@angular/common";
 import { Reveal } from "../../directive/reveal";
 import { ChangeDetectorRef } from '@angular/core';
+import { API_CONFIG } from '../../config/api.config';
 
 @Component({
   selector: 'app-register',
@@ -119,7 +120,7 @@ export class Register {
       }
       const response = await firstValueFrom(
         this.http.post(
-          'http://localhost:5284/api/users/register',
+          `${API_CONFIG.usersEndpointBase}/register`,
           this.form,
           {
             headers: {

@@ -3,6 +3,7 @@ import { isPlatformBrowser } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { API_CONFIG } from '../config/api.config';
 
 interface LoginResponse {
   token: string;
@@ -18,7 +19,7 @@ interface LoginResponse {
 
 export class AuthService {
 
-  private apiUrl = 'http://localhost:5284/api/users';
+  private apiUrl = API_CONFIG.usersEndpointBase;
   private currentUserSubject = new BehaviorSubject<any>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
   private freshLoginSubject = new BehaviorSubject<boolean>(false);

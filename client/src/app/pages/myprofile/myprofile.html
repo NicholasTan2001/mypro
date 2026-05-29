@@ -47,13 +47,13 @@
                     {{ ageError }}
                 </p>
                 <app-input [(model)]="form.Email" label="Email" type="text" placeholder="Users_123@gmail.com "
-                    inputmode="numeric" class="w-full">
+                    class="w-full">
                 </app-input>
                 <p *ngIf="emailError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ emailError }}
                 </p>
                 <app-input [(model)]="form.PhoneNumber" label="Phone Number" type="text" placeholder="0121231231"
-                    maxlength="10" class="w-full">
+                    inputmode="numeric" maxlength="10" class="w-full">
                 </app-input>
                 <p *ngIf="phoneNumberError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ phoneNumberError }}

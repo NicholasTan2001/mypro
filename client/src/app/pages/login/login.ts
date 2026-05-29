@@ -11,6 +11,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { LogoutService } from '../../services/logout.service';
 import { HttpClient } from '@angular/common/http';
 import { DeleteAcccountService } from '../../services/delete-account.service';
+import { API_CONFIG } from '../../config/api.config';
 
 @Component({
   selector: 'app-login',
@@ -125,7 +126,7 @@ export class Login implements OnInit {
 
       const response = await firstValueFrom(
         this.http.post(
-          'http://localhost:5284/api/users/forgot-password',
+          `${API_CONFIG.usersEndpointBase}/forgot-password`,
           {
             identityNumber: this.form2.IdentityNumber
           }
