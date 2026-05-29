@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Page</title>
+</head>
+
+<body>
+    <div class="flex flex-col items-center justify-center">
+
+        <!-- User Page Title -->
+        @if (user){
+        <h1 reveal class="font-bold md:text-2xl text-xl mb-12">
+            <span class="text-purple-600">{{user.name}}</span>'s Profile
+        </h1>
+        }
+
+        <!-- Error User -->
+        @if (!user){
+        <div reveal class="user-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
+            <div class="flex flex-col items-center justify-center p-20">
+                <img src="notfound.jpg" alt="No Related User Found" class="md:w-50 w-30 mx-auto mb-12">
+                <p class="font-medium md:text-lg text-base text-black mb-6">No User found.</p>
+                <p class="font-medium md:text-sm text-sm leading-relaxed text-gray-500">Sorry, we couldn't find any user
+                    that you're
+                    looking
+                    for.
+                </p>
+            </div>
+        </div>
+        }
+
+        <!-- User Details -->
+        @if (user) {
+        <div reveal class="user-card bg-white rounded-lg p-6 md:w-2/3 w-full shadow-lg">
+            <div class="flex flex-col gap-2 md:text-base text-sm">
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">General Personal Information</h2>
+                <p class="text-black font-bold">Name: <span class="text-purple-500">{{ user.name }}</span></p>
+                <p class="text-black font-bold">Age: <span class="text-purple-500">{{ user.age }}</span></p>
+                <p class="text-black font-bold">Email: <span class="text-purple-500"> {{ user.email }}</span></p>
+                <p class="text-black font-bold">Phone: <span class="text-purple-500"> {{ user.phoneNumber }}</span></p>
+                <p class="text-black font-bold">Country: <span class="text-purple-500">{{ user.country }}</span></p>
+            </div>
+        </div>
+        }
+    </div>
+
+</body>
+
+</html>

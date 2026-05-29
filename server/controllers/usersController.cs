@@ -245,4 +245,49 @@ MyProfile Team
         return Ok(new { message = "Profile updated successfully.", user });
     }
 
+    [HttpGet("search")]
+    public async Task<ActionResult> SearchUsers([FromQuery] string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return BadRequest(new { message = "Search term is required." });
+        }
+
+        var users = await _context.Users
+            .Where(u => u.Name!.ToLower().Contains(name.ToLower()))
+            .Select(u => new
+            {
+                u.Id,
+                u.Name,
+                u.Age,
+                u.Email,
+                u.Country
+            })
+            .ToListAsync();
+
+        return Ok(new { users });
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult> GetUserById(int id)
+    {
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found." });
+        }
+
+        return Ok(new
+        {
+            user.Id,
+            user.Name,
+            user.IdentityNumber,
+            user.Age,
+            user.Email,
+            user.PhoneNumber,
+            user.Country
+        });
+    }
+
 }

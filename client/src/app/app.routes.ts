@@ -5,9 +5,10 @@ import { Login } from './pages/login/login';
 import { Register } from './pages/register/register';
 import { Myprofile } from './pages/myprofile/myprofile'
 import { Setting } from './pages/setting/setting';
+import { Search } from './pages/search/search';
+import { UserDetails } from './pages/userdetails/userdetails';
 
 import { AuthGuardService, PublicGuardService } from './services/auth.guard';
-
 
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -25,6 +26,12 @@ export const routes: Routes = [
         component: Setting,
         canActivate: [AuthGuardService]
     },
+    {
+        path: 'search',
+        component: Search,
+        canActivate: [AuthGuardService]
+    },
+    { path: 'user/:id', component: UserDetails, canActivate: [AuthGuardService] },
 
     { path: '**', redirectTo: 'login' },
 ];

@@ -18,7 +18,7 @@
         <!-- General Personal Information -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
             <h2 class="font-bold md:text-lg text-base text-black">General Personal Information</h2>
-            <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 mt-3">
+            <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 mt-4">
                 <div class="flex md:flex-row flex-col gap-4">
                     <app-input [(model)]="form.IdentityNumber" label="Identity Number" type="text"
                         placeholder="010118145248" maxlength="12" inputmode="numeric" [readonly]="true" class="w-full">
@@ -86,7 +86,7 @@
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
                     <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Updated!</h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        Your profilte is updated.
+                        Your profile is updated.
                     </p>
                     <app-button label="Okay" (click)="closeUpdateUserModal()" />
                 </div>

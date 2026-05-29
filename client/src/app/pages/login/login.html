@@ -17,7 +17,7 @@
         <!-- Login Form-->
         <div reveal class="login-card flex flex-col bg-white rounded-lg p-6 md:w-120 w-full mb-12">
             <h2 class="text-center font-bold md:text-lg text-base text-purple-600">Login Now</h2>
-            <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 mt-3">
+            <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 mt-4">
                 <app-input [(model)]="form.IdentityNumber" label="Identity Number" type="text"
                     placeholder="010118145248" maxlength="12" inputmode="numeric">
                 </app-input>
@@ -52,7 +52,7 @@
         <div reveal class="login-card flex flex-col bg-white rounded-lg p-6 md:w-160 w-full">
             <h2 class="font-bold md:text-lg text-base text-purple-600">Reset Password
             </h2>
-            <p class="text-black font-medium md:text-base text-sm mt-3 leading-relaxed text-justify mb-3">Forgot your
+            <p class="text-black font-medium md:text-base text-sm mt-4 leading-relaxed text-justify mb-3">Forgot your
                 password? No worries. We will send a temporary password to the email address linked to your
                 account. Please provide your identification number below for verification purposes.
                 If you no longer remember the email address associated with this account, you may contact the website

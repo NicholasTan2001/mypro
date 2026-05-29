@@ -17,7 +17,7 @@
         <!-- Register Form-->
         <div reveal class="register-card flex flex-col bg-white rounded-lg p-6 md:w-120 w-full">
             <h2 class="text-center font-bold md:text-lg text-base text-black">Register Now</h2>
-            <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 mt-3">
+            <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 mt-4">
                 <app-input [(model)]="form.IdentityNumber" label="Identity Number" type="text"
                     placeholder="010118145248" maxlength="12" inputmode="numeric">
                 </app-input>

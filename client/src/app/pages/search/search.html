@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Page</title>
+</head>
+
+<body>
+
+    <!-- Search Page Title -->
+    <div class="flex flex-col items-center justify-center">
+        <h1 reveal class="font-bold md:text-2xl text-xl mb-12">
+            <span class="text-purple-600">My</span>Profile Search
+        </h1>
+
+        <!-- Search Bar -->
+        <div reveal class="flex flex-col w-full md:w-3/5 mb-12">
+            <div class="flex flex-row items-center gap-2 justify-center">
+                <app-searchbar placeholder="Search user by name..." (onSearchClick)="onSearch($event)"
+                    class="w-full font-medium">
+                </app-searchbar>
+                @if (isLoading) {
+                <div class="flex items-center">
+                    <div class="animate-spin rounded-full h-6 w-6 border-4 border-purple-600 border-t-transparent">
+                    </div>
+                </div>
+                }
+            </div>
+            <div reveal class="flex flex-col ml-5">
+                <p *ngIf="searchError"
+                    class="flex justify-left text-red-500 md:text-sm text-xs font-medium mt-2 md:w-3/5">
+                    {{ searchError }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        @if (resultSuccess && searchResults.length > 0) {
+        @for (result of searchResults; track result.id) {
+        <div reveal (click)="viewUserDetail(result.id)"
+            class="search-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12 result-card">
+            <h2 class="font-bold md:text-lg text-base text-black"><span class="text-purple-500">{{result.name}}</span>'s
+                Profile</h2>
+            <div class="mt-4 flex flex-col gap-1">
+                <p class="text-black md:text-base text-sm font-bold">Age: <span class="text-purple-500">{{
+                        result.age}}</span></p>
+                <p class="text-black md:text-base text-sm font-bold">Email: <span class="text-purple-500">{{
+                        result.email}}</span></p>
+                <p class="text-black md:text-base text-sm font-bold">Country: <span class="text-purple-500">{{
+                        result.country}}</span></p>
+            </div>
+        </div>
+        }
+        }
+
+        <!-- No Results -->
+        @if (noResult){
+        <div reveal class="search-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
+            <div class="flex flex-col items-center justify-center p-20">
+                <img src="notfound.jpg" alt="No Related User Found" class="md:w-50 w-30 mx-auto mb-12">
+                <p class="font-medium md:text-lg text-base text-black mb-6">No User found.</p>
+                <p class="font-medium md:text-sm text-sm text-gray-500 leading-relaxed">Sorry, we couldn't find any user
+                    that you're
+                    looking for.
+                </p>
+            </div>
+        </div>
+        }
+    </div>
+</body>
+
+</html>
