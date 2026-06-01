@@ -12,6 +12,10 @@ interface LoginResponse {
     name: string;
     identityNumber: string;
     country: string;
+    email: string;
+    phoneNumber: string;
+    address: string;
+    sex: string;
   };
 }
 

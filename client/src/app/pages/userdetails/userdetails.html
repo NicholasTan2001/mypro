@@ -17,31 +17,66 @@
         </h1>
         }
 
-        <!-- Error User -->
-        @if (!user){
-        <div reveal class="user-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
-            <div class="flex flex-col items-center justify-center p-8">
-                <img src="notfound.jpg" alt="No Related User Found" class="md:w-50 w-30 mx-auto mb-6">
-                <p class="font-medium md:text-lg text-base text-black mb-6">No User found.</p>
-                <p class="font-medium md:text-sm text-xs leading-relaxed text-gray-500">Sorry, we couldn't find any user
-                    that you're
-                    looking
-                    for.
+        @if (user && user.intro!==""){
+        <!-- User Details (Public) -->
+        <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mb-12">
+            <div class="flex flex-col gap-2 md:text-base text-sm">
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">Introduction</h2>
+                <p class="text-black font-bold">Bio: <span class="text-purple-500">{{ user.intro }}</span></p>
+            </div>
+        </div>
+        }
+
+        @if (user && user.status=="Public") {
+        <div reveal class="user-card bg-white rounded-lg p-6 md:w-2/3 w-full shadow-lg mb-12">
+            <div class="flex flex-col gap-2 md:text-base text-sm">
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">General Personal Information</h2>
+                <p class="text-black font-bold">Name: <span class="text-purple-500">{{ user.name }}</span></p>
+                <p class="text-black font-bold">Sex: <span class="text-purple-500">{{ user.sex }}</span></p>
+                <p class="text-black font-bold">Age: <span class="text-purple-500">{{ user.age }}</span></p>
+                <p class="text-black font-bold">Email: <span class="text-purple-500"> {{ user.email }}</span></p>
+                <p class="text-black font-bold">Phone: <span class="text-purple-500"> {{ user.phoneNumber }}</span></p>
+                <p class="text-black font-bold">Address: <span class="text-purple-500"> {{ user.address }}</span></p>
+                <p class="text-black font-bold">Country: <span class="text-purple-500">{{ user.country }}</span></p>
+            </div>
+        </div>
+        }
+
+        @if (user && user.conclusion!==""){
+        <!-- User Details (Public) -->
+        <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mb-12">
+            <div class="flex flex-col gap-2 md:text-base text-sm">
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">Conclusion</h2>
+                <p class="text-black font-bold">Message: <span class="text-purple-500">{{ user.conclusion }}</span>
                 </p>
             </div>
         </div>
         }
 
-        <!-- User Details -->
-        @if (user) {
-        <div reveal class="user-card bg-white rounded-lg p-6 md:w-2/3 w-full shadow-lg">
-            <div class="flex flex-col gap-2 md:text-base text-sm">
-                <h2 class="font-bold md:text-lg text-base text-black mb-4">General Personal Information</h2>
-                <p class="text-black font-bold">Name: <span class="text-purple-500">{{ user.name }}</span></p>
-                <p class="text-black font-bold">Age: <span class="text-purple-500">{{ user.age }}</span></p>
-                <p class="text-black font-bold">Email: <span class="text-purple-500"> {{ user.email }}</span></p>
-                <p class="text-black font-bold">Phone: <span class="text-purple-500"> {{ user.phoneNumber }}</span></p>
-                <p class="text-black font-bold">Country: <span class="text-purple-500">{{ user.country }}</span></p>
+        <!-- User Details (Private) -->
+        @if (user && user.status=="Private") {
+        <div reveal class="user-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
+            <div class="flex flex-col items-center justify-center p-8">
+                <img src="lockprofile.jpg" alt="This Profile is Private" class="md:w-50 w-30 mx-auto mb-6">
+                <p class="font-medium md:text-lg text-base text-black mb-6">This Profile is Private</p>
+                <p class="font-medium md:text-sm text-xs leading-relaxed text-gray-500">Sorry, we couldn't let you view
+                    this profile since this profile is private.
+                </p>
+            </div>
+        </div>
+        }
+
+        <!-- Error User -->
+        @if (!user){
+        <div reveal class="user-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
+            <div class="flex flex-col items-center justify-center p-8">
+                <img src="notfound.jpg" alt="No Related User Found" class="md:w-50 w-30 mx-auto mb-6">
+                <p class="font-medium md:text-lg text-base text-black mb-6">No User Found.</p>
+                <p class="font-medium md:text-sm text-xs leading-relaxed text-gray-500">Sorry, we couldn't find any user
+                    that you're
+                    looking
+                    for.
+                </p>
             </div>
         </div>
         }

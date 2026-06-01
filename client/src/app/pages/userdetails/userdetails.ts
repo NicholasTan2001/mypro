@@ -14,6 +14,7 @@ import { API_CONFIG } from '../../config/api.config';
   templateUrl: './userdetails.html',
   styleUrl: './userdetails.css'
 })
+
 export class UserDetails implements OnInit {
 
   user: any = null;
@@ -45,6 +46,11 @@ export class UserDetails implements OnInit {
           email: response.email,
           phoneNumber: response.phoneNumber,
           country: response.country,
+          sex: response.sex,
+          address: response.address,
+          status: response.status,
+          intro: response.intro,
+          conclusion: response.conclusion
         };
         this.cd.detectChanges();
       }

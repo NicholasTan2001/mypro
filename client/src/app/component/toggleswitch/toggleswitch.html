@@ -1,0 +1,6 @@
+<button (click)="toggle()" [class.bg-green-500]="isActive" [class.bg-red-500]="!isActive"
+    class="relative w-14 h-7 rounded-full transition-colors duration-400 ease-in-out cursor-pointer">
+    <span [class.translate-x-7]="isActive"
+        class="absolute top-1 left-1 w-5 h-5 bg-white rounded-full transition-transform duration-400 ease-in-out shadow-md">
+    </span>
+</button>

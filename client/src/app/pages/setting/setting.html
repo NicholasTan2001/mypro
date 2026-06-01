@@ -17,10 +17,22 @@
             </h1>
         </div>
 
+        <!-- Private Profile Visibility -->
+        <div reveal class="setting-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
+            <h2 class="font-bold md:text-lg text-base text-black">Private Profile Visibility</h2>
+            <p class="text-black font-medium md:text-base text-sm mt-4 leading-relaxed text-justify">You can adjust your
+                profile visibility here. When enabled, only your friends will be able to view your profile. If disabled,
+                your profile will be public and accessible to anyone.</p>
+            <div class="flex mt-4 justify-end">
+                <app-toggle-switch [isActive]="isPrivate" (toggled)="onTogglePrivateMode($event)">
+                </app-toggle-switch>
+            </div>
+        </div>
+
         <!-- Change Password Form-->
         <div reveal class="setting-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
             <h2 class="font-bold md:text-lg text-base text-black">Change Account Password</h2>
-            <p class="text-black font-medium md:text-base text-sm mt-4 leading-relaxed text-justify"> Are you sure you
+            <p class="text-black font-medium md:text-base text-sm mt-4 leading-relaxed text-justify"> Are you sure
                 want to change your account password? If so, please enter your current password, your new password, and
                 confirm your new password below. For security purposes, your previous password will no longer be valid
                 after the change. Please make sure to remember your new password for future logins.</p>

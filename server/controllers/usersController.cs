@@ -41,9 +41,31 @@ public class UsersController : ControllerBase
             return BadRequest(new { message = "Identity number already registered." });
         }
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+        user.Status = "Public";
+        user.Additional = new Additional
+        {
+            Intro = "",
+            Conclusion = "",
+        };
+
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
-        return Ok(user);
+        return Ok(new
+        {
+            message = "Registration successful.",
+            user = new
+            {
+                user.Id,
+                user.Name,
+                user.IdentityNumber,
+                user.Country,
+                user.Email,
+                user.PhoneNumber,
+                user.Address,
+                user.Sex,
+                user.Status
+            }
+        });
     }
 
     [HttpPost("login")]
@@ -77,7 +99,10 @@ public class UsersController : ControllerBase
                 user.IdentityNumber,
                 user.Country,
                 user.Email,
-                user.PhoneNumber
+                user.PhoneNumber,
+                user.Address,
+                user.Sex,
+                user.Status
             }
         });
     }
@@ -240,6 +265,14 @@ MyProfile Team
         {
             user.Country = request.Country;
         }
+        if (!string.IsNullOrEmpty(request.Address))
+        {
+            user.Address = request.Address;
+        }
+        if (!string.IsNullOrEmpty(request.Sex))
+        {
+            user.Sex = request.Sex;
+        }
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
         return Ok(new { message = "Profile updated successfully.", user });
@@ -254,6 +287,7 @@ MyProfile Team
         }
 
         var users = await _context.Users
+        .Include(u => u.Additional)
             .Where(u => u.Name!.ToLower().Contains(name.ToLower()))
             .Select(u => new
             {
@@ -261,7 +295,11 @@ MyProfile Team
                 u.Name,
                 u.Age,
                 u.Email,
-                u.Country
+                u.Country,
+                u.Sex,
+                u.Address,
+                u.Status,
+                intro = u.Additional!.Intro ?? ""
             })
             .ToListAsync();
 
@@ -271,7 +309,9 @@ MyProfile Team
     [HttpGet("{id}")]
     public async Task<ActionResult> GetUserById(int id)
     {
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == id);
+        var user = await _context.Users
+        .Include(u => u.Additional)
+        .FirstOrDefaultAsync(u => u.Id == id);
 
         if (user == null)
         {
@@ -286,8 +326,116 @@ MyProfile Team
             user.Age,
             user.Email,
             user.PhoneNumber,
-            user.Country
+            user.Country,
+            user.Sex,
+            user.Address,
+            user.Status,
+            intro = user.Additional!.Intro ?? "",
+            conclusion = user.Additional!.Conclusion ?? ""
+
         });
+    }
+
+    [HttpGet("additional/{id}")]
+    [Authorize]
+    public async Task<ActionResult> GetIntro(int id)
+    {
+        var additional = await _context.Additionals
+            .FirstOrDefaultAsync(a => a.UserId == id);
+
+        if (additional == null)
+        {
+            return Ok(new
+            {
+                intro = "",
+                conclusion = ""
+            });
+        }
+
+        return Ok(new
+        {
+            intro = additional.Intro ?? "",
+            conclusion = additional.Conclusion ?? ""
+        });
+    }
+
+    [HttpPut("update-intro")]
+    [Authorize]
+    public async Task<ActionResult> UpdateIntro([FromBody] UpdateIntroductionRequest request)
+    {
+        var user = await _context.Users
+            .Include(u => u.Additional)
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+
+        if (user.Additional == null)
+        {
+            user.Additional = new Additional { UserId = user.Id };
+        }
+
+        user.Additional.Intro = request.Intro ?? "";
+
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Introduction updated successfully." });
+    }
+
+    [HttpPut("update-status")]
+    [Authorize]
+    public async Task<ActionResult> UpdateStatus([FromBody] UpdateStatusRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+
+        if (request.Status != "Public" && request.Status != "Private")
+        {
+            return BadRequest(new { message = "Invalid status. Use 'Public' or 'Private'." });
+        }
+
+        user.Status = request.Status;
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            status = user.Status
+        });
+    }
+
+    [HttpPut("update-conclusion")]
+    [Authorize]
+    public async Task<ActionResult> UpdateConclusion([FromBody] UpdateConclusionRequest request)
+    {
+        var user = await _context.Users
+            .Include(u => u.Additional)
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+
+        if (user.Additional == null)
+        {
+            user.Additional = new Additional { UserId = user.Id };
+        }
+
+        user.Additional.Conclusion = request.Conclusion ?? "";
+
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Conclusion updated successfully." });
     }
 
 }

@@ -30,6 +30,8 @@ export class Register {
     Country: 'Malaysia',
     Email: '',
     PhoneNumber: '',
+    Sex: 'Male',
+    Address: '',
   };
 
   identityNumberError: string = '';
@@ -39,6 +41,7 @@ export class Register {
   confirmPasswordError: string = '';
   phoneNumberError: string = '';
   emailError: string = '';
+  addressError: string = '';
   registerSuccess: boolean = false;
   isLoading: boolean = false;
 
@@ -57,6 +60,7 @@ export class Register {
     this.confirmPasswordError = '';
     this.emailError = '';
     this.phoneNumberError = '';
+    this.addressError = '';
     try {
       if (!this.form.IdentityNumber) {
         this.identityNumberError = 'Identity number is required.';
@@ -115,6 +119,11 @@ export class Register {
       }
       if (this.form.Password !== this.form.ConfirmPassword) {
         this.confirmPasswordError = 'Passwords do not match.';
+        this.isLoading = false;
+        return;
+      }
+      if (!this.form.Address) {
+        this.addressError = 'Address is required.';
         this.isLoading = false;
         return;
       }

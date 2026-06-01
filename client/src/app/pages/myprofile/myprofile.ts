@@ -20,6 +20,8 @@ interface UpdateProfileResponse {
     country: string;
     email: string;
     phoneNumber: string;
+    sex: string;
+    address: string;
   };
 }
 
@@ -36,10 +38,13 @@ export class Myprofile implements OnInit {
   name: string = '';
   loginSuccess: boolean = false;
   isLoading: boolean = false;
+  isLoading2: boolean = false;
+  isLoading3: boolean = false;
   nameError: string = '';
   ageError: string = '';
   emailError: string = '';
   phoneNumberError: string = '';
+  addressError: string = '';
   updateUserSuccess: boolean = false;
 
   form = {
@@ -49,6 +54,16 @@ export class Myprofile implements OnInit {
     Country: '',
     Email: '',
     PhoneNumber: '',
+    Sex: '',
+    Address: ''
+  }
+
+  form2 = {
+    Intro: ''
+  }
+
+  form3 = {
+    Conclusion: ''
   }
 
   constructor(
@@ -58,19 +73,72 @@ export class Myprofile implements OnInit {
   ) { }
 
   ngOnInit() {
-    const user = this.authService.getCurrentUser();
-    if (user) {
-      this.name = user.name;
-      this.form.IdentityNumber = user.identityNumber;
-      this.form.Name = user.name;
-      this.form.Age = (user.age).toString();
-      this.form.Country = user.country;
-      this.form.Email = user.email;
-      this.form.PhoneNumber = user.phoneNumber;
-    }
+    this.loadUser();
+    this.loadAdditional();
     this.authService.freshLogin$.subscribe(isFreshLogin => {
       this.loginSuccess = isFreshLogin;
     });
+  }
+
+  async loadUser() {
+    try {
+      const user = this.authService.getCurrentUser();
+      if (user) {
+        const response: any = await firstValueFrom(
+          this.http.get(
+            `${API_CONFIG.usersEndpointBase}/${user.id}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${this.authService.getToken()}`
+              }
+            }
+          )
+        );
+
+        if (response) {
+          this.name = response.name;
+          this.form.IdentityNumber = response.identityNumber;
+          this.form.Name = response.name;
+          this.form.Age = (response.age).toString();
+          this.form.Country = response.country;
+          this.form.Email = response.email;
+          this.form.PhoneNumber = response.phoneNumber;
+          this.form.Address = response.address;
+          this.form.Sex = response.sex;
+        }
+      }
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Failed to load user information:', error);
+      this.cd.detectChanges();
+    }
+  }
+
+  async loadAdditional() {
+    try {
+      const user = this.authService.getCurrentUser();
+      if (user) {
+        const response: any = await firstValueFrom(
+          this.http.get(
+            `${API_CONFIG.usersEndpointBase}/additional/${user.id}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${this.authService.getToken()}`
+              }
+            }
+          )
+        );
+
+        if (response) {
+          this.form2.Intro = response.intro;
+          this.form3.Conclusion = response.conclusion;
+        }
+      }
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Failed to load additional information:', error);
+      this.cd.detectChanges();
+    }
   }
 
   closeLoginSuccessModal() {
@@ -84,6 +152,7 @@ export class Myprofile implements OnInit {
     this.ageError = '';
     this.emailError = '';
     this.phoneNumberError = '';
+    this.addressError = '';
     try {
       if (!this.form.Name) {
         this.nameError = 'Name is required.';
@@ -127,6 +196,12 @@ export class Myprofile implements OnInit {
         this.cd.detectChanges();
         return;
       }
+      if (!this.form.Address) {
+        this.addressError = 'Address is required.';
+        this.isLoading = false;
+        this.cd.detectChanges();
+        return;
+      }
       const response = await firstValueFrom(
         this.http.put<UpdateProfileResponse>(
           `${API_CONFIG.usersEndpointBase}/update-profile`,
@@ -136,7 +211,9 @@ export class Myprofile implements OnInit {
             age: Number(this.form.Age),
             email: this.form.Email,
             phoneNumber: this.form.PhoneNumber,
-            country: this.form.Country
+            country: this.form.Country,
+            sex: this.form.Sex,
+            address: this.form.Address
           },
           {
             headers: {
@@ -147,16 +224,7 @@ export class Myprofile implements OnInit {
         )
       );
       if (response) {
-        const updatedUser = {
-          identityNumber: this.form.IdentityNumber,
-          name: this.form.Name,
-          age: Number(this.form.Age),
-          email: this.form.Email,
-          phoneNumber: this.form.PhoneNumber,
-          country: this.form.Country,
-        };
-        this.authService.updateCurrentUser(updatedUser);
-        this.form.Name = updatedUser.name;
+        this.loadUser();
         this.isLoading = false;
         this.updateUserSuccess = true;
         this.cd.detectChanges();
@@ -174,5 +242,85 @@ export class Myprofile implements OnInit {
 
   closeUpdateUserModal() {
     this.updateUserSuccess = false;
+  }
+
+  async onSubmit2() {
+    this.isLoading2 = true;
+    try {
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        this.isLoading2 = false;
+        return;
+      }
+      const response = await firstValueFrom(
+        this.http.put(
+          `${API_CONFIG.usersEndpointBase}/update-intro`,
+          {
+            identityNumber: user.identityNumber,
+            intro: this.form2.Intro
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+
+      if (response) {
+        this.isLoading2 = false;
+        this.loadAdditional();
+        this.updateUserSuccess = true;
+        this.cd.detectChanges();
+      }
+
+    } catch (error: any) {
+      this.isLoading2 = false;
+      this.cd.detectChanges();
+    } finally {
+      this.isLoading2 = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  async onSubmit3() {
+    this.isLoading3 = true;
+    try {
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        this.isLoading3 = false;
+        return;
+      }
+      const response = await firstValueFrom(
+        this.http.put(
+          `${API_CONFIG.usersEndpointBase}/update-conclusion`,
+          {
+            identityNumber: user.identityNumber,
+            conclusion: this.form3.Conclusion
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+
+      if (response) {
+        this.isLoading3 = false;
+        this.loadAdditional();
+        this.updateUserSuccess = true;
+        this.cd.detectChanges();
+      }
+
+    } catch (error: any) {
+      this.isLoading3 = false;
+      this.cd.detectChanges();
+    } finally {
+      this.isLoading3 = false;
+      this.cd.detectChanges();
+    }
   }
 }

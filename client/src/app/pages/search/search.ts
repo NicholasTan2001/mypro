@@ -22,6 +22,8 @@ export class Search {
   isLoading: boolean = false;
   searchError: string = '';
   noResult: boolean = false;
+  shakingId: number | null = null;
+  canShake: boolean = false;  // 👈 Add this
 
   constructor(private http: HttpClient, private cd: ChangeDetectorRef, private router: Router,
     private route: ActivatedRoute
@@ -42,7 +44,6 @@ export class Search {
       queryParams: { name: searchTerm },
       queryParamsHandling: 'merge'
     });
-
     this.performSearch(searchTerm);
   }
 
@@ -79,6 +80,26 @@ export class Search {
     } finally {
       this.isLoading = false;
       this.cd.detectChanges();
+    }
+  }
+
+  onCardClick(result: any) {
+    if (result.status === 'Private') {
+      this.shakingId = null;
+      this.canShake = false;
+      this.cd.detectChanges();
+      setTimeout(() => {
+        this.shakingId = result.id;
+        this.canShake = true;
+        this.cd.detectChanges();
+      }, 0);
+      setTimeout(() => {
+        this.shakingId = null;
+        this.canShake = false;
+        this.cd.detectChanges();
+      }, 600);
+    } else {
+      this.viewUserDetail(result.id);
     }
   }
 

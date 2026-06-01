@@ -11,10 +11,11 @@ import { FormsModule } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { DeleteAcccountService } from '../../services/delete-account.service';
 import { API_CONFIG } from '../../config/api.config';
+import { Toggleswitch } from '../../component/toggleswitch/toggleswitch';
 
 @Component({
   selector: 'app-setting',
-  imports: [Reveal, InputComponent, Button, CommonModule, FormsModule],
+  imports: [Reveal, InputComponent, Button, CommonModule, FormsModule, Toggleswitch],
   standalone: true,
   templateUrl: './setting.html',
   styleUrl: './setting.css',
@@ -33,7 +34,8 @@ export class Setting implements OnInit {
   }
 
   deleteSuccess: boolean = false;
-  identityNumber: string = '';
+  identityNumber: string = "";
+  status: string = "";
   isLoading: boolean = false;
   isLoading2: boolean = false;
   passwordError: string = "";
@@ -41,6 +43,7 @@ export class Setting implements OnInit {
   newPasswordError: string = "";
   confirmNewPasswordError: string = "";
   updatePasswordSuccess: boolean = false;
+  isPrivate: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -51,9 +54,33 @@ export class Setting implements OnInit {
   ) { }
 
   ngOnInit() {
-    const user = this.authService.getCurrentUser();
-    if (user) {
-      this.identityNumber = user.identityNumber;
+    this.loadUser();
+  }
+
+  async loadUser() {
+    try {
+      const user = this.authService.getCurrentUser();
+      if (user) {
+        this.identityNumber = user.identityNumber;
+        const response: any = await firstValueFrom(
+          this.http.get(
+            `${API_CONFIG.usersEndpointBase}/${user.id}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${this.authService.getToken()}`
+              }
+            }
+          )
+        );
+        if (response) {
+          this.status = response.status;
+          this.isPrivate = this.status === 'Private';
+        }
+      }
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Failed to load intro:', error);
+      this.cd.detectChanges();
     }
   }
 
@@ -174,6 +201,43 @@ export class Setting implements OnInit {
 
   loginPage() {
     this.authService.logout();
+  }
+
+  async onTogglePrivateMode(value: boolean) {
+    this.isPrivate = value;
+    this.status = value ? 'Private' : 'Public';
+    await this.updateStatus(this.status);
+  }
+
+  async updateStatus(newStatus: string) {
+    try {
+      const response: any = await firstValueFrom(
+        this.http.put(
+          `${API_CONFIG.usersEndpointBase}/update-status`,
+          {
+            identityNumber: this.identityNumber,
+            status: newStatus
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response) {
+        this.loadUser();
+        this.isPrivate = response.status == 'Private';
+        this.cd.detectChanges();
+      }
+    } catch (error: any) {
+      this.isPrivate = newStatus == 'Private';
+      this.cd.detectChanges();
+    } finally {
+      this.isPrivate = newStatus == 'Private';
+      this.cd.detectChanges();
+    }
   }
 
 }

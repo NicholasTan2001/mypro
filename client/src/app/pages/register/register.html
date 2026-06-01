@@ -29,8 +29,21 @@
                 <p *ngIf="nameError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ nameError }}
                 </p>
-                <app-input [(model)]="form.Age" label="Age" type="text" placeholder="25" inputmode="numeric">
-                </app-input>
+                <div class="flex md:flex-row flex-col md:gap-5 gap-6 md:justify-between">
+                    <app-input [(model)]="form.Age" label="Age" type="text" placeholder="25" inputmode="numeric">
+                    </app-input>
+                    <div class="flex flex-col w-full gap-1 md:w-3/4 font-medium">
+                        <label class="md:text-base text-sm text-gray-400 font-medium">
+                            Sex
+                        </label>
+                        <select [(ngModel)]="form.Sex" name="Sex"
+                            class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="coming-soon" disabled>Coming Soon ...</option>
+                        </select>
+                    </div>
+                </div>
                 <p *ngIf="ageError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ ageError }}
                 </p>
@@ -55,6 +68,16 @@
                 </app-input>
                 <p *ngIf="confirmPasswordError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ confirmPasswordError }}
+                </p>
+                <div class="flex flex-col gap-1 w-full">
+                    <label class="md:text-base text-sm text-gray-400 font-medium">Address</label>
+                    <textarea [(ngModel)]="form.Address" name="address"
+                        placeholder="No 45, Jalan Puncak 1/1, Taman Puncak Utama, 43000 Kajang, Selangor" rows="4"
+                        class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium">
+  </textarea>
+                </div>
+                <p *ngIf="addressError" class="text-red-500 md:text-sm text-xs font-medium">
+                    {{ addressError }}
                 </p>
                 <div class="flex md:flex-row flex-col md:gap-5 gap-6 md:justify-between items-end">
                     <div class="flex flex-col w-full gap-1 md:w-3/4 font-medium">

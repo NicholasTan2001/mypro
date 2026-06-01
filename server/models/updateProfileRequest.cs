@@ -21,5 +21,11 @@ namespace MyProfile.Models
 
         [JsonPropertyName("phoneNumber")]
         public string? PhoneNumber { get; set; }
+
+        [JsonPropertyName("sex")]
+        public string? Sex { get; set; }
+
+        [JsonPropertyName("address")]
+        public string? Address { get; set; }
     }
 }

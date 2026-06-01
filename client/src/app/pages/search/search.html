@@ -16,7 +16,7 @@
         </h1>
 
         <!-- Search Bar -->
-        <div reveal class="flex flex-col md:w-3/5 mb-12">
+        <div reveal class="flex flex-col md:w-3/5 w-2/3 mb-12">
             <div class="flex flex-row items-center gap-2 justify-center">
                 <app-searchbar placeholder="Search user by name..." (onSearchClick)="onSearch($event)"
                     class="w-full font-medium">
@@ -39,17 +39,38 @@
         <!-- Search Results -->
         @if (resultSuccess && searchResults.length > 0) {
         @for (result of searchResults; track result.id) {
-        <div reveal (click)="viewUserDetail(result.id)"
+        <div reveal (click)="onCardClick(result)" [class.shake]="shakingId === result.id && canShake"
             class="search-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12 result-card">
-            <h2 class="font-bold md:text-lg text-base text-black"><span class="text-purple-500">{{result.name}}</span>'s
-                Profile</h2>
+            <div class="flex flex-col md:flex-row md:justify-between md:items-end">
+                <h2 class="font-bold md:text-lg text-base text-black">
+                    <span class="text-purple-500">{{result.name}}</span>'s Profile
+                </h2>
+                @if (result.status == "Private") {
+                <p class="text-red-500 md:text-lg text-base font-bold">
+                    🔒 {{result.status}}
+                </p>
+                } @else {
+                <p class="text-green-500 md:text-lg text-base font-bold">
+                    🌍 {{result.status}}
+                </p>
+                }
+            </div>
+            @if (result.intro) {
+            <div class="intro-section">
+                <p class="text-black md:text-base text-sm font-bold mt-3">
+                    Bio: <span class="text-purple-500">{{ result.intro }}</span>
+                </p>
+            </div>
+            }
             <div class="mt-4 flex flex-col gap-1">
-                <p class="text-black md:text-base text-sm font-bold">Age: <span class="text-purple-500">{{
-                        result.age}}</span></p>
-                <p class="text-black md:text-base text-sm font-bold">Email: <span class="text-purple-500">{{
-                        result.email}}</span></p>
-                <p class="text-black md:text-base text-sm font-bold">Country: <span class="text-purple-500">{{
-                        result.country}}</span></p>
+                <p class="text-black md:text-base text-sm font-bold">Age: <span
+                        class="text-purple-500">{{result.age}}</span></p>
+                <p class="text-black md:text-base text-sm font-bold">Sex: <span
+                        class="text-purple-500">{{result.sex}}</span></p>
+                <p class="text-black md:text-base text-sm font-bold">Email: <span
+                        class="text-purple-500">{{result.email}}</span></p>
+                <p class="text-black md:text-base text-sm font-bold">Country: <span
+                        class="text-purple-500">{{result.country}}</span></p>
             </div>
         </div>
         }
@@ -60,8 +81,9 @@
         <div reveal class="search-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
             <div class="flex flex-col items-center justify-center p-8">
                 <img src="notfound.jpg" alt="No Related User Found" class="md:w-50 w-25 mb-6">
-                <p class="font-medium md:text-lg text-base text-black mb-6">No User found.</p>
-                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">Sorry, we couldn't find any user
+                <p class="font-medium md:text-lg text-base text-black mb-6">No User Found.</p>
+                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">Sorry, we couldn't find any
+                    user
                     that you're
                     looking for.
                 </p>
