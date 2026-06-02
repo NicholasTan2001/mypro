@@ -311,6 +311,8 @@ MyProfile Team
     {
         var user = await _context.Users
         .Include(u => u.Additional)
+        .Include(u => u.Organization)
+        .Include(u => u.Student)
         .FirstOrDefaultAsync(u => u.Id == id);
 
         if (user == null)
@@ -331,8 +333,17 @@ MyProfile Team
             user.Address,
             user.Status,
             intro = user.Additional!.Intro ?? "",
-            conclusion = user.Additional!.Conclusion ?? ""
-
+            conclusion = user.Additional!.Conclusion ?? "",
+            position = user.Organization?.Position ?? "",
+            course = user.Student?.Course ?? "",
+            location = user.Student?.Location ?? "",
+            studentStartDate = user.Student?.StartDate ?? null,
+            studentEndDate = user.Student?.EndDate ?? null,
+            role = user.Organization?.Role ?? "",
+            company = user.Organization?.Company ?? "",
+            responsible = user.Organization?.Responsible ?? "",
+            empStartDate = user.Organization?.StartDate ?? null,
+            empendDate = user.Organization?.EndDate ?? null
         });
     }
 
@@ -436,6 +447,134 @@ MyProfile Team
         await _context.SaveChangesAsync();
 
         return Ok(new { message = "Conclusion updated successfully." });
+    }
+
+    [HttpGet("position/{id}")]
+    [Authorize]
+    public async Task<ActionResult> GetPosition(int id)
+    {
+        var organization = await _context.Organizations
+            .FirstOrDefaultAsync(o => o.UserId == id);
+        if (organization == null)
+        {
+            var student = await _context.Students
+            .FirstOrDefaultAsync(o => o.UserId == id);
+            return Ok(new
+            {
+                position = "Student",
+                course = student?.Course ?? "",
+                location = student?.Location ?? "",
+                startDate = student?.StartDate ?? null,
+                endDate = student?.EndDate ?? null
+            });
+        }
+        return Ok(new
+        {
+            position = organization.Position ?? "",
+            role = organization.Role ?? "",
+            company = organization.Company ?? "",
+            responsible = organization.Responsible ?? "",
+            startDate = organization.StartDate ?? null,
+            endDate = organization.EndDate ?? null
+        });
+    }
+
+    [HttpPut("update-student")]
+    [Authorize]
+    public async Task<ActionResult> UpdateStudent([FromBody] UpdateStudentRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        var existingStudent = await _context.Students
+            .FirstOrDefaultAsync(s => s.UserId == user.Id);
+
+        if (existingStudent == null)
+        {
+            var newStudent = new Student { UserId = user.Id };
+            newStudent.Course = request.Course;
+            newStudent.Location = request.Location;
+            newStudent.StartDate = request.StartDate;
+            newStudent.EndDate = request.EndDate;
+            _context.Students.Add(newStudent);
+        }
+        else
+        {
+            existingStudent.UserId = user.Id;
+            existingStudent.Course = request.Course;
+            existingStudent.Location = request.Location;
+            existingStudent.StartDate = request.StartDate;
+            existingStudent.EndDate = request.EndDate;
+            _context.Students.Update(existingStudent);
+        }
+        var organization = await _context.Organizations
+            .FirstOrDefaultAsync(o => o.UserId == user.Id);
+        if (organization != null)
+        {
+            _context.Organizations.Remove(organization);
+        }
+
+        await _context.SaveChangesAsync();
+        return Ok(new
+        {
+            message = "Student status set successfully.",
+            position = "Student"
+        });
+    }
+
+    [HttpPut("update-organization")]
+    [Authorize]
+    public async Task<ActionResult> UpdateOrganization([FromBody] UpdateOrganizationRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        var existingOrganization = await _context.Organizations
+            .FirstOrDefaultAsync(o => o.UserId == user.Id);
+        if (existingOrganization == null)
+        {
+            var newOrganization = new Organization
+            {
+                UserId = user.Id,
+                Position = request.Position,
+                Role = request.Role,
+                Company = request.Company,
+                StartDate = request.StartDate,
+                EndDate = request.EndDate,
+                Responsible = request.Responsible
+            };
+            _context.Organizations.Add(newOrganization);
+        }
+        else
+        {
+            existingOrganization.Position = request.Position;
+            existingOrganization.Role = request.Role;
+            existingOrganization.Company = request.Company;
+            existingOrganization.StartDate = request.StartDate;
+            existingOrganization.EndDate = request.EndDate;
+            existingOrganization.Responsible = request.Responsible;
+            _context.Organizations.Update(existingOrganization);
+        }
+        var student = await _context.Students
+            .FirstOrDefaultAsync(s => s.UserId == user.Id);
+
+        if (student != null)
+        {
+            _context.Students.Remove(student);
+        }
+
+        await _context.SaveChangesAsync();
+        return Ok(new
+        {
+            message = "Organization position updated successfully.",
+            position = request.Position
+        });
     }
 
 }

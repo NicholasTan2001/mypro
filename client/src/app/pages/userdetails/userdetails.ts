@@ -50,7 +50,21 @@ export class UserDetails implements OnInit {
           address: response.address,
           status: response.status,
           intro: response.intro,
-          conclusion: response.conclusion
+          conclusion: response.conclusion,
+          position: response.position,
+          course: response.course,
+          location: response.location,
+          studentStartDate: response.studentStartDate ? response.startDate.split('T')[0]
+            : '',
+          studentEndDate: response.studentEndDate ? response.studentEndDate.split('T')[0]
+            : '',
+          role: response.role,
+          company: response.company,
+          responsible: response.responsible,
+          empStartDate: response.empStartDate ? response.empStartDate.split('T')[0]
+            : '',
+          empendDate: response.empendDate ? response.empendDate.split('T')[0]
+            : '',
         };
         this.cd.detectChanges();
       }

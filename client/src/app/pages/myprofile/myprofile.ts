@@ -40,12 +40,20 @@ export class Myprofile implements OnInit {
   isLoading: boolean = false;
   isLoading2: boolean = false;
   isLoading3: boolean = false;
+  isLoading4: boolean = false;
   nameError: string = '';
   ageError: string = '';
   emailError: string = '';
   phoneNumberError: string = '';
   addressError: string = '';
   updateUserSuccess: boolean = false;
+  courseError: string = '';
+  locationError: string = '';
+  studentDateError: string = '';
+  roleError: string = '';
+  companyError: string = '';
+  empDateError: string = '';
+  responsibleError: string = '';
 
   form = {
     IdentityNumber: '',
@@ -66,6 +74,25 @@ export class Myprofile implements OnInit {
     Conclusion: ''
   }
 
+  form4 = {
+    Position: 'Student'
+  }
+
+  form5 = {
+    Course: '',
+    Location: '',
+    StartDate: '',
+    EndDate: '',
+  }
+
+  form6 = {
+    Role: '',
+    Company: '',
+    Responsible: '',
+    StartDate: '',
+    EndDate: '',
+  }
+
   constructor(
     private authService: AuthService,
     private http: HttpClient,
@@ -75,6 +102,7 @@ export class Myprofile implements OnInit {
   ngOnInit() {
     this.loadUser();
     this.loadAdditional();
+    this.loadPosition();
     this.authService.freshLogin$.subscribe(isFreshLogin => {
       this.loginSuccess = isFreshLogin;
     });
@@ -137,6 +165,57 @@ export class Myprofile implements OnInit {
       this.cd.detectChanges();
     } catch (error: any) {
       console.error('Failed to load additional information:', error);
+      this.cd.detectChanges();
+    }
+  }
+
+  async loadPosition() {
+    try {
+      const user = this.authService.getCurrentUser();
+      if (user) {
+        const response: any = await firstValueFrom(
+          this.http.get(
+            `${API_CONFIG.usersEndpointBase}/position/${user.id}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${this.authService.getToken()}`
+              }
+            }
+          )
+        );
+
+        if (response) {
+          this.form4.Position = response.position;
+          if (response.position === 'Employee' || response.position === 'Employer') {
+            this.form6.Role = response.role || '';
+            this.form6.Company = response.company || '';
+            this.form6.Responsible = response.responsible || '';
+            this.form6.StartDate = response.startDate
+              ? response.startDate.split('T')[0]
+              : '';
+
+            this.form6.EndDate = response.endDate
+              ? response.endDate.split('T')[0]
+              : '';
+            this.form6.Responsible = response.responsible || '';
+          } else if (response.position === 'Student') {
+
+            this.form5.Course = response.course || '';
+            this.form5.Location = response.location || '';
+            this.form5.StartDate = response.startDate
+              ? response.startDate.split('T')[0]
+              : '';
+
+            this.form5.EndDate = response.endDate
+              ? response.endDate.split('T')[0]
+              : '';
+          }
+        }
+      }
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Failed to load position:', error);
+      this.form4.Position = 'Student';
       this.cd.detectChanges();
     }
   }
@@ -267,14 +346,12 @@ export class Myprofile implements OnInit {
           }
         )
       );
-
       if (response) {
         this.isLoading2 = false;
         this.loadAdditional();
         this.updateUserSuccess = true;
         this.cd.detectChanges();
       }
-
     } catch (error: any) {
       this.isLoading2 = false;
       this.cd.detectChanges();
@@ -307,14 +384,12 @@ export class Myprofile implements OnInit {
           }
         )
       );
-
       if (response) {
         this.isLoading3 = false;
         this.loadAdditional();
         this.updateUserSuccess = true;
         this.cd.detectChanges();
       }
-
     } catch (error: any) {
       this.isLoading3 = false;
       this.cd.detectChanges();
@@ -323,4 +398,135 @@ export class Myprofile implements OnInit {
       this.cd.detectChanges();
     }
   }
+
+  async onSubmit4() {
+    this.isLoading4 = true;
+    this.courseError = '';
+    this.locationError = '';
+    this.studentDateError = '';
+    this.roleError = '';
+    this.companyError = '';
+    this.empDateError = '';
+    this.responsibleError = '';
+    const user = this.authService.getCurrentUser();
+    if (!user) {
+      this.isLoading4 = false;
+      this.cd.detectChanges();
+      return;
+    }
+    const position = this.form4.Position;
+    if (position === 'Student') {
+      try {
+        if (!this.form5.Course) {
+          this.courseError = 'Course is required.';
+          this.isLoading4 = false;
+          this.cd.detectChanges();
+          return;
+        }
+        if (!this.form5.Location) {
+          this.locationError = 'Location is required.';
+          this.isLoading4 = false;
+          this.cd.detectChanges();
+          return;
+        }
+        if (!this.form5.StartDate || !this.form5.EndDate || this.form5.StartDate >= this.form5.EndDate) {
+          this.studentDateError = 'Valid dates are required.';
+          this.isLoading4 = false;
+          this.cd.detectChanges();
+          return;
+        }
+        const response = await firstValueFrom(
+          this.http.put(
+            `${API_CONFIG.usersEndpointBase}/update-student`,
+            {
+              identityNumber: user.identityNumber,
+              course: this.form5.Course,
+              location: this.form5.Location,
+              startDate: this.form5.StartDate,
+              endDate: this.form5.EndDate
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.authService.getToken()}`
+              }
+            }
+          )
+        );
+        if (response) {
+          this.isLoading4 = false;
+          this.loadPosition();
+          this.updateUserSuccess = true;
+          this.cd.detectChanges();
+        }
+      } catch (error: any) {
+        this.isLoading4 = false;
+        this.cd.detectChanges();
+      } finally {
+        this.isLoading4 = false;
+        this.cd.detectChanges();
+      }
+    }
+    else if (position === 'Employee' || position === 'Employer') {
+      try {
+        if (!this.form6.Role) {
+          this.roleError = 'Role is required.';
+          this.isLoading4 = false;
+          this.cd.detectChanges();
+          return;
+        }
+        if (!this.form6.Responsible) {
+          this.responsibleError = 'Responsibilities are required.';
+          this.isLoading4 = false;
+          this.cd.detectChanges();
+          return;
+        }
+        if (!this.form6.Company) {
+          this.companyError = 'Company is required.';
+          this.isLoading4 = false;
+          this.cd.detectChanges();
+          return;
+        }
+        if (!this.form6.StartDate || !this.form6.EndDate || this.form6.StartDate >= this.form6.EndDate) {
+          this.empDateError = 'Valid dates are required.';
+          this.isLoading4 = false;
+          this.cd.detectChanges();
+          return;
+        }
+        const response = await firstValueFrom(
+          this.http.put(
+            `${API_CONFIG.usersEndpointBase}/update-organization`,
+            {
+              position: position,
+              identityNumber: user.identityNumber,
+              role: this.form6.Role,
+              company: this.form6.Company,
+              startDate: this.form6.StartDate,
+              endDate: this.form6.EndDate,
+              responsible: this.form6.Responsible
+            },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${this.authService.getToken()}`
+              }
+            }
+          )
+        );
+        if (response) {
+          this.isLoading4 = false;
+          this.loadPosition();
+          this.updateUserSuccess = true;
+          this.cd.detectChanges();
+        }
+      } catch (error: any) {
+        this.isLoading4 = false;
+        this.cd.detectChanges();
+      } finally {
+        this.isLoading4 = false;
+        this.cd.detectChanges();
+      }
+    }
+  }
 }
+

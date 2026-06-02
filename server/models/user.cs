@@ -38,5 +38,8 @@ namespace MyProfile.Models
 
         public Additional? Additional { get; set; }
 
+        public Student? Student { get; set; }
+
+        public Organization? Organization { get; set; }
     }
 }
