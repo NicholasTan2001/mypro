@@ -21,6 +21,15 @@ namespace MyProfile.Models
         [JsonPropertyName("Conclusion")]
         public string? Conclusion { get; set; }
 
+        [JsonPropertyName("Hobby")]
+        public string? Hobby { get; set; }
+
+        [JsonPropertyName("Skill")]
+        public string? Skill { get; set; }
+
+        [JsonPropertyName("Language")]
+        public string? Language { get; set; }
+
         public User? User { get; set; }
     }
 }

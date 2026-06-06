@@ -39,7 +39,7 @@
         <!-- Search Results -->
         @if (resultSuccess && searchResults.length > 0) {
         @for (result of searchResults; track result.id) {
-        <div reveal (click)="onCardClick(result)" [class.shake]="shakingId === result.id && canShake"
+        <div reveal [class.shake]="shakingId === result.id && canShake"
             class="search-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12 result-card">
             <div class="flex flex-col md:flex-row md:justify-between md:items-end">
                 <h2 class="font-bold md:text-lg text-base text-black">
@@ -56,7 +56,7 @@
                 }
             </div>
             @if (result.intro) {
-            <div class="intro-section">
+            <div class="show-section">
                 <p class="text-black md:text-base text-sm font-bold mt-3">
                     Bio: <span class="text-purple-500">{{ result.intro }}</span>
                 </p>
@@ -71,6 +71,28 @@
                         class="text-purple-500">{{result.email}}</span></p>
                 <p class="text-black md:text-base text-sm font-bold">Country: <span
                         class="text-purple-500">{{result.country}}</span></p>
+            </div>
+            <div class="show-section flex justify-end gap-6">
+                @if (id == result.id) {
+                <p
+                    class="flex rounded-lg text-white bg-gray-400 md:text-base text-sm font-medium mt-5 w-full justify-center items-center px-2 py-1">
+                    Your Profile
+                </p>
+                } @else {
+                @if (isRequestSent(result.id)) {
+                <p
+                    class="flex rounded-lg text-white bg-gray-400 md:text-base text-sm font-medium mt-5 w-full justify-center items-center px-2 py-1">
+                    Request Sent
+                </p>
+                } @else {
+                <app-button [label]="isLoading2 ? 'Loading...' : 'Add Friend'" (click)="onPermissionClick(result)"
+                    size="sm" class="flex flex-col mt-5 w-full">
+                </app-button>
+                }
+                }
+                <app-button [label]="isLoading3 ? 'Loading...' : 'View Profile'" (click)="onCardClick(result)" size="sm"
+                    class="flex flex-col mt-5 w-full">
+                </app-button>
             </div>
         </div>
         }
@@ -90,6 +112,22 @@
             </div>
         </div>
         }
+
+        <!-- Sucessfully Add Permission -->
+        <div *ngIf="permissionSuccess">
+            <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
+                <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
+                    <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Sent Request!
+                    </h2>
+                    <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
+                        Friend request is successfully sent.
+                    </p>
+                    <app-button label="Okay" (click)="closePermissionSuccessModal()" />
+                </div>
+            </div>
+        </div>
+
     </div>
 </body>
 

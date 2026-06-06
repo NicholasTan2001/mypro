@@ -7,35 +7,76 @@ import { firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { API_CONFIG } from '../../config/api.config';
 import { Router, ActivatedRoute } from '@angular/router';
+import { Button } from '../../component/button/button';
+import { AuthService } from '../../services/auth.service';
+
 
 @Component({
   selector: 'app-search',
-  imports: [Searchbar, Reveal, CommonModule],
+  imports: [Searchbar, Reveal, CommonModule, Button],
   standalone: true,
   templateUrl: './search.html',
   styleUrl: './search.css',
 })
-export class Search {
 
+export class Search {
+  id: string = "";
   resultSuccess: boolean = false;
   searchResults: any[] = [];
   isLoading: boolean = false;
   searchError: string = '';
   noResult: boolean = false;
   shakingId: number | null = null;
-  canShake: boolean = false;  // 👈 Add this
+  canShake: boolean = false;
+  isLoading2: boolean = false;
+  isLoading3: boolean = false;
+  permissionSuccess: boolean = false;
+  sentRequests: number[] = [];
 
-  constructor(private http: HttpClient, private cd: ChangeDetectorRef, private router: Router,
+  constructor(private http: HttpClient, private cd: ChangeDetectorRef, private router: Router, private authService: AuthService,
     private route: ActivatedRoute
   ) { }
 
   ngOnInit() {
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      this.id = user.id;
+      this.loadRelationship();
+    }
     this.route.queryParams.subscribe(params => {
       const searchTerm = params['name'];
       if (searchTerm) {
         this.performSearch(searchTerm);
       }
     });
+  }
+
+  async loadRelationship() {
+    try {
+      const response: any = await firstValueFrom(
+        this.http.get(
+          `${API_CONFIG.usersEndpointBase}/relationship/${this.id}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response && response.relationships) {
+        response.relationships.forEach((relationship: any) => {
+          this.sentRequests.push(parseInt(relationship.permission));
+        });
+      }
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Failed to load relationships:', error);
+      this.sentRequests = [];
+      this.cd.detectChanges();
+    }
+  }
+  isRequestSent(friendId: number): boolean {
+    return this.sentRequests.includes(friendId);
   }
 
   async onSearch(searchTerm: string) {
@@ -48,6 +89,10 @@ export class Search {
   }
 
   async performSearch(searchTerm: string) {
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      this.id = user.id;
+    }
     this.isLoading = true;
     this.resultSuccess = false;
     this.noResult = false;
@@ -84,6 +129,7 @@ export class Search {
   }
 
   onCardClick(result: any) {
+    this.isLoading3 = true;
     if (result.status === 'Private') {
       this.shakingId = null;
       this.canShake = false;
@@ -101,10 +147,56 @@ export class Search {
     } else {
       this.viewUserDetail(result.id);
     }
+    this.isLoading3 = false;
   }
 
   viewUserDetail(userId: number) {
     this.cd.detectChanges();
     this.router.navigate(['/user', userId]);
   }
+
+  async onPermissionClick(result: any) {
+    this.isLoading2 = true;
+    try {
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        this.isLoading2 = false;
+        return;
+      }
+      const response: any = await firstValueFrom(
+        this.http.post(
+          `${API_CONFIG.usersEndpointBase}/add-permission`,
+          {
+            identityNumber: user.identityNumber,
+            permission: result.id,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response) {
+        this.permissionSuccess = true;
+        this.isLoading2 = false;
+        this.loadRelationship();
+        this.cd.detectChanges();
+      }
+    } catch (error: any) {
+      this.isLoading2 = false;
+      this.cd.detectChanges();
+    } finally {
+      this.isLoading2 = false;
+      this.cd.detectChanges();
+    }
+
+  }
+
+  closePermissionSuccessModal() {
+    this.permissionSuccess = false;
+  }
+
+
 }

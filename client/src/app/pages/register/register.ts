@@ -32,6 +32,7 @@ export class Register {
     PhoneNumber: '',
     Sex: 'Male',
     Address: '',
+    BirthDate: null,
   };
 
   identityNumberError: string = '';
@@ -42,6 +43,7 @@ export class Register {
   phoneNumberError: string = '';
   emailError: string = '';
   addressError: string = '';
+  birthDateError: string = ''
   registerSuccess: boolean = false;
   isLoading: boolean = false;
 
@@ -61,6 +63,7 @@ export class Register {
     this.emailError = '';
     this.phoneNumberError = '';
     this.addressError = '';
+    this.birthDateError = '';
     try {
       if (!this.form.IdentityNumber) {
         this.identityNumberError = 'Identity number is required.';
@@ -84,6 +87,11 @@ export class Register {
       }
       if (Number(this.form.Age) <= 0 || Number(this.form.Age) > 120 || isNaN(Number(this.form.Age))) {
         this.ageError = 'Valid age is required.';
+        this.isLoading = false;
+        return;
+      }
+      if (!this.form.BirthDate) {
+        this.birthDateError = 'Date of birth is required.';
         this.isLoading = false;
         return;
       }

@@ -12,27 +12,32 @@
 
         <!-- User Page Title -->
         @if (user){
-        <h1 reveal class="font-bold md:text-2xl text-xl mb-12">
+        <h1 reveal class="font-bold md:text-2xl text-xl">
             <span class="text-purple-600">{{user.name}}</span>'s Profile
         </h1>
         }
 
         <!-- User Details (Public) -->
-        @if (user && user.intro!==""){
-        <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mb-12">
+        @if (user && user.intro!=="" && user.status=="Public") {
+        <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
                 <h2 class="font-bold md:text-lg text-base text-black mb-4">Introduction</h2>
-                <p class="text-black font-bold">Bio: <span class="text-purple-500">{{ user.intro }}</span></p>
+                <p class="text-black font-bold"><span class="text-purple-500">{{ user.intro }}</span></p>
             </div>
         </div>
         }
         @if (user && user.status=="Public") {
-        <div reveal class="user-card bg-white rounded-lg p-6 md:w-2/3 w-full shadow-lg mb-12">
+        <div reveal class="user-card bg-white rounded-lg p-6 md:w-2/3 w-full shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
-                <h2 class="font-bold md:text-lg text-base text-black mb-4">General Personal Information</h2>
+                <div class="flex flex-col md:flex-row justify-between">
+                    <h2 class="font-bold md:text-lg text-base text-black">General Personal Information</h2>
+                    <h2 class="font-bold md:text-lg text-base text-gray-500 mb-4">ID: {{user.id}}</h2>
+                </div>
                 <p class="text-black font-bold">Name: <span class="text-purple-500">{{ user.name }}</span></p>
                 <p class="text-black font-bold">Sex: <span class="text-purple-500">{{ user.sex }}</span></p>
                 <p class="text-black font-bold">Age: <span class="text-purple-500">{{ user.age }}</span></p>
+                <p class="text-black font-bold">Date of Bith: <span class="text-purple-500"> {{ user.birthDate }}</span>
+                </p>
                 <p class="text-black font-bold">Email: <span class="text-purple-500"> {{ user.email }}</span></p>
                 <p class="text-black font-bold">Phone: <span class="text-purple-500"> {{ user.phoneNumber }}</span></p>
                 <p class="text-black font-bold">Address: <span class="text-purple-500"> {{ user.address }}</span></p>
@@ -40,53 +45,182 @@
             </div>
         </div>
         }
-        @if (user && user.position=="Student") {
-        <div reveal class="user-card bg-white rounded-lg p-6 w-full md:w-1/2 shadow-lg mb-12">
+        @if (user && user.course!=="" && user.status=="Public") {
+        <div reveal class="user-card bg-white rounded-lg p-6 w-full md:w-2/3 shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
                 <h2 class="font-bold md:text-lg text-base text-black mb-4">Professional Information</h2>
-                <p class="text-black font-bold">Position: <span class="text-purple-500">{{ user.position }}</span></p>
+                <p class="text-black font-bold">Position: <span class="text-purple-500">Student</span></p>
                 <p class="text-black font-bold">Course: <span class="text-purple-500">{{ user.course }}</span></p>
                 <p class="text-black font-bold">Location: <span class="text-purple-500">{{ user.location }}</span></p>
                 <div class="flex flex-col md:flex-row gap-2 md:gap-12">
 
-                    <p class="text-black font-bold">Start Date: <span class="text-purple-500">{{ user.studentStartDate |
-                            date }}</span></p>
-                    <p class="text-black font-bold">End Date: <span class="text-purple-500">{{ user.studentEndDate |
-                            date
+                    <p class="text-black font-bold">Start Date: <span class="text-purple-500">{{ user.studentStartDate
+                            }}</span></p>
+                    <p class="text-black font-bold">End Date: <span class="text-purple-500">{{
+                            user.studentEndDate
                             }}</span></p>
                 </div>
             </div>
         </div>
         }
-
-        @if (user && user.position=="Employee" || user.position=="Employer") {
-        <div reveal class="user-card bg-white rounded-lg p-6 w-full md:w-2/3 shadow-lg mb-12">
+        @if (user && (user.position=="Employee" || user.position=="Employer") && user.status=="Public") {
+        <div reveal class="user-card bg-white rounded-lg p-6 w-full md:w-2/3 shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
                 <h2 class="font-bold md:text-lg text-base text-black mb-4">Professional Information</h2>
                 <p class="text-black font-bold">Position: <span class="text-purple-500">{{ user.position }}</span>
                 </p>
                 <p class="text-black font-bold">Role: <span class="text-purple-500">{{ user.role }}</span></p>
-                <p class="text-black font-bold">Company: <span class="text-purple-500">{{ user.company }}</span></p>
-                <p class="text-black font-bold">Responsible: <span class="text-purple-500">{{ user.responsible
+                <p class="text-black font-bold">Responsibilities: <span class="text-purple-500">{{ user.responsible
                         }}</span>
                 </p>
+                <p class="text-black font-bold">Company: <span class="text-purple-500">{{ user.company }}</span></p>
                 <div class="flex flex-col md:flex-row gap-2 md:gap-12">
                     <p class="text-black font-bold">Start Date: <span class="text-purple-500">{{ user.empStartDate
                             }}</span></p>
-                    <p class="text-black font-bold">Expected End Date: <span class="text-purple-500">{{ user.empendDate
+                    <p class="text-black font-bold">End Date: <span class="text-purple-500">{{ user.empEndDate
                             }}</span></p>
                 </div>
             </div>
         </div>
         }
+        @if (user && experience.length>0 && user.status=="Public") {
+        <div reveal class="user-card bg-white rounded-lg p-6 md:w-2/3 w-full shadow-lg mt-12">
+            <div class="flex flex-col gap-2 md:text-base text-sm">
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">Working Experiences</h2>
+                <div class="flex flex-col gap-4">
+                    @for (exp of experience; track exp.id) {
+                    <div
+                        class="border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-purple-100 hover:border-purple-500 transition duration-300">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex-1">
+                                <p class="md:text-base text-sm text-purple-500 font-bold">{{ exp.position }}</p>
+                                <p class="md:text-sm text-xs text-purple-400 font-bold mt-2">{{ exp.company }}</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 md:text-sm text-xs mb-2 font-bold">{{ exp.responsible }}</p>
+                        <p class="text-gray-400 md:text-sm text-xs font-bold">
+                            {{ exp.startDate }} until
+                            {{ exp.endDate }}
+                        </p>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+        }
+        @if (user && project.length>0 && user.status=="Public") {
+        <div reveal class="user-card bg-white rounded-lg p-6 md:w-2/3 w-full shadow-lg mt-12">
+            <div class="flex flex-col gap-2 md:text-base text-sm">
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">Projects</h2>
+                <div class="flex flex-col gap-4">
+                    @for (pro of project; track pro.id) {
+                    <div
+                        class="border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-purple-100 hover:border-purple-500 transition duration-300">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex-1">
+                                <p class="md:text-base text-sm text-purple-500 font-bold">{{ pro.title }}</p>
+                                <p class="md:text-sm text-xs text-purple-400 font-bold mt-2">{{ pro.type }}</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 md:text-sm text-xs mb-2 font-bold">{{ pro.feature }}</p>
+                        <p class="text-gray-400 md:text-sm text-xs font-bold">
+                            {{ pro.startDate }} until
+                            {{ pro.endDate }}
+                        </p>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+        }
+        @if (user && achievement.length>0 && user.status=="Public") {
+        <div reveal class="user-card bg-white rounded-lg p-6 md:w-2/3 w-full shadow-lg mt-12">
+            <div class="flex flex-col gap-2 md:text-base text-sm">
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">Achievements</h2>
+                <div class="flex flex-col gap-4">
+                    @for (ach of achievement; track ach.id) {
+                    <div
+                        class="border border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-purple-100 hover:border-purple-500 transition duration-300">
+                        <div class="flex justify-between items-start mb-2">
+                            <div class="flex-1">
+                                <p class="md:text-base text-sm text-purple-500 font-bold">{{ ach.title }}</p>
+                                <p class="md:text-sm text-xs text-purple-400 font-bold mt-2">{{ ach.type }}</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-400 md:text-sm text-xs font-bold">
+                            {{ ach.date }}
+                        </p>
+                        <a [href]="ach.link" target="_blank" rel="noopener noreferrer"
+                            class="text-gray-400 md:text-sm text-xs font-bold mt-2 hover:text-blue-400 hover:underline">
+                            {{ ach.link }}
+                        </a>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+        }
+        @if (user && user.hobby!='') {
+        <div class="flex flex-col lg:flex-row lg:gap-12 md:w-7/8 w-full">
+            <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
+                <div class="flex flex-col gap-2 md:text-base text-sm">
+                    <h2 class="font-bold md:text-lg text-base text-black mb-4">Hobbies</h2>
+                    <div class="flex flex-wrap gap-3">
+                        @for (hobby of user.hobby.split(','); track hobby) {
+                        <span
+                            class="border-2 border-white bg-purple-100 text-purple-500 p-2 rounded-lg font-bold md:text-sm text-xs hover:bg-gray-100 cursor-pointer">
+                            {{ hobby.trim() }}
+                        </span>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
+                <div class="flex flex-col gap-2 md:text-base text-sm">
+                    <h2 class="font-bold md:text-lg text-base text-black mb-4">Skills</h2>
+                    <div class="flex flex-wrap gap-2">
+                        @for (skill of user.skill.split(','); track skill) {
+                        <span
+                            class="border-2 border-white bg-purple-100 text-purple-500 p-2 rounded-lg font-bold md:text-sm text-xs hover:bg-gray-100 cursor-pointer">
+                            {{ skill.trim() }}
+                        </span>
+                        }
+                    </div>
 
-        @if (user && user.conclusion!==""){
-        <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mb-12">
+                </div>
+            </div>
+            <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
+                <div class="flex flex-col gap-2 md:text-base text-sm">
+                    <h2 class="font-bold md:text-lg text-base text-black mb-4">Languages</h2>
+                    <div class="flex flex-wrap gap-2">
+                        @for (language of user.language.split(','); track language) {
+                        <span
+                            class="border-2 border-white bg-purple-100 text-purple-500 p-2 rounded-lg font-bold md:text-sm text-xs hover:bg-gray-100 cursor-pointer">
+                            {{ language.trim() }}
+                        </span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
+        @if (user && user.conclusion!=="" && user.status=="Public"){
+        <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
                 <h2 class="font-bold md:text-lg text-base text-black mb-4">Conclusion</h2>
-                <p class="text-black font-bold">Message: <span class="text-purple-500">{{ user.conclusion
+                <p class="text-black font-bold"><span class="text-purple-500">{{ user.conclusion
                         }}</span>
                 </p>
+            </div>
+        </div>
+        }
+        @if(user && user.status=="Public"){
+        <div reveal class="user-card flex flex-col bg-white rounded-lg p-3 mt-12">
+            <div class="flex flex-col items-center justify-center">
+                <div class="w-35 md:w-40">
+                    <qrcode [qrdata]="profileUrl" [width]="300" [errorCorrectionLevel]="'H'">
+                    </qrcode>
+                </div>
             </div>
         </div>
         }

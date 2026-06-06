@@ -46,8 +46,10 @@ public class UsersController : ControllerBase
         {
             Intro = "",
             Conclusion = "",
+            Skill = "",
+            Language = "",
+            Hobby = ""
         };
-
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
         return Ok(new
@@ -63,7 +65,8 @@ public class UsersController : ControllerBase
                 user.PhoneNumber,
                 user.Address,
                 user.Sex,
-                user.Status
+                user.Status,
+                user.BirthDate
             }
         });
     }
@@ -102,7 +105,8 @@ public class UsersController : ControllerBase
                 user.PhoneNumber,
                 user.Address,
                 user.Sex,
-                user.Status
+                user.Status,
+                user.BirthDate
             }
         });
     }
@@ -259,7 +263,6 @@ MyProfile Team
         if (!string.IsNullOrEmpty(request.PhoneNumber))
         {
             user.PhoneNumber = request.PhoneNumber;
-
         }
         if (!string.IsNullOrEmpty(request.Country))
         {
@@ -272,6 +275,10 @@ MyProfile Team
         if (!string.IsNullOrEmpty(request.Sex))
         {
             user.Sex = request.Sex;
+        }
+        if (request.BirthDate != null)
+        {
+            user.BirthDate = request.BirthDate;
         }
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
@@ -332,8 +339,12 @@ MyProfile Team
             user.Sex,
             user.Address,
             user.Status,
+            user.BirthDate,
             intro = user.Additional!.Intro ?? "",
             conclusion = user.Additional!.Conclusion ?? "",
+            hobby = user.Additional!.Hobby ?? "",
+            skill = user.Additional!.Skill ?? "",
+            language = user.Additional!.Language ?? "",
             position = user.Organization?.Position ?? "",
             course = user.Student?.Course ?? "",
             location = user.Student?.Location ?? "",
@@ -343,8 +354,9 @@ MyProfile Team
             company = user.Organization?.Company ?? "",
             responsible = user.Organization?.Responsible ?? "",
             empStartDate = user.Organization?.StartDate ?? null,
-            empendDate = user.Organization?.EndDate ?? null
+            empEndDate = user.Organization?.EndDate ?? null
         });
+
     }
 
     [HttpGet("additional/{id}")]
@@ -359,14 +371,21 @@ MyProfile Team
             return Ok(new
             {
                 intro = "",
-                conclusion = ""
+                conclusion = "",
+                hobby = "",
+                skill = "",
+                language = "",
             });
         }
 
         return Ok(new
         {
             intro = additional.Intro ?? "",
-            conclusion = additional.Conclusion ?? ""
+            conclusion = additional.Conclusion ?? "",
+            hobby = additional.Hobby ?? "",
+            skill = additional.Skill ?? "",
+            language = additional.Language ?? ""
+
         });
     }
 
@@ -575,6 +594,290 @@ MyProfile Team
             message = "Organization position updated successfully.",
             position = request.Position
         });
+    }
+
+    [HttpGet("experience/{id}")]
+    public async Task<ActionResult> GetExperiences(int id)
+    {
+        var experiences = await _context.Experiences
+            .Where(e => e.UserId == id)
+            .OrderByDescending(e => e.StartDate)
+            .Select(e => new
+            {
+                e.Id,
+                e.Position,
+                e.Company,
+                e.Responsible,
+                e.StartDate,
+                e.EndDate
+            })
+            .ToListAsync();
+
+        return Ok(new { experiences });
+    }
+
+    [HttpPost("add-experience")]
+    [Authorize]
+    public async Task<ActionResult> AddExperience([FromBody] AddExperienceRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+
+        var experience = new Experience
+        {
+            UserId = user.Id,
+            Position = request.Position,
+            Company = request.Company,
+            Responsible = request.Responsible,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate
+        };
+        _context.Experiences.Add(experience);
+        await _context.SaveChangesAsync();
+        return Ok(new
+        {
+            message = "Experience added successfully.",
+        });
+    }
+
+    [HttpDelete("delete-experience/{id}")]
+    [Authorize]
+    public async Task<ActionResult> DeleteExperience(int id)
+    {
+        var experience = await _context.Experiences
+            .FirstOrDefaultAsync(e => e.Id == id);
+        if (experience == null)
+        {
+            return NotFound(new { message = "Experience not found." });
+        }
+        _context.Experiences.Remove(experience);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Experience deleted successfully." });
+    }
+
+    [HttpPost("add-achievement")]
+    [Authorize]
+    public async Task<ActionResult> AddAchievement([FromBody] AddAchievementRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+
+        var achievement = new Achievement
+        {
+            UserId = user.Id,
+            Type = request.Type,
+            Title = request.Title,
+            Link = request.Link,
+            Date = request.Date
+        };
+
+        _context.Achievements.Add(achievement);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            message = "Achievement added successfully.",
+        });
+    }
+
+    [HttpGet("achievement/{id}")]
+    public async Task<ActionResult> GetAchievements(int id)
+    {
+        var achievements = await _context.Achievements
+            .Where(a => a.UserId == id)
+            .OrderByDescending(a => a.Date)
+            .Select(a => new
+            {
+                a.Id,
+                a.Type,
+                a.Title,
+                a.Link,
+                a.Date
+            })
+            .ToListAsync();
+
+        return Ok(new { achievements });
+    }
+
+    [HttpDelete("delete-achievement/{id}")]
+    [Authorize]
+    public async Task<ActionResult> DeleteAchievement(int id)
+    {
+        var achievement = await _context.Achievements
+            .FirstOrDefaultAsync(a => a.Id == id);
+
+        if (achievement == null)
+        {
+            return NotFound(new { message = "Achievement not found." });
+        }
+
+        _context.Achievements.Remove(achievement);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Achievement deleted successfully." });
+    }
+
+    [HttpPost("add-project")]
+    [Authorize]
+    public async Task<ActionResult> AddProject([FromBody] AddProjectRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        var project = new Project
+        {
+            UserId = user.Id,
+            Title = request.Title,
+            Type = request.Type,
+            Feature = request.Feature,
+            StartDate = request.StartDate,
+            EndDate = request.EndDate
+        };
+        _context.Projects.Add(project);
+        await _context.SaveChangesAsync();
+        return Ok(new
+        {
+            message = "Project added successfully.",
+        });
+    }
+
+    [HttpGet("project/{id}")]
+    public async Task<ActionResult> GetProjects(int id)
+    {
+        var projects = await _context.Projects
+            .Where(p => p.UserId == id)
+            .OrderByDescending(p => p.StartDate)
+            .Select(p => new
+            {
+                p.Id,
+                p.Title,
+                p.Type,
+                p.Feature,
+                p.StartDate,
+                p.EndDate
+            })
+            .ToListAsync();
+
+        return Ok(new { projects });
+    }
+
+    [HttpDelete("delete-project/{id}")]
+    [Authorize]
+    public async Task<ActionResult> DeleteProject(int id)
+    {
+        var project = await _context.Projects
+            .FirstOrDefaultAsync(p => p.Id == id);
+        if (project == null)
+        {
+            return NotFound(new { message = "Project not found." });
+        }
+        _context.Projects.Remove(project);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Project deleted successfully." });
+    }
+
+    [HttpPut("update-additional")]
+    [Authorize]
+    public async Task<ActionResult> UpdateAdditional([FromBody] UpdateAdditionalRequest request)
+    {
+        var user = await _context.Users
+            .Include(u => u.Additional)
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+
+        if (user.Additional == null)
+        {
+            user.Additional = new Additional { UserId = user.Id };
+        }
+
+        if (!string.IsNullOrEmpty(request.Hobby))
+            user.Additional.Hobby = request.Hobby;
+
+        if (!string.IsNullOrEmpty(request.Skill))
+            user.Additional.Skill = request.Skill;
+
+        if (!string.IsNullOrEmpty(request.Language))
+            user.Additional.Language = request.Language;
+
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            hobby = user.Additional.Hobby,
+            skill = user.Additional.Skill,
+            language = user.Additional.Language
+        });
+    }
+
+    [HttpPost("add-permission")]
+    [Authorize]
+    public async Task<ActionResult> AddRelationship([FromBody] AddPermissionRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        var existingRelationship = await _context.Relationships
+            .FirstOrDefaultAsync(r =>
+                r.UserId == user.Id &&
+                r.Permission == request.Permission);
+        if (existingRelationship != null)
+        {
+            return BadRequest(new
+            {
+                message = "Permission already exists for this user."
+            });
+        }
+        var relationship = new Relationship
+        {
+            UserId = user.Id,
+            Permission = request.Permission
+        };
+        _context.Relationships.Add(relationship);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            message = "Permission added successfully."
+        });
+    }
+
+    [HttpGet("relationship/{id}")]
+    [Authorize]
+    public async Task<ActionResult> GetRelationships(int id)
+    {
+        Console.WriteLine(id);
+
+        var relationships = await _context.Relationships
+            .Where(r => r.UserId == id)
+            .Select(r => new
+            {
+                r.Id,
+                r.Permission
+            })
+            .ToListAsync();
+
+        return Ok(new { relationships });
     }
 
 }

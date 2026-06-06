@@ -27,5 +27,10 @@ namespace MyProfile.Models
 
         [JsonPropertyName("address")]
         public string? Address { get; set; }
+
+        [JsonPropertyName("birthDate")]
+        public DateTime? BirthDate { get; set; }
+
+
     }
 }

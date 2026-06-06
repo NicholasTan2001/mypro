@@ -13,7 +13,10 @@ namespace MyProfile.Models
         public string? Name { get; set; }
 
         [JsonPropertyName("Age")]
-        public int Age { get; set; }
+        public int? Age { get; set; }
+
+        [JsonPropertyName("BirthDate")]
+        public DateTime? BirthDate { get; set; }
 
         [JsonPropertyName("Password")]
         public string? Password { get; set; }
@@ -41,5 +44,11 @@ namespace MyProfile.Models
         public Student? Student { get; set; }
 
         public Organization? Organization { get; set; }
+
+        public Experience? Experience { get; set; }
+
+        public Achievement? Achievement { get; set; }
+
+        public Relationship? Relationship { get; set; }
     }
 }

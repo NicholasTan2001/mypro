@@ -13,5 +13,14 @@ public class AppDbContext : DbContext
 
     public DbSet<Organization> Organizations { get; set; }
 
+    public DbSet<Experience> Experiences { get; set; }
+
+    public DbSet<Achievement> Achievements { get; set; }
+
+    public DbSet<Project> Projects { get; set; }
+
+    public DbSet<Relationship> Relationships { get; set; }
+
+
 
 }

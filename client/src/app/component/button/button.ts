@@ -21,8 +21,8 @@ export class Button {
       danger: 'bg-red-600 hover:bg-red-500 text-white hover:shadow-red-500/50',
     };
     const sizes = {
-      sm: 'text-sm px-3 py-1',
-      md: 'md:text-base text-sm md:px- md:py-2 px-3 py-2',
+      sm: 'md:text-base text-sm px-2 py-1',
+      md: 'md:text-base text-sm md:px-3 md:py-2 px-3 py-2',
       lg: 'text-lg px-6 py-2',
     };
     return `${base} ${variants[this.variant]} ${sizes[this.size]}`;

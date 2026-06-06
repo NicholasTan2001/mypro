@@ -6,18 +6,22 @@ import { Reveal } from '../../directive/reveal';
 import { firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { API_CONFIG } from '../../config/api.config';
+import { QRCodeComponent } from 'angularx-qrcode';
 
 @Component({
   selector: 'app-userdetails',
-  imports: [CommonModule, Reveal],
+  imports: [CommonModule, Reveal, QRCodeComponent],
   standalone: true,
   templateUrl: './userdetails.html',
   styleUrl: './userdetails.css'
 })
 
 export class UserDetails implements OnInit {
-
   user: any = null;
+  experience: any[] = [];
+  achievement: any[] = [];
+  project: any[] = [];
+  profileUrl = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -29,6 +33,10 @@ export class UserDetails implements OnInit {
     const userId = this.route.snapshot.paramMap.get('id');
     if (userId) {
       this.loadUserDetail(userId);
+      this.loadExperience(userId);
+      this.loadAchievement(userId);
+      this.loadProject(userId);
+      this.profileUrl = `http://192.168.1.6:4200/user/${userId}`;
     }
   }
 
@@ -37,7 +45,6 @@ export class UserDetails implements OnInit {
       const response: any = await firstValueFrom(
         this.http.get(`${API_CONFIG.usersEndpointBase}/${userId}`)
       );
-
       if (response) {
         this.user = {
           id: response.id,
@@ -48,13 +55,18 @@ export class UserDetails implements OnInit {
           country: response.country,
           sex: response.sex,
           address: response.address,
+          birthDate: response.birthDate ? response.birthDate.split('T')[0]
+            : '',
           status: response.status,
           intro: response.intro,
           conclusion: response.conclusion,
+          hobby: response.hobby,
+          skill: response.skill,
+          language: response.language,
           position: response.position,
           course: response.course,
           location: response.location,
-          studentStartDate: response.studentStartDate ? response.startDate.split('T')[0]
+          studentStartDate: response.studentStartDate ? response.studentStartDate.split('T')[0]
             : '',
           studentEndDate: response.studentEndDate ? response.studentEndDate.split('T')[0]
             : '',
@@ -63,17 +75,87 @@ export class UserDetails implements OnInit {
           responsible: response.responsible,
           empStartDate: response.empStartDate ? response.empStartDate.split('T')[0]
             : '',
-          empendDate: response.empendDate ? response.empendDate.split('T')[0]
+          empEndDate: response.empEndDate ? response.empEndDate.split('T')[0]
             : '',
         };
         this.cd.detectChanges();
       }
     } catch (error: any) {
-      this.cd.detectChanges();
-
-    } finally {
+      console.error('Failed to load user details:', error);
       this.cd.detectChanges();
     }
   }
+
+  async loadExperience(userId: string) {
+    try {
+      const response: any = await firstValueFrom(
+        this.http.get(`${API_CONFIG.usersEndpointBase}/experience/${userId}`)
+      );
+
+      if (response && response.experiences) {
+        this.experience = response.experiences.map((exp: any) => ({
+          id: exp.id,
+          position: exp.position,
+          company: exp.company,
+          responsible: exp.responsible,
+          startDate: exp.startDate ? exp.startDate.split('T')[0] : '',
+          endDate: exp.endDate ? exp.endDate.split('T')[0] : ''
+        }));
+      }
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Failed to load experiences:', error);
+      this.experience = [];
+      this.cd.detectChanges();
+    }
+  }
+
+  async loadProject(userId: string) {
+    try {
+      const response: any = await firstValueFrom(
+        this.http.get(`${API_CONFIG.usersEndpointBase}/project/${userId}`)
+      );
+
+      if (response && response.projects) {
+        this.project = response.projects.map((pro: any) => ({
+          id: pro.id,
+          title: pro.title,
+          type: pro.type,
+          feature: pro.feature,
+          startDate: pro.startDate ? pro.startDate.split('T')[0] : '',
+          endDate: pro.endDate ? pro.endDate.split('T')[0] : ''
+        }));
+      }
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Failed to load experiences:', error);
+      this.achievement = [];
+      this.cd.detectChanges();
+    }
+  }
+
+  async loadAchievement(userId: string) {
+    try {
+      const response: any = await firstValueFrom(
+        this.http.get(`${API_CONFIG.usersEndpointBase}/achievement/${userId}`)
+      );
+
+      if (response && response.achievements) {
+        this.achievement = response.achievements.map((ach: any) => ({
+          id: ach.id,
+          type: ach.type,
+          title: ach.title,
+          link: ach.link,
+          date: ach.date ? ach.date.split('T')[0] : '',
+        }));
+      }
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Failed to load experiences:', error);
+      this.achievement = [];
+      this.cd.detectChanges();
+    }
+  }
+
 
 }

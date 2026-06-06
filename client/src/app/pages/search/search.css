@@ -19,12 +19,12 @@ h1 {
     background: #ecd8f8f6;
 }
 
-.result-card:hover .intro-section {
+.result-card:hover .show-section {
     max-height: 200px;
     opacity: 1;
 }
 
-.intro-section {
+.show-section {
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;

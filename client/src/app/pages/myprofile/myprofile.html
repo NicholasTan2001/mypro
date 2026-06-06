@@ -35,7 +35,12 @@
 
         <!-- General Personal Information -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
-            <h2 class="font-bold md:text-lg text-base text-black">General Personal Information</h2>
+            <div class="flex md:flex-row flex-col gap-4 justify-between">
+                <h2 class="font-bold md:text-lg text-base text-black">General Personal Information</h2>
+                <p class="text-gray-500 md:text-lg text-base font-bold"> ID:
+                    {{ id }}
+                </p>
+            </div>
             <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 mt-4">
                 <div class="flex md:flex-row flex-col gap-4">
                     <app-input [(model)]="form.IdentityNumber" label="Identity Number" type="text"
@@ -62,6 +67,11 @@
                         </select>
                     </div>
                 </div>
+                <app-input [(model)]="form.BirthDate" label="Date of Birth" type="date" class="w-full">
+                </app-input>
+                <p *ngIf="birthDateError" class="text-red-500 md:text-sm text-xs font-medium">
+                    {{ birthDateError }}
+                </p>
                 <p *ngIf="ageError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ ageError }}
                 </p>
@@ -81,7 +91,7 @@
                     <label class="md:text-base text-sm text-gray-400 font-medium">Address</label>
                     <textarea [(ngModel)]="form.Address" name="Address"
                         placeholder="No 45, Jalan Puncak 1/1, Taman Puncak Utama, 43000 Kajang, Selangor" rows="4"
-                        class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium">
+                        class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
   </textarea>
                 </div>
                 <p *ngIf="addressError" class="text-red-500 md:text-sm text-xs font-medium">
@@ -109,7 +119,7 @@
         <!-- Professional Information -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
             <h2 class="font-bold md:text-lg text-base text-black">Profesional Information</h2>
-            <form (ngSubmit)="onSubmit4()" class="flex flex-col gap-4 mt-4">
+            <form (ngSubmit)="onSubmit4()" class="flex flex-col mt-4">
                 <div class="flex md:flex-row flex-col gap-4">
                     <div class="flex flex-col md:w-2/3 gap-1 font-medium">
                         <label class="md:text-base text-sm text-gray-400 font-medium">
@@ -125,7 +135,7 @@
                     </div>
                 </div>
                 @if (form4.Position === 'Student') {
-                <div class="flex flex-col gap-4">
+                <div class="flex flex-col gap-4 mt-4">
                     <div class="position-section w-full expand">
                         <app-input [(model)]="form5.Course" label="Course" type="text" placeholder="Computer Science"
                             class="w-full">
@@ -143,7 +153,7 @@
                         </p>
                     </div>
                 </div>
-                <div class="flex md:flex-row flex-col gap-4">
+                <div class="flex md:flex-row flex-col gap-4 mt-4">
                     <div class="position-section w-full expand ">
                         <app-input [(model)]="form5.StartDate" label="Start Date" type="date" class="w-full">
                         </app-input>
@@ -158,8 +168,7 @@
                 </p>
                 }
                 @if (form4.Position === 'Employee' || form4.Position === 'Employer') {
-
-                <div class="position-section w-full expand">
+                <div class="position-section w-full expand mt-4">
                     <app-input [(model)]="form6.Role" label="Role" type="text" placeholder="Software Engineer"
                         class="w-full">
                     </app-input>
@@ -167,19 +176,17 @@
                         {{ roleError }}
                     </p>
                 </div>
-
-                <div class="w-full position-section expand">
+                <div class="position-section w-full expand mt-4">
                     <label class="md:text-base text-sm text-gray-400 font-medium">Responsibilities</label>
                     <textarea [(ngModel)]="form6.Responsible" name="responsible"
-                        placeholder="Software Testing, Code Review, Bug Fixing." rows="4"
-                        class="border border-gray-600 text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium">
+                        placeholder="Software Testing, Code Review, Bug Fixing" rows="4"
+                        class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
   </textarea>
                     <p *ngIf="responsibleError" class="text-red-500 md:text-sm text-xs font-medium mt-3">
                         {{ responsibleError }}
                     </p>
                 </div>
-
-                <div class="position-section w-full expand">
+                <div class="position-section w-full expand mt-2">
                     <app-input [(model)]="form6.Company" label="Company" type="text" placeholder="Google Inc."
                         class="w-full">
                     </app-input>
@@ -187,7 +194,7 @@
                         {{ companyError }}
                     </p>
                 </div>
-                <div class="flex md:flex-row flex-col gap-4">
+                <div class="flex md:flex-row flex-col gap-4 mt-4">
                     <div class="position-section w-full expand ">
                         <app-input [(model)]="form6.StartDate" label="Start Date" type="date" class="w-full">
                         </app-input>
@@ -201,11 +208,272 @@
                     {{ empDateError }}
                 </p>
                 }
-                <div class="flex justify-end mt-1">
+                <div class="flex justify-end mt-5">
                     <app-button type="submit" [label]="isLoading4 ? 'Loading...' : 'Update'" class=" flex flex-col">
                     </app-button>
                 </div>
             </form>
+        </div>
+
+        <!-- Working Experiences -->
+        <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
+            <h2 class="font-bold md:text-lg text-base text-black">Working Experiences</h2>
+            <div class="flex flex-col gap-4 mt-6">
+                @if (experience.length > 0) {
+                @for (exp of experience; track exp.id) {
+                <div
+                    class="border-1 border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-purple-100 hover:border-purple-500 transition duration-300">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold md:text-base text-sm text-black">{{ exp.position }}</h3>
+                        <button (click)="deleteExperience(exp.id)"
+                            class="text-red-500 md:text-sm text-xs font-bold hover:text-red-300 cursor-pointer">
+                            Delete
+                        </button>
+                    </div>
+                    <p class="text-black md:text-sm text-xs font-medium mb-2">
+                        {{ exp.company }}
+                    </p>
+                    <p class="text-gray-500 md:text-sm text-xs font-medium">
+                        {{ exp.startDate }} until
+                        {{ exp.endDate }}
+                    </p>
+                </div>
+                }
+                } @else {
+                <p class="text-gray-500 text-center font-medium">No experience yet.</p>
+                }
+            </div>
+            <form (ngSubmit)="onSubmit5()" class="flex flex-col mt-4">
+                <div class="w-full expand">
+                    <app-input [(model)]="form7.Position" label="Position" type="text" placeholder="Software Engineer"
+                        class="w-full">
+                    </app-input>
+                    <p *ngIf="positionError" class="text-red-500 md:text-sm text-xs font-medium mt-4">
+                        {{ positionError }}
+                    </p>
+                </div>
+                <div class="w-full expand mt-4">
+                    <label class="md:text-base text-sm text-gray-400 font-medium">Responsibilities</label>
+                    <textarea [(ngModel)]="form7.Responsible" name="responsible"
+                        placeholder="Software Testing, Code Review, Bug Fixing." rows="4"
+                        class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
+  </textarea>
+                    <p *ngIf="workingResponsibleError" class="text-red-500 md:text-sm text-xs font-medium mt-3">
+                        {{ workingResponsibleError }}
+                    </p>
+                </div>
+                <div class="w-full expand mt-2">
+                    <app-input [(model)]="form7.Company" label="Company" type="text" placeholder="Google Inc."
+                        class="w-full">
+                    </app-input>
+                    <p *ngIf="workingCompanyError" class="text-red-500 md:text-sm text-xs font-medium mt-4">
+                        {{ workingCompanyError }}
+                    </p>
+                </div>
+                <div class="flex md:flex-row flex-col gap-4 mt-4">
+                    <div class="w-full expand ">
+                        <app-input [(model)]="form7.StartDate" label="Start Date" type="date" class="w-full">
+                        </app-input>
+                    </div>
+                    <div class="w-full expand">
+                        <app-input [(model)]="form7.EndDate" label="Expected End Date" type="date" class="w-full">
+                        </app-input>
+                    </div>
+                </div>
+                <p *ngIf="workingDateError" class="text-red-500 md:text-sm text-xs font-medium mt-4 ">
+                    {{ workingDateError }}
+                </p>
+                <div class="flex justify-end mt-5">
+                    <app-button type="submit" [label]="isLoading5 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                    </app-button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Projects -->
+        <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
+            <h2 class="font-bold md:text-lg text-base text-black">Projects</h2>
+            <div class="flex flex-col gap-4 mt-6">
+                @if (project.length > 0) {
+                @for (pro of project; track pro.id) {
+                <div
+                    class="border-1 border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-purple-100 hover:border-purple-500 transition duration-300">
+                    <div class="flex justify-between items-start mb-2">
+                        <h3 class="font-bold md:text-base text-sm text-black">{{ pro.title }}</h3>
+                        <button (click)="deleteProject(pro.id)"
+                            class="text-red-500 md:text-sm text-xs font-bold hover:text-red-300 cursor-pointer">
+                            Delete
+                        </button>
+                    </div>
+                    <p class="text-black md:text-sm text-xs font-medium mb-2">
+                        {{ pro.type }}
+                    </p>
+                    <p class="text-gray-500 md:text-sm text-xs font-medium">
+                        {{ pro.startDate }} until
+                        {{ pro.endDate }}
+                    </p>
+                </div>
+                }
+                } @else {
+                <p class="text-gray-500 text-center font-medium">No project yet.</p>
+                }
+            </div>
+            <div class="flex flex-col">
+                <form (ngSubmit)="onSubmit6()" class="flex flex-col gap-4 mt-4">
+                    <app-input [(model)]="form8.Title" label="Title" type="text" placeholder="MyProfile" class="w-full">
+                    </app-input>
+                    <p *ngIf="projectTitleError" class="text-red-500 md:text-sm text-xs font-medium">
+                        {{ projectTitleError }}
+                    </p>
+                    <app-input [(model)]="form8.Type" label="Type" type="text" placeholder="Website Application"
+                        class="w-full">
+                    </app-input>
+                    <p *ngIf="projectTypeError" class="text-red-500 md:text-sm text-xs font-medium">
+                        {{ projectTypeError }}
+                    </p>
+                    <div class="w-full expand">
+                        <label class="md:text-base text-sm text-gray-400 font-medium">Features</label>
+                        <textarea [(ngModel)]="form8.Feature" name="feature"
+                            placeholder="Collect Real Data, Showcase Real Data to Public" rows="4"
+                            class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
+  </textarea>
+                        <p *ngIf="projectFeatureError" class="text-red-500 md:text-sm text-xs font-medium mt-3">
+                            {{ projectFeatureError }}
+                        </p>
+                    </div>
+                    <div class="flex md:flex-row flex-col gap-4">
+                        <div class="w-full expand ">
+                            <app-input [(model)]="form8.StartDate" label="Start Date" type="date" class="w-full">
+                            </app-input>
+                        </div>
+                        <div class="w-full expand">
+                            <app-input [(model)]="form8.EndDate" label="Expected End Date" type="date" class="w-full">
+                            </app-input>
+                        </div>
+                    </div>
+                    <p *ngIf="projectDateError" class="text-red-500 md:text-sm text-xs font-medium">
+                        {{ projectDateError }}
+                    </p>
+                    <div class="flex justify-end mt-1">
+                        <app-button type="submit" [label]="isLoading6 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                        </app-button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Achievements -->
+        <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
+            <h2 class="font-bold md:text-lg text-base text-black">Achievements</h2>
+            <div class="flex flex-col">
+                <div class="flex flex-col gap-4 mt-6">
+                    @if (achievement.length > 0) {
+                    @for (ach of achievement; track ach.id) {
+                    <div
+                        class="border-1 border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-purple-100 hover:border-purple-500 transition duration-300">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="font-bold md:text-base text-sm text-black">{{ ach.title }}</h3>
+                            <button (click)="deleteAchievement(ach.id)"
+                                class="text-red-500 md:text-sm text-xs font-bold hover:text-red-300 cursor-pointer">
+                                Delete
+                            </button>
+                        </div>
+                        <p class="text-black md:text-sm text-xs font-medium mb-2">
+                            {{ ach.type }}
+                        </p>
+                        <p class="text-gray-500 md:text-sm text-xs font-medium">
+                            {{ ach.date}}
+                        </p>
+                    </div>
+                    }
+                    } @else {
+                    <p class="text-gray-500 text-center font-medium">No achievement yet.</p>
+                    }
+                </div>
+                <form (ngSubmit)="onSubmit7()" class="flex flex-col gap-4 mt-4">
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex flex-col gap-1 font-medium w-full">
+                            <label class="md:text-base text-sm text-gray-400 font-medium">
+                                Type
+                            </label>
+                            <select [(ngModel)]="form9.Type" name="Type"
+                                class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white">
+                                <option value="Certificate">Certificate</option>
+                                <option value="Award">Award</option>
+                                <option value="Badge">Badge</option>
+                                <option value="License">License</option>
+                                <option value="coming-soon" disabled>Coming Soon ...</option>
+                            </select>
+                        </div>
+                        <div class="flex flex-col font-medium w-full">
+                            <app-input [(model)]="form9.Date" label="Date" type="date" class="w-full">
+                            </app-input>
+                        </div>
+                    </div>
+                    <p *ngIf="achiveDateError" class="text-red-500 md:text-sm text-xs font-medium">
+                        {{ achiveDateError }}
+                    </p>
+                    <app-input [(model)]="form9.Title" label="Title" type="text" placeholder="AWS Data Engineering"
+                        class="w-full">
+                    </app-input>
+                    <p *ngIf="titleError" class="text-red-500 md:text-sm text-xs font-medium">
+                        {{ titleError }}
+                    </p>
+                    <app-input [(model)]="form9.Link" label="Link" type="text"
+                        placeholder="https://aws.amazon.com/training/" class="w-full">
+                    </app-input>
+                    <p *ngIf="linkError" class="text-red-500 md:text-sm text-xs font-medium">
+                        {{ linkError }}
+                    </p>
+                    <div class="flex justify-end mt-1">
+                        <app-button type="submit" [label]="isLoading7 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                        </app-button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Additional Information -->
+        <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
+            <h2 class="font-bold md:text-lg text-base text-black">Additional Information</h2>
+            <div class="flex flex-col">
+                <form (ngSubmit)="onSubmit8()" class="flex flex-col gap-4 mt-4">
+                    <div class="w-full expand">
+                        <label class="md:text-base text-sm text-gray-400 font-medium">Hobbies</label>
+                        <textarea [(ngModel)]="form10.Hobby" name="hobby" placeholder="Play Badminton, Play Chess"
+                            rows="2"
+                            class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
+  </textarea>
+                        <p *ngIf="hobbyError" class="text-red-500 md:text-sm text-xs font-medium mt-3">
+                            {{ hobbyError }}
+                        </p>
+                    </div>
+                    <div class="w-full expand">
+                        <label class="md:text-base text-sm text-gray-400 font-medium">Skills</label>
+                        <textarea [(ngModel)]="form10.Skill" name="skill" placeholder="HTML, CSS, JavaScript, PHP"
+                            rows="2"
+                            class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
+  </textarea>
+                        <p *ngIf="skillError" class="text-red-500 md:text-sm text-xs font-medium mt-3">
+                            {{ skillError }}
+                        </p>
+                    </div>
+                    <div class="w-full expand">
+                        <label class="md:text-base text-sm text-gray-400 font-medium">Languages</label>
+                        <textarea [(ngModel)]="form10.Language" name="language" placeholder="English, Mandarin, Malay"
+                            rows="2"
+                            class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
+  </textarea>
+                        <p *ngIf="languageError" class="text-red-500 md:text-sm text-xs font-medium mt-3">
+                            {{ languageError }}
+                        </p>
+                    </div>
+                    <div class="flex justify-end mt-1">
+                        <app-button type="submit" [label]="isLoading8 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                        </app-button>
+                    </div>
+                </form>
+            </div>
         </div>
 
         <!-- Conclusion -->
@@ -216,7 +484,7 @@
                     <label class="md:text-base text-sm text-gray-400 font-medium">Message</label>
                     <textarea [(ngModel)]="form3.Conclusion" name="conclusion"
                         placeholder="Please send email to me if you have any questions." rows="4"
-                        class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium">
+                        class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
   </textarea>
                 </div>
                 <div class="flex justify-end mt-1">

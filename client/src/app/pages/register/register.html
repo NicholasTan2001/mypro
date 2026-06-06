@@ -47,6 +47,11 @@
                 <p *ngIf="ageError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ ageError }}
                 </p>
+                <app-input [(model)]="form.BirthDate" label="Date of Birth" type="date" class="w-full">
+                </app-input>
+                <p *ngIf="birthDateError" class="text-red-500 md:text-sm text-xs font-medium">
+                    {{ birthDateError }}
+                </p>
                 <app-input [(model)]="form.Email" label="Email" type="text" placeholder="Users_123@gmail.com ">
                 </app-input>
                 <p *ngIf=" emailError" class="text-red-500 md:text-sm text-xs font-medium">
