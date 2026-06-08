@@ -7,6 +7,7 @@ import { Myprofile } from './pages/myprofile/myprofile'
 import { Setting } from './pages/setting/setting';
 import { Search } from './pages/search/search';
 import { UserDetails } from './pages/userdetails/userdetails';
+import { Friend } from './pages/friend/friend';
 
 import { AuthGuardService, PublicGuardService } from './services/auth.guard';
 
@@ -29,6 +30,11 @@ export const routes: Routes = [
     {
         path: 'search',
         component: Search,
+        canActivate: [AuthGuardService]
+    },
+    {
+        path: 'friend',
+        component: Friend,
         canActivate: [AuthGuardService]
     },
     { path: 'user/:id', component: UserDetails, canActivate: [AuthGuardService] },

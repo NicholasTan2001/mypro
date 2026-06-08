@@ -323,9 +323,15 @@ export class Myprofile implements OnInit {
       const user = this.authService.getCurrentUser();
       if (user) {
         const response: any = await firstValueFrom(
-          this.http.get(`${API_CONFIG.usersEndpointBase}/achievement/${user.id}`)
+          this.http.get(
+            `${API_CONFIG.usersEndpointBase}/achievement/${user.id}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${this.authService.getToken()}`
+              }
+            }
+          )
         );
-
         if (response && response.achievements) {
           this.achievement = response.achievements.map((ach: any) => ({
             id: ach.id,

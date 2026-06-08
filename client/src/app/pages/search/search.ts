@@ -31,7 +31,9 @@ export class Search {
   isLoading2: boolean = false;
   isLoading3: boolean = false;
   permissionSuccess: boolean = false;
+  showExistFriendRequest: boolean = false;
   sentRequests: number[] = [];
+  friends: number[] = [];
 
   constructor(private http: HttpClient, private cd: ChangeDetectorRef, private router: Router, private authService: AuthService,
     private route: ActivatedRoute
@@ -67,6 +69,10 @@ export class Search {
         response.relationships.forEach((relationship: any) => {
           this.sentRequests.push(parseInt(relationship.permission));
         });
+
+        response.relationships.forEach((relationship: any) => {
+          this.friends.push(parseInt(relationship.friend));
+        });
       }
       this.cd.detectChanges();
     } catch (error: any) {
@@ -75,8 +81,13 @@ export class Search {
       this.cd.detectChanges();
     }
   }
-  isRequestSent(friendId: number): boolean {
-    return this.sentRequests.includes(friendId);
+
+  isRequestSent(permissionId: number): boolean {
+    return this.sentRequests.includes(permissionId);
+  }
+
+  isFriend(friendId: number): boolean {
+    return this.friends.includes(friendId);
   }
 
   async onSearch(searchTerm: string) {
@@ -130,6 +141,9 @@ export class Search {
 
   onCardClick(result: any) {
     this.isLoading3 = true;
+    if (this.isFriend(result.id)) {
+      this.viewUserDetail(result.id);
+    }
     if (result.status === 'Private') {
       this.shakingId = null;
       this.canShake = false;
@@ -185,18 +199,26 @@ export class Search {
         this.cd.detectChanges();
       }
     } catch (error: any) {
+      if (error.error?.message == "You already received a request from this user.") {
+        this.showExistFriendRequest = true;
+      }
       this.isLoading2 = false;
       this.cd.detectChanges();
     } finally {
       this.isLoading2 = false;
       this.cd.detectChanges();
     }
-
   }
 
   closePermissionSuccessModal() {
     this.permissionSuccess = false;
   }
+
+  closeExistFriendRequestModal() {
+    this.showExistFriendRequest = false;
+  }
+
+
 
 
 }

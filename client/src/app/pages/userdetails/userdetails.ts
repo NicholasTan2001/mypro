@@ -7,6 +7,7 @@ import { firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { API_CONFIG } from '../../config/api.config';
 import { QRCodeComponent } from 'angularx-qrcode';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-userdetails',
@@ -22,8 +23,10 @@ export class UserDetails implements OnInit {
   achievement: any[] = [];
   project: any[] = [];
   profileUrl = '';
+  friends: number[] = [];
 
   constructor(
+    private authService: AuthService,
     private route: ActivatedRoute,
     private http: HttpClient,
     private cd: ChangeDetectorRef,
@@ -36,6 +39,7 @@ export class UserDetails implements OnInit {
       this.loadExperience(userId);
       this.loadAchievement(userId);
       this.loadProject(userId);
+      this.loadRelationship(userId);
       this.profileUrl = `http://192.168.1.6:4200/user/${userId}`;
     }
   }
@@ -43,7 +47,11 @@ export class UserDetails implements OnInit {
   async loadUserDetail(userId: string) {
     try {
       const response: any = await firstValueFrom(
-        this.http.get(`${API_CONFIG.usersEndpointBase}/${userId}`)
+        this.http.get(`${API_CONFIG.usersEndpointBase}/${userId}`, {
+          headers: {
+            'Authorization': `Bearer ${this.authService.getToken()}`
+          }
+        })
       );
       if (response) {
         this.user = {
@@ -89,7 +97,13 @@ export class UserDetails implements OnInit {
   async loadExperience(userId: string) {
     try {
       const response: any = await firstValueFrom(
-        this.http.get(`${API_CONFIG.usersEndpointBase}/experience/${userId}`)
+        this.http.get(`${API_CONFIG.usersEndpointBase}/experience/${userId}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
       );
 
       if (response && response.experiences) {
@@ -113,7 +127,13 @@ export class UserDetails implements OnInit {
   async loadProject(userId: string) {
     try {
       const response: any = await firstValueFrom(
-        this.http.get(`${API_CONFIG.usersEndpointBase}/project/${userId}`)
+        this.http.get(`${API_CONFIG.usersEndpointBase}/project/${userId}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
       );
 
       if (response && response.projects) {
@@ -128,8 +148,8 @@ export class UserDetails implements OnInit {
       }
       this.cd.detectChanges();
     } catch (error: any) {
-      console.error('Failed to load experiences:', error);
-      this.achievement = [];
+      console.error('Failed to load Projects:', error);
+      this.project = [];
       this.cd.detectChanges();
     }
   }
@@ -137,7 +157,13 @@ export class UserDetails implements OnInit {
   async loadAchievement(userId: string) {
     try {
       const response: any = await firstValueFrom(
-        this.http.get(`${API_CONFIG.usersEndpointBase}/achievement/${userId}`)
+        this.http.get(`${API_CONFIG.usersEndpointBase}/achievement/${userId}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
       );
 
       if (response && response.achievements) {
@@ -151,10 +177,41 @@ export class UserDetails implements OnInit {
       }
       this.cd.detectChanges();
     } catch (error: any) {
-      console.error('Failed to load experiences:', error);
+      console.error('Failed to load Achievements:', error);
       this.achievement = [];
       this.cd.detectChanges();
     }
+  }
+
+  async loadRelationship(userId: string) {
+    try {
+      const response: any = await firstValueFrom(
+        this.http.get(`${API_CONFIG.usersEndpointBase}/relationship/${userId}`,
+          {
+            headers: {
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+
+      if (response && response.relationships) {
+        response.relationships.forEach((relationship: any) => {
+          this.friends.push(relationship.friend);
+        });
+      };
+      this.cd.detectChanges();
+      console.log(this.friends);
+
+    } catch (error: any) {
+      console.error('Failed to load Friends:', error);
+      this.friends = [];
+      this.cd.detectChanges();
+    }
+  }
+
+  isFriend(permissionId: number): boolean {
+    return this.friends.includes(permissionId);
   }
 
 

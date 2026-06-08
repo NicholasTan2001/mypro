@@ -597,6 +597,7 @@ MyProfile Team
     }
 
     [HttpGet("experience/{id}")]
+    [Authorize]
     public async Task<ActionResult> GetExperiences(int id)
     {
         var experiences = await _context.Experiences
@@ -691,6 +692,7 @@ MyProfile Team
     }
 
     [HttpGet("achievement/{id}")]
+    [Authorize]
     public async Task<ActionResult> GetAchievements(int id)
     {
         var achievements = await _context.Achievements
@@ -755,6 +757,7 @@ MyProfile Team
     }
 
     [HttpGet("project/{id}")]
+    [Authorize]
     public async Task<ActionResult> GetProjects(int id)
     {
         var projects = await _context.Projects
@@ -843,10 +846,16 @@ MyProfile Team
                 r.Permission == request.Permission);
         if (existingRelationship != null)
         {
-            return BadRequest(new
-            {
-                message = "Permission already exists for this user."
-            });
+            return BadRequest(new { message = "Permission already exists for this user." });
+        }
+        var incomingRequest = await _context.Relationships
+        .FirstOrDefaultAsync(r =>
+            r.UserId == request.Permission &&
+            r.Permission == user.Id);
+
+        if (incomingRequest != null)
+        {
+            return BadRequest(new { message = "You already received a request from this user." });
         }
         var relationship = new Relationship
         {
@@ -855,29 +864,162 @@ MyProfile Team
         };
         _context.Relationships.Add(relationship);
         await _context.SaveChangesAsync();
-
-        return Ok(new
-        {
-            message = "Permission added successfully."
-        });
+        return Ok(new { message = "Permission added successfully." });
     }
 
     [HttpGet("relationship/{id}")]
     [Authorize]
     public async Task<ActionResult> GetRelationships(int id)
     {
-        Console.WriteLine(id);
-
         var relationships = await _context.Relationships
-            .Where(r => r.UserId == id)
+            .Where(r => r.UserId == id || r.Friend == id)
             .Select(r => new
             {
                 r.Id,
-                r.Permission
+                r.Permission,
+                r.Friend
             })
             .ToListAsync();
 
         return Ok(new { relationships });
     }
+
+    [HttpGet("friend-request/{id}")]
+    [Authorize]
+    public async Task<ActionResult> GetFriendRequests(int id)
+    {
+        var relationshipsForUser = await _context.Relationships
+            .Where(r => r.Permission == id)
+            .ToListAsync();
+
+        var senderIds = relationshipsForUser
+            .Select(r => r.UserId)
+            .Distinct()
+            .ToList();
+
+        var friendRequests = await _context.Users
+            .Where(u => senderIds.Contains(u.Id))
+            .Select(u => new
+            {
+                id = _context.Relationships
+                    .Where(r => r.Permission == id && r.UserId == u.Id)
+                    .Select(r => r.Id)
+                    .FirstOrDefault(),
+                requesterName = u.Name,
+                requesterAge = u.Age,
+                requesterSex = u.Sex,
+                requesterCountry = u.Country,
+                requesterEmail = u.Email,
+            })
+            .OrderByDescending(r => r.id)
+            .ToListAsync();
+
+        return Ok(new { friendRequests });
+    }
+
+    [HttpPut("accept-friend-request")]
+    [Authorize]
+    public async Task<ActionResult> AcceptFriendRequest([FromBody] UpdateFriendRequest request)
+    {
+        Console.WriteLine(request.IdentityNumber);
+        var user = await _context.Users
+           .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        var friendRequest = await _context.Relationships
+            .FirstOrDefaultAsync(r => r.Id == request.RequestId);
+        if (friendRequest == null)
+        {
+            return NotFound(new { message = "Friend request not found." });
+        }
+        friendRequest.Friend = friendRequest.Permission;
+        friendRequest.Permission = null;
+        _context.Relationships.Update(friendRequest);
+
+        var reverseRelationship = new Relationship
+        {
+            UserId = user.Id,
+            Permission = null,
+            Friend = friendRequest.UserId
+        };
+        _context.Relationships.Add(reverseRelationship);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Friend request accepted." });
+    }
+
+    [HttpDelete("delete-friend-request/{id}")]
+    [Authorize]
+    public async Task<ActionResult> DeleteFriendRequest(int id)
+    {
+        var relationship = await _context.Relationships
+            .FirstOrDefaultAsync(r => r.Id == id);
+        if (relationship == null)
+        {
+            return NotFound(new { message = "Relationship not found." });
+        }
+        _context.Relationships.Remove(relationship);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Relationship deleted successfully." });
+    }
+
+    [HttpGet("friend/{id}")]
+    [Authorize]
+    public async Task<ActionResult> GetFriend(int id)
+    {
+        var relationshipsForUser = await _context.Relationships
+            .Where(r => r.UserId == id)
+            .ToListAsync();
+        var friendIds = relationshipsForUser
+            .Where(r => r.Friend != null)
+            .Select(r => r.Friend)
+            .Distinct()
+            .ToList();
+        var friends = await _context.Users
+            .Where(u => friendIds.Contains(u.Id))
+            .Select(u => new
+            {
+                id = _context.Relationships
+                    .Where(r => r.UserId == id && r.Friend == u.Id)
+                    .Select(r => r.Id)
+                    .FirstOrDefault(),
+                friendName = u.Name,
+                friendAge = u.Age,
+                friendSex = u.Sex,
+                friendCountry = u.Country,
+                friendEmail = u.Email,
+                friendId = u.Id,
+            })
+            .OrderByDescending(r => r.id)
+            .ToListAsync();
+        return Ok(new { friends });
+    }
+
+    [HttpDelete("delete-friend/{id}")]
+    [Authorize]
+    public async Task<ActionResult> DeleteFriend(int id)
+    {
+        var relationship = await _context.Relationships
+            .FirstOrDefaultAsync(r => r.Id == id);
+        if (relationship == null)
+        {
+            return NotFound(new { message = "Relationship not found." });
+        }
+        var oppositeUserId = relationship.Friend;
+        var oppositeFriend = relationship.UserId;
+        var relationship2 = await _context.Relationships
+            .FirstOrDefaultAsync(r => r.Friend == oppositeFriend && r.UserId == oppositeUserId);
+        if (relationship2 == null)
+        {
+            return NotFound(new { message = "Relationship2 not found." });
+        }
+        _context.Relationships.Remove(relationship);
+        _context.Relationships.Remove(relationship2);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Relationship deleted successfully." });
+    }
+
+
 
 }

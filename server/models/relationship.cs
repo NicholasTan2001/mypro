@@ -10,18 +10,16 @@ namespace MyProfile.Models
         [JsonPropertyName("Id")]
         public int Id { get; set; }
 
-        [Required]
         [JsonPropertyName("Friend")]
         public int? Friend { get; set; }
 
-        [Required]
         [JsonPropertyName("Permission")]
         public int? Permission { get; set; }
 
         [Required]
         [ForeignKey("User")]
         [JsonPropertyName("UserId")]
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
 
         public User? User { get; set; }
     }

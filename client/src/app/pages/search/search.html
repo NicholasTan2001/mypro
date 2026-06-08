@@ -78,17 +78,21 @@
                     class="flex rounded-lg text-white bg-gray-400 md:text-base text-sm font-medium mt-5 w-full justify-center items-center px-2 py-1">
                     Your Profile
                 </p>
-                } @else {
-                @if (isRequestSent(result.id)) {
+                }
+                @else if (isRequestSent(result.id)) {
                 <p
                     class="flex rounded-lg text-white bg-gray-400 md:text-base text-sm font-medium mt-5 w-full justify-center items-center px-2 py-1">
                     Request Sent
                 </p>
-                } @else {
+                }@else if (isFriend(result.id)) {
+                <p
+                    class="flex rounded-lg text-white bg-gray-400 md:text-base text-sm font-medium mt-5 w-full justify-center items-center px-2 py-1">
+                    Your Friend
+                </p>
+                }@else{
                 <app-button [label]="isLoading2 ? 'Loading...' : 'Add Friend'" (click)="onPermissionClick(result)"
                     size="sm" class="flex flex-col mt-5 w-full">
                 </app-button>
-                }
                 }
                 <app-button [label]="isLoading3 ? 'Loading...' : 'View Profile'" (click)="onCardClick(result)" size="sm"
                     class="flex flex-col mt-5 w-full">
@@ -124,6 +128,21 @@
                         Friend request is successfully sent.
                     </p>
                     <app-button label="Okay" (click)="closePermissionSuccessModal()" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Exist Friend Request Modal -->
+        <div *ngIf="showExistFriendRequest">
+            <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
+                <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
+                    <div class="mb-4 md:text-4xl text-3xl text-red-500 font-bold">✗</div>
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Failed to Send Request!
+                    </h2>
+                    <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
+                        You already have this user friend request. Check your friend request now.
+                    </p>
+                    <app-button label="Yes, I will" (click)="closeExistFriendRequestModal()" />
                 </div>
             </div>
         </div>
