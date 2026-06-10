@@ -240,7 +240,10 @@
                 </div>
                 }
                 } @else {
-                <p class="text-gray-500 text-center font-medium">No experience yet.</p>
+                <div class="flex flex-col justify-center items-center">
+                    <img src="noworkingexperiences.png" alt="No Working Experiences Found" class="md:w-35 w-25">
+                    <p class="font-medium md:text-base text-sm text-black">No Woking Experience.</p>
+                </div>
                 }
             </div>
             <form (ngSubmit)="onSubmit5()" class="flex flex-col mt-4">
@@ -315,7 +318,10 @@
                 </div>
                 }
                 } @else {
-                <p class="text-gray-500 text-center font-medium">No project yet.</p>
+                <div class="flex flex-col justify-center items-center">
+                    <img src="noproject.jpg" alt="No Achievement Found" class="md:w-35 w-25">
+                    <p class="font-medium md:text-base text-sm text-black">No Project.</p>
+                </div>
                 }
             </div>
             <div class="flex flex-col">
@@ -387,7 +393,10 @@
                     </div>
                     }
                     } @else {
-                    <p class="text-gray-500 text-center font-medium">No achievement yet.</p>
+                    <div class="flex flex-col justify-center items-center">
+                        <img src="noachievement.png" alt="No Achievement Found" class="md:w-35 w-25">
+                        <p class="font-medium md:text-base text-sm text-black">No Achievement.</p>
+                    </div>
                     }
                 </div>
                 <form (ngSubmit)="onSubmit7()" class="flex flex-col gap-4 mt-4">

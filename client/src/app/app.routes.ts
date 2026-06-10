@@ -8,8 +8,10 @@ import { Setting } from './pages/setting/setting';
 import { Search } from './pages/search/search';
 import { UserDetails } from './pages/userdetails/userdetails';
 import { Friend } from './pages/friend/friend';
+import { Verify } from './pages/verify/verify';
 
 import { AuthGuardService, PublicGuardService } from './services/auth.guard';
+import { VerifyGuard } from './services/verify.guard';
 
 export const routes: Routes = [
     { path: '', redirectTo: 'home', pathMatch: 'full' },
@@ -20,24 +22,29 @@ export const routes: Routes = [
     {
         path: 'myprofile',
         component: Myprofile,
-        canActivate: [AuthGuardService]
+        canActivate: [AuthGuardService, VerifyGuard]
     },
     {
         path: 'setting',
         component: Setting,
-        canActivate: [AuthGuardService]
+        canActivate: [AuthGuardService, VerifyGuard]
     },
     {
         path: 'search',
         component: Search,
-        canActivate: [AuthGuardService]
+        canActivate: [AuthGuardService, VerifyGuard]
     },
     {
         path: 'friend',
         component: Friend,
+        canActivate: [AuthGuardService, VerifyGuard]
+    },
+    {
+        path: 'verify',
+        component: Verify,
         canActivate: [AuthGuardService]
     },
-    { path: 'user/:id', component: UserDetails, canActivate: [AuthGuardService] },
+    { path: 'user/:id', component: UserDetails, canActivate: [AuthGuardService, VerifyGuard] },
 
     { path: '**', redirectTo: 'login' },
 ];

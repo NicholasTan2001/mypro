@@ -17,6 +17,19 @@
             </h1>
         </div>
 
+        <!-- Second Verification -->
+        <div reveal class="setting-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
+            <h2 class="font-bold md:text-lg text-base text-black">OTP Verification</h2>
+            <p class="text-black font-medium md:text-base text-sm mt-4 leading-relaxed text-justify">You can manage your
+                two-factor authentication settings here. When enabled, you will be required to complete OTP verification
+                before successfully logging in. When disabled, you can log in using only your identity number and
+                password without OTP verification. </p>
+            <div class="flex mt-4 justify-end">
+                <app-toggle-switch [isActive]="isVerify" (toggled)="onToggleVerifyMode($event)">
+                </app-toggle-switch>
+            </div>
+        </div>
+
         <!-- Private Profile Visibility -->
         <div reveal class="setting-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
             <h2 class="font-bold md:text-lg text-base text-black">Private Profile Visibility</h2>

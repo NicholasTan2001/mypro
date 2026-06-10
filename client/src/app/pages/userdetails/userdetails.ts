@@ -18,6 +18,8 @@ import { AuthService } from '../../services/auth.service';
 })
 
 export class UserDetails implements OnInit {
+
+  id: any = null;
   user: any = null;
   experience: any[] = [];
   achievement: any[] = [];
@@ -41,6 +43,10 @@ export class UserDetails implements OnInit {
       this.loadProject(userId);
       this.loadRelationship(userId);
       this.profileUrl = `http://192.168.1.6:4200/user/${userId}`;
+    }
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      this.id = user.id;
     }
   }
 
@@ -135,7 +141,6 @@ export class UserDetails implements OnInit {
           }
         )
       );
-
       if (response && response.projects) {
         this.project = response.projects.map((pro: any) => ({
           id: pro.id,
@@ -165,7 +170,6 @@ export class UserDetails implements OnInit {
           }
         )
       );
-
       if (response && response.achievements) {
         this.achievement = response.achievements.map((ach: any) => ({
           id: ach.id,
@@ -194,15 +198,12 @@ export class UserDetails implements OnInit {
           }
         )
       );
-
       if (response && response.relationships) {
         response.relationships.forEach((relationship: any) => {
           this.friends.push(relationship.friend);
         });
       };
       this.cd.detectChanges();
-      console.log(this.friends);
-
     } catch (error: any) {
       console.error('Failed to load Friends:', error);
       this.friends = [];
@@ -213,6 +214,5 @@ export class UserDetails implements OnInit {
   isFriend(permissionId: number): boolean {
     return this.friends.includes(permissionId);
   }
-
 
 }

@@ -21,6 +21,9 @@ public class AppDbContext : DbContext
 
     public DbSet<Relationship> Relationships { get; set; }
 
+    public DbSet<Verification> Verifications { get; set; }
+
+
 
 
 }

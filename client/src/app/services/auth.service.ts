@@ -16,6 +16,8 @@ interface LoginResponse {
     phoneNumber: string;
     address: string;
     sex: string;
+    status: string;
+    verify: string;
   };
 }
 

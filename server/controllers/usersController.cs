@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Text;
 using MyProfile.Models;
 using BCrypt.Net;
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
 
 [Route("api/users")]
@@ -42,6 +43,7 @@ public class UsersController : ControllerBase
         }
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
         user.Status = "Public";
+        user.Verify = "No";
         user.Additional = new Additional
         {
             Intro = "",
@@ -90,6 +92,22 @@ public class UsersController : ControllerBase
         {
             return Unauthorized(new { message = "Invalid credentials" });
         }
+        if (user.Verify == "Yes")
+        {
+            var existingVerification = await _context.Verifications
+                .FirstOrDefaultAsync(v => v.UserId == user.Id);
+
+            if (existingVerification == null)
+            {
+                var verification = new Verification
+                {
+                    UserId = user.Id,
+                    Password = null
+                };
+                _context.Verifications.Add(verification);
+                await _context.SaveChangesAsync();
+            }
+        }
         var token = GenerateJwtToken(user);
         return Ok(new
         {
@@ -106,6 +124,7 @@ public class UsersController : ControllerBase
                 user.Address,
                 user.Sex,
                 user.Status,
+                user.Verify,
                 user.BirthDate
             }
         });
@@ -340,6 +359,7 @@ MyProfile Team
             user.Address,
             user.Status,
             user.BirthDate,
+            user.Verify,
             intro = user.Additional!.Intro ?? "",
             conclusion = user.Additional!.Conclusion ?? "",
             hobby = user.Additional!.Hobby ?? "",
@@ -439,6 +459,33 @@ MyProfile Team
         return Ok(new
         {
             status = user.Status
+        });
+    }
+
+    [HttpPut("update-verify")]
+    [Authorize]
+    public async Task<ActionResult> UpdateVerify([FromBody] UpdateVerifyRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+
+        if (request.Verify != "No" && request.Verify != "Yes")
+        {
+            return BadRequest(new { message = "Invalid status. Use 'Public' or 'Private'." });
+        }
+
+        user.Verify = request.Verify;
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            verify = user.Verify
         });
     }
 
@@ -1018,6 +1065,125 @@ MyProfile Team
         _context.Relationships.Remove(relationship2);
         await _context.SaveChangesAsync();
         return Ok(new { message = "Relationship deleted successfully." });
+    }
+
+    public string Generate6DigitCode()
+    {
+        return RandomNumberGenerator.GetInt32(100000, 1000000).ToString();
+    }
+
+    [HttpGet("check-verification/{id}")]
+    [Authorize]
+    public async Task<ActionResult> GetVerification(int id)
+    {
+        var verification = await _context.Verifications
+            .FirstOrDefaultAsync(a => a.UserId == id);
+        if (verification == null)
+        {
+            return Ok(new
+            {
+                verify = "No",
+            });
+        }
+
+        return Ok(new
+        {
+            verify = "Yes",
+
+        });
+    }
+
+    [HttpDelete("delete-verification/{id}")]
+    [Authorize]
+    public async Task<ActionResult> DeleteVerification(int id)
+    {
+        var verification = await _context.Verifications
+            .FirstOrDefaultAsync(u => u.Id == id);
+
+        if (verification == null)
+        {
+            return Unauthorized(new { message = "Verification not found." });
+        }
+        _context.Verifications.Remove(verification);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Verification deleted successfully." });
+    }
+
+    [HttpGet("verification/{id}")]
+    [Authorize]
+    public async Task<ActionResult> GetVerificationChecking(int id)
+    {
+        var verification = await _context.Verifications
+            .FirstOrDefaultAsync(a => a.UserId == id);
+        var otp = Generate6DigitCode();
+        if (verification == null)
+        {
+            return Ok(new
+            {
+                verify = "No",
+            });
+        }
+        verification.Password = otp;
+        verification.CreatedAt = DateTime.UtcNow;
+        verification.ExpiredAt = DateTime.UtcNow.AddSeconds(60);
+        await _context.SaveChangesAsync();
+        var user = await _context.Users
+    .FirstOrDefaultAsync(u => u.Id == verification.UserId);
+
+        if (user == null)
+        {
+            return BadRequest(new { message = "Identity number not found." });
+        }
+
+        await SendSecondVerification(user, otp);
+        return Ok(new
+        {
+            verify = "Yes",
+            password = otp,
+            id = verification.Id,
+            createdAt = verification.CreatedAt,
+            expiredAt = verification.ExpiredAt
+        });
+    }
+
+    private async Task SendSecondVerification(User user, string otp)
+    {
+        try
+        {
+            using (var client = new System.Net.Mail.SmtpClient("smtp.gmail.com"))
+            {
+                client.Port = 587;
+                client.Credentials = new System.Net.NetworkCredential("nicholastankaejer2001@gmail.com", "tefk njkh merf nwik");
+                client.EnableSsl = true;
+                var mailMessage = new System.Net.Mail.MailMessage();
+                mailMessage.From = new System.Net.Mail.MailAddress(
+                    "nicholastankaejer2001@gmail.com",
+                    "MyProfile Developer"
+                );
+                mailMessage.To.Add(user.Email ?? "");
+                mailMessage.Subject = "MyProfile - Second Verification";
+                mailMessage.Body = $@"
+Dear {user.Name},
+
+Second Verification has been enabled for your account. Please find your OTP Password below and keep it confidential.
+
+        Current OTP Password: {otp}
+
+This OTP is valid for 60 seconds only. Please use it before it expires.
+
+If you did not request this verification, you may safely ignore this email.
+
+Best regards,
+MyProfile Team
+            ";
+                mailMessage.IsBodyHtml = false;
+                await client.SendMailAsync(mailMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Email sending failed: {ex.Message}");
+        }
     }
 
 

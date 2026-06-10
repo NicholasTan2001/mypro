@@ -141,7 +141,7 @@ export class Search {
 
   onCardClick(result: any) {
     this.isLoading3 = true;
-    if (this.isFriend(result.id)) {
+    if (this.isFriend(result.id) || result.id == this.id) {
       this.viewUserDetail(result.id);
     }
     if (result.status === 'Private') {

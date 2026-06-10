@@ -36,6 +36,7 @@ export class Setting implements OnInit {
   deleteSuccess: boolean = false;
   identityNumber: string = "";
   status: string = "";
+  verify: string = "";
   isLoading: boolean = false;
   isLoading2: boolean = false;
   passwordError: string = "";
@@ -44,6 +45,7 @@ export class Setting implements OnInit {
   confirmNewPasswordError: string = "";
   updatePasswordSuccess: boolean = false;
   isPrivate: boolean = false;
+  isVerify: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -75,6 +77,8 @@ export class Setting implements OnInit {
         if (response) {
           this.status = response.status;
           this.isPrivate = this.status === 'Private';
+          this.verify = response.verify;
+          this.isVerify = this.verify === 'Yes';
         }
       }
       this.cd.detectChanges();
@@ -236,6 +240,43 @@ export class Setting implements OnInit {
       this.cd.detectChanges();
     } finally {
       this.isPrivate = newStatus == 'Private';
+      this.cd.detectChanges();
+    }
+  }
+
+  async onToggleVerifyMode(value: boolean) {
+    this.isVerify = value;
+    this.verify = value ? 'Yes' : 'No';
+    await this.updateVerify(this.verify);
+  }
+
+  async updateVerify(newVerify: string) {
+    try {
+      const response: any = await firstValueFrom(
+        this.http.put(
+          `${API_CONFIG.usersEndpointBase}/update-verify`,
+          {
+            identityNumber: this.identityNumber,
+            verify: newVerify
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response) {
+        this.loadUser();
+        this.isVerify = response.Verify == 'Yes';
+        this.cd.detectChanges();
+      }
+    } catch (error: any) {
+      this.isPrivate = newVerify == 'Yes';
+      this.cd.detectChanges();
+    } finally {
+      this.isPrivate = newVerify == 'Yes';
       this.cd.detectChanges();
     }
   }

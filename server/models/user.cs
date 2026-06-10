@@ -39,6 +39,9 @@ namespace MyProfile.Models
         [JsonPropertyName("Status")]
         public string? Status { get; set; }
 
+        [JsonPropertyName("Verify")]
+        public string? Verify { get; set; }
+
         public Additional? Additional { get; set; }
 
         public Student? Student { get; set; }
@@ -50,5 +53,8 @@ namespace MyProfile.Models
         public Achievement? Achievement { get; set; }
 
         public Relationship? Relationship { get; set; }
+
+        public Verification? Verification { get; set; }
+
     }
 }
