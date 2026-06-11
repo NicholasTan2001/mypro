@@ -8,10 +8,13 @@ import { ChangeDetectorRef } from '@angular/core';
 import { API_CONFIG } from '../../config/api.config';
 import { QRCodeComponent } from 'angularx-qrcode';
 import { AuthService } from '../../services/auth.service';
+import { Button } from '../../component/button/button';
+import { FormsModule } from '@angular/forms';
+
 
 @Component({
   selector: 'app-userdetails',
-  imports: [CommonModule, Reveal, QRCodeComponent],
+  imports: [CommonModule, Reveal, QRCodeComponent, Button, FormsModule],
   standalone: true,
   templateUrl: './userdetails.html',
   styleUrl: './userdetails.css'
@@ -20,12 +23,23 @@ import { AuthService } from '../../services/auth.service';
 export class UserDetails implements OnInit {
 
   id: any = null;
+  name: any = null;
+  identityNumber: any = null;
+  email: any = null;
   user: any = null;
   experience: any[] = [];
   achievement: any[] = [];
   project: any[] = [];
   profileUrl = '';
   friends: number[] = [];
+  userId: any = null;
+  isLoading: boolean = false;
+  reportError: string = '';
+  reportSuccess: boolean = false;
+
+  form = {
+    Report: '',
+  }
 
   constructor(
     private authService: AuthService,
@@ -35,6 +49,13 @@ export class UserDetails implements OnInit {
   ) { }
 
   ngOnInit() {
+    const user = this.authService.getCurrentUser();
+    if (user) {
+      this.id = user.id;
+      this.name = user.name;
+      this.email = user.email;
+      this.identityNumber = user.identityNumber;
+    }
     const userId = this.route.snapshot.paramMap.get('id');
     if (userId) {
       this.loadUserDetail(userId);
@@ -42,11 +63,8 @@ export class UserDetails implements OnInit {
       this.loadAchievement(userId);
       this.loadProject(userId);
       this.loadRelationship(userId);
+      this.userId = userId;
       this.profileUrl = `http://192.168.1.6:4200/user/${userId}`;
-    }
-    const user = this.authService.getCurrentUser();
-    if (user) {
-      this.id = user.id;
     }
   }
 
@@ -213,6 +231,55 @@ export class UserDetails implements OnInit {
 
   isFriend(permissionId: number): boolean {
     return this.friends.includes(permissionId);
+  }
+
+  async onSubmit() {
+    this.isLoading = true;
+    this.reportError = '';
+
+    if (!this.form.Report) {
+      this.reportError = "Report message is required."
+      this.isLoading = false;
+      this.cd.detectChanges();
+      return;
+    }
+    try {
+      const response: any = await firstValueFrom(
+        this.http.post(`${API_CONFIG.usersEndpointBase}/report`,
+          {
+            reportThisId: this.userId,
+            email: this.email,
+            identityNumber: this.identityNumber,
+            name: this.name,
+            report: this.form.Report
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response) {
+        this.isLoading = false;
+        this.reportSuccess = true;
+        this.form.Report = '';
+        this.cd.detectChanges();
+      };
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Failed to load Friends:', error);
+      this.isLoading = false;
+      this.cd.detectChanges();
+    } finally {
+      this.isLoading = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  closeReportSuccessModal() {
+    this.reportSuccess = false;
   }
 
 }

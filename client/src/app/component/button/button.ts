@@ -11,6 +11,7 @@ export class Button {
   @Input() label: string = 'Button';
   @Input() variant: 'primary' | 'outline' | 'danger' = 'primary';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
+  @Input() href?: string;
   @Output() onClick = new EventEmitter<MouseEvent>();
 
   get classes(): string {

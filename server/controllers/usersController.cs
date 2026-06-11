@@ -1161,11 +1161,11 @@ MyProfile Team
                     "MyProfile Developer"
                 );
                 mailMessage.To.Add(user.Email ?? "");
-                mailMessage.Subject = "MyProfile - Second Verification";
+                mailMessage.Subject = "MyProfile - OTP Verification";
                 mailMessage.Body = $@"
 Dear {user.Name},
 
-Second Verification has been enabled for your account. Please find your OTP Password below and keep it confidential.
+OTP Verification has been enabled for your account. Please find your OTP Password below and keep it confidential.
 
         Current OTP Password: {otp}
 
@@ -1185,6 +1185,81 @@ MyProfile Team
             Console.WriteLine($"Email sending failed: {ex.Message}");
         }
     }
+
+    [HttpPost("report")]
+    [Authorize]
+    public async Task<ActionResult> SendReport([FromBody] SendReportRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.ReportThisId);
+
+        if (user == null)
+        {
+            return NotFound(new { message = "User not found." });
+        }
+
+        try
+        {
+            await SendReportEmail(request.Email ?? "", request.Name ?? "", request.IdentityNumber ?? "", user.Email ?? "", user.Name ?? "", user.IdentityNumber ?? "", request.Report ?? "");
+
+            return Ok(new { message = "Report sent successfully." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = "Failed to send report: " + ex.Message });
+        }
+    }
+
+    private async Task SendReportEmail(string reporterEmail, string reporterName, string reporterIdentity, string reportedUserEmail, string reportedUserName, string reportedUserIdentity, string reportMessage)
+    {
+        try
+        {
+            using (var client = new System.Net.Mail.SmtpClient("smtp.gmail.com"))
+            {
+                client.Port = 587;
+                client.Credentials = new System.Net.NetworkCredential("nicholastankaejer2001@gmail.com", "tefk njkh merf nwik");
+                client.EnableSsl = true;
+
+                var mailMessage = new System.Net.Mail.MailMessage();
+                mailMessage.From = new System.Net.Mail.MailAddress(
+                    "nicholastankaejer2001@gmail.com",
+                    "MyProfile System"
+                );
+
+                mailMessage.To.Add("nicholastankaejer2001@gmail.com");
+                mailMessage.Subject = $"MyProfile Report - {reportedUserName}";
+
+                mailMessage.Body = $@"
+New Report Submitted
+
+Reporter Details:
+Name: {reporterName}
+Identity Number: {reporterIdentity}
+Email: {reporterEmail}
+
+Reported User:
+Name: {reportedUserName}
+Identity Number {reportedUserIdentity}
+Email: {reportedUserEmail}
+
+Report Message:
+{reportMessage}
+
+---
+Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
+            ";
+
+                mailMessage.IsBodyHtml = false;
+                await client.SendMailAsync(mailMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Email sending failed: {ex.Message}");
+            throw;
+        }
+    }
+
 
 
 
