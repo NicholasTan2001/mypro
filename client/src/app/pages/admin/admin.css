@@ -1,0 +1,54 @@
+/* h1 Color */
+h1 {
+    color: white;
+}
+
+/* Admin Card */
+.admin-card {
+    box-shadow: 0 0 40px rgba(227, 224, 224, 0.8),
+        0 0 60px rgba(20, 20, 20, 0.95);
+}
+
+/* Result Card */
+.result-card {
+    transition: all 0.5s ease-in-out;
+    cursor: pointer;
+}
+
+.result-card:hover {
+    transform: scale(1.05);
+    background: #ecd8f8f6;
+}
+
+.result-card:hover .show-section {
+    max-height: 200px;
+    opacity: 1;
+}
+
+.show-section {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease-in-out, opacity 0.5s ease-in-out;
+    opacity: 0;
+}
+
+/* Shake animation */
+@keyframes shake {
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-10px);
+    }
+
+    75% {
+        transform: translateX(10px);
+    }
+}
+
+.shake {
+    animation: shake 0.2s ease-in-out 3 !important;
+}

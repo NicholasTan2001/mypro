@@ -12,7 +12,7 @@
         </div>
 
         <!-- Desktop Navigation -->
-        <div class="hidden lg:flex items-center gap-6">
+        <div class="hidden xl:flex items-center gap-6">
             <a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
                 class="relative group font-medium px-3 py-2 transition duration-300 hover:text-purple-300">
                 Home
@@ -51,6 +51,14 @@
                     class="absolute left-0 -bottom-1 w-0 h-[2px] bg-red-300 transition-all duration-300 group-hover:w-full"></span>
             </a>
             }
+            @if (isUser && isAdmin){
+            <a routerLink="/admin" routerLinkActive="active-link-2"
+                class="relative group font-medium px-3 py-2 transition duration-300 hover:text-red-300">
+                Admin
+                <span
+                    class="absolute left-0 -bottom-1 w-0 h-[2px] bg-red-300 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            }
         </div>
     </div>
 
@@ -65,14 +73,14 @@
         }
 
         <!-- Hamburger Icon -->
-        <button class="lg:hidden text-2xl cursor-pointer transition-transform duration-300" [class.rotate-90]="menuOpen"
+        <button class="xl:hidden text-2xl cursor-pointer transition-transform duration-300" [class.rotate-90]="menuOpen"
             (click)="toggleMenu()">
             {{ menuOpen ? '✕' : '☰' }}
         </button>
     </div>
 
     <!-- Mobile Navigation -->
-    <div class="mobile-menu absolute top-full left-0 w-full bg-black border-purple-900 flex flex-col lg:hidden"
+    <div class="mobile-menu absolute top-full left-0 w-full bg-black border-purple-900 flex flex-col xl:hidden"
         [class.open]="menuOpen">
         <a routerLink="/home" (click)="closeMenu()" routerLinkActive="mobile-active-link"
             [routerLinkActiveOptions]="{ exact: true }"
@@ -99,6 +107,12 @@
         <a routerLink="/setting" (click)="closeMenu()" routerLinkActive="mobile-active-link-2"
             class="px-6 py-3 font-medium hover:bg-red-400 hover:text-white hover:px-12 transition duration-300">
             Settings
+        </a>
+        }
+        @if (isUser && isAdmin){
+        <a routerLink="/admin" (click)="closeMenu()" routerLinkActive="mobile-active-link-2"
+            class="px-6 py-3 font-medium hover:bg-red-400 hover:text-white hover:px-12 transition duration-300">
+            Admin
         </a>
         }
     </div>

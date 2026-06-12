@@ -42,6 +42,12 @@ namespace MyProfile.Models
         [JsonPropertyName("Verify")]
         public string? Verify { get; set; }
 
+        [JsonPropertyName("Block")]
+        public string? Block { get; set; }
+
+        [JsonPropertyName("Admin")]
+        public string? Admin { get; set; }
+
         public Additional? Additional { get; set; }
 
         public Student? Student { get; set; }

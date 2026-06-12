@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+</head>
+
+<body>
+
+    <!-- Admin Page Title -->
+    <div class=" flex flex-col items-center justify-center">
+        <h1 reveal class="font-bold md:text-2xl text-xl mb-12"><span class="text-purple-600">{{ form.Name
+                }}</span> Admin
+        </h1>
+
+        <!-- Admin Search -->
+        <div reveal class="flex flex-col md:w-3/5 w-full mb-12">
+            <div class="flex flex-row items-center gap-2 justify-center">
+                <app-searchbar placeholder="Search user by name..." (onSearchClick)="onSearch($event)"
+                    class="w-full font-medium">
+                </app-searchbar>
+                @if (isLoading) {
+                <div class="flex items-center">
+                    <div class="animate-spin rounded-full h-6 w-6 border-4 border-purple-600 border-t-transparent">
+                    </div>
+                </div>
+                }
+            </div>
+            <div reveal class="flex flex-col ml-5">
+                <p *ngIf="searchError"
+                    class="flex justify-left text-red-500 md:text-sm text-xs font-medium mt-2 md:w-3/5">
+                    {{ searchError }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Search Results -->
+        @if (resultSuccess && searchResults.length > 0) {
+        @for (result of searchResults; track result.id) {
+        <div reveal [class.shake]="shakingId === result.id && canShake"
+            class="admin-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12 result-card">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-end">
+                <h2 class="font-bold md:text-lg text-base text-black">
+                    <span class="text-purple-500">{{result.name}}</span>'s Profile
+                </h2>
+                @if (result.status == "Private") {
+                <p class="text-red-500 md:text-lg text-base font-bold">
+                    🔒 {{result.status}}
+                </p>
+                } @else {
+                <p class="text-green-500 md:text-lg text-base font-bold">
+                    🌍 {{result.status}}
+                </p>
+                }
+            </div>
+            @if (result.intro) {
+            <div class="show-section">
+                <p class="text-black md:text-base text-sm font-bold mt-3">
+                    Bio: <span class="text-purple-500">{{ result.intro }}</span>
+                </p>
+            </div>
+            }
+            <div class="mt-4 flex flex-col gap-1">
+                <p class="text-black md:text-base text-sm font-bold">Age: <span
+                        class="text-purple-500">{{result.age}}</span></p>
+                <p class="text-black md:text-base text-sm font-bold">Sex: <span
+                        class="text-purple-500">{{result.sex}}</span></p>
+                <p class="text-black md:text-base text-sm font-bold">Email: <span
+                        class="text-purple-500">{{result.email}}</span></p>
+                <p class="text-black md:text-base text-sm font-bold">Country: <span
+                        class="text-purple-500">{{result.country}}</span></p>
+            </div>
+            <div class="show-section flex justify-center gap-6">
+                @if (result.admin=="Yes"){
+                <p
+                    class="flex rounded-lg justify-center items-center text-white bg-gray-400 md:text-base text-sm font-medium md:px-5 px-2 py-1 w-full mt-5 ">
+                    Admin
+                </p>
+                } @else{
+                <app-button [label]="isLoading2 ? 'Loading...' : 'Add Admin'" size="sm" (click)="addAdmin(result)"
+                    class=" flex flex-col mt-5 w-full">
+                </app-button>
+                }
+                @if (result.id == form.Id){
+                <p
+                    class="flex rounded-lg justify-center items-center text-white bg-gray-400 md:text-base text-sm font-medium md:px-5 px-2 py-1 w-full mt-5 ">
+                    Can't Block
+                </p>
+                }@else if (result.block=="Yes"){
+                <app-button [label]="isLoading5 ? 'Loading...' : 'Unblock'" size="sm" (click)="unblockUser(result)"
+                    class=" flex flex-col mt-5 w-full">
+                </app-button>
+                } @else if (result.block=="No"){
+                <app-button [label]="isLoading5 ? 'Loading...' : 'Block'" size="sm" (click)="blockUser(result)"
+                    class=" flex flex-col mt-5 w-full">
+                </app-button>
+                }
+                <app-button [label]="isLoading3 ? 'Loading...' : 'View Profile'" (click)="onCardClick(result)" size="sm"
+                    class="flex flex-col mt-5 w-full">
+                </app-button>
+            </div>
+        </div>
+        }
+        }
+
+        <!-- No Results -->
+        @if (noResult){
+        <div reveal class="search-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
+            <div class="flex flex-col items-center justify-center p-8">
+                <img src="notfound.jpg" alt="No Related User Found" class="md:w-50 w-25 mb-6">
+                <p class="font-medium md:text-lg text-base text-black mb-6">No User Found.</p>
+                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">Sorry, we couldn't find any
+                    user
+                    that you're
+                    looking for.
+                </p>
+            </div>
+        </div>
+        }
+
+        <!-- Admins -->
+        <div reveal class="admin-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
+            <h2 class="font-bold md:text-lg text-base text-black mb-6">Admins</h2>
+            @if (admins.length > 0) {
+            <div class="flex flex-col gap-4">
+                @for (ad of admins; track ad.id) {
+                <div class="rounded-lg p-4 bg-purple-100">
+                    <p class="font-bold text-purple-500 md:text-lg text-base mb-4">
+                        {{ ad.name }}<span class="text-black"></span>
+                    </p>
+                    <p class="text-black md:text-base text-sm font-bold">Age: <span class="text-purple-500">
+                            {{ ad.age }}</span>
+                    </p>
+                    <p class="text-black md:text-base text-sm font-bold">Sex: <span class="text-purple-500">
+                            {{ ad.sex }}</span>
+                    </p>
+                    <p class="text-black md:text-base text-sm font-bold">Email: <span class="text-purple-500">
+                            {{ ad.email }}</span>
+                    </p>
+                    <p class="text-black md:text-base text-sm font-bold">Country: <span class="text-purple-500">
+                            {{ ad.country }}</span>
+                    </p>
+                    <div class="flex justify-end mt-4">
+                        @if (ad.id == form.Id){
+                        <p
+                            class="flex rounded-lg items-center text-white bg-gray-400 md:text-base text-sm font-medium md:px-5 px-3 py-2">
+                            Can't Remove
+                        </p>
+                        } @else{
+                        <app-button [label]="isLoading4 ? 'Loading...' : 'Remove'" (click)="deleteAdmin(ad.id)"
+                            variant="danger" class="flex justify-end">
+                        </app-button>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+            } @else {
+            <div class="flex flex-col items-center justify-center p-8">
+                <img src="nofriend.jpg" alt="No Friend Found" class="md:w-50 w-25 mb-6">
+                <p class="font-medium md:text-lg text-base text-black mb-6">No Admin Found.</p>
+                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">Sorry, we couldn't find any
+                    admin
+                    that you're
+                    looking for.
+                </p>
+            </div>
+            }
+        </div>
+
+        <!-- Successfully Add New Admin Modal -->
+        <div *ngIf="addAdminSuccess">
+            <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
+                <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
+                    <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Added!
+                    </h2>
+                    <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
+                        New admin is added.
+                    </p>
+                    <app-button label="Thanks" (click)="closeAddAdminSuccessModal()" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Successfully Delete Admin Modal -->
+        <div *ngIf="deleteAdminSuccess">
+            <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
+                <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
+                    <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Removed!
+                    </h2>
+                    <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
+                        This admin is removed.
+                    </p>
+                    <app-button label="Thanks" (click)="closeDeleteAdminModal()" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Successfully Block User Modal -->
+        <div *ngIf="blockUserSuccess">
+            <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
+                <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
+                    <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Blocked!
+                    </h2>
+                    <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
+                        This account is blocked.
+                    </p>
+                    <app-button label="Thanks" (click)="closeBlockUserModal()" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Successfully Unblock User Modal -->
+        <div *ngIf="unblockUserSuccess">
+            <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
+                <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
+                    <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Unblocked!
+                    </h2>
+                    <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
+                        This account is unblocked.
+                    </p>
+                    <app-button label="Thanks" (click)="closeUnblockUserModal()" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>

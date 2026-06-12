@@ -16,13 +16,23 @@ import { LogoutService } from '../../services/logout.service';
 export class Navbar {
 
   isUser: boolean = false;
+  isAdmin: boolean = false;
   menuOpen = false;
 
-  constructor(private authService: AuthService, private logoutService: LogoutService) { }
+  constructor(private authService: AuthService, private logoutService: LogoutService,
+  ) { }
 
   ngOnInit() {
     this.authService.currentUser$.subscribe(user => {
       this.isUser = user;
+      if (user) {
+        this.isUser = true;
+        this.isAdmin = user.admin === "Yes";
+      } else {
+        this.isUser = false;
+        this.isAdmin = false;
+      }
+
     });
   }
 

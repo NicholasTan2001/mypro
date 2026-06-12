@@ -87,6 +87,7 @@ export class UserDetails implements OnInit {
           country: response.country,
           sex: response.sex,
           address: response.address,
+          block: response.block,
           birthDate: response.birthDate ? response.birthDate.split('T')[0]
             : '',
           status: response.status,
@@ -110,6 +111,7 @@ export class UserDetails implements OnInit {
           empEndDate: response.empEndDate ? response.empEndDate.split('T')[0]
             : '',
         };
+        console.log(this.user.block);
         this.cd.detectChanges();
       }
     } catch (error: any) {

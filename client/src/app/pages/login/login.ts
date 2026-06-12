@@ -32,6 +32,7 @@ export class Login implements OnInit {
     IdentityNumber: '',
   }
 
+  blockedAccountSuccess: boolean = false;
   deleteAccountSuccess: boolean = false;
   logoutSuccess: boolean = false;
   resetPasswordSuccess: boolean = false;
@@ -88,12 +89,18 @@ export class Login implements OnInit {
       this.authService.setToken(response.token, response.user);
       this.router.navigate(['/myprofile']);
     } catch (error: any) {
+      if (error.error.message = "Block Account") {
+        this.blockedAccountSuccess = true;
+        this.cd.detectChanges();
+        return;
+      }
       const message = error?.error?.message || 'Login failed. Please try again.';
       this.passwordError = message;
       this.isLoading = false;
       this.cd.detectChanges();
     } finally {
       this.isLoading = false;
+      this.cd.detectChanges();
     }
   }
 
@@ -110,20 +117,17 @@ export class Login implements OnInit {
   async onSubmit2() {
     this.isLoading2 = true;
     this.identityNumberError2 = '';
-
     try {
       if (!this.form2.IdentityNumber) {
         this.identityNumberError2 = 'Identity number is required.';
         this.isLoading2 = false;
         return;
       }
-
       if (!/^\d{12}$/.test(this.form2.IdentityNumber)) {
         this.identityNumberError2 = 'Valid identity number is required.';
         this.isLoading2 = false;
         return;
       }
-
       const response = await firstValueFrom(
         this.http.post(
           `${API_CONFIG.usersEndpointBase}/forgot-password`,
@@ -132,14 +136,12 @@ export class Login implements OnInit {
           }
         )
       );
-
       if (response) {
         this.form2.IdentityNumber = '';
         this.isLoading2 = false;
         this.resetPasswordSuccess = true;
         this.cd.detectChanges();
       }
-
     } catch (error: any) {
       this.isLoading2 = false;
       const message = error?.error?.message || 'Failed to send reset instructions. Please try again.';
@@ -153,6 +155,10 @@ export class Login implements OnInit {
 
   closeResetPassword() {
     this.resetPasswordSuccess = false;
+  }
+
+  closeBlocked() {
+    this.blockedAccountSuccess = false;
   }
 
 }

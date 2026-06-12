@@ -155,6 +155,7 @@ export class Myprofile implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.cd.detectChanges();
     this.loadUser();
     this.loadAdditional();
     this.loadPosition();

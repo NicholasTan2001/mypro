@@ -44,6 +44,8 @@ public class UsersController : ControllerBase
         user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
         user.Status = "Public";
         user.Verify = "No";
+        user.Block = "No";
+        user.Admin = "No";
         user.Additional = new Additional
         {
             Intro = "",
@@ -92,6 +94,10 @@ public class UsersController : ControllerBase
         {
             return Unauthorized(new { message = "Invalid credentials" });
         }
+        if (user.Block == "Yes")
+        {
+            return Unauthorized(new { message = "Blocked Account" });
+        }
         if (user.Verify == "Yes")
         {
             var existingVerification = await _context.Verifications
@@ -125,7 +131,9 @@ public class UsersController : ControllerBase
                 user.Sex,
                 user.Status,
                 user.Verify,
-                user.BirthDate
+                user.BirthDate,
+                user.Block,
+                user.Admin
             }
         });
     }
@@ -325,6 +333,8 @@ MyProfile Team
                 u.Sex,
                 u.Address,
                 u.Status,
+                u.Admin,
+                u.Block,
                 intro = u.Additional!.Intro ?? ""
             })
             .ToListAsync();
@@ -360,6 +370,8 @@ MyProfile Team
             user.Status,
             user.BirthDate,
             user.Verify,
+            user.Block,
+            user.Admin,
             intro = user.Additional!.Intro ?? "",
             conclusion = user.Additional!.Conclusion ?? "",
             hobby = user.Additional!.Hobby ?? "",
@@ -1260,7 +1272,113 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         }
     }
 
+    [HttpPut("add-admin")]
+    [Authorize]
+    public async Task<ActionResult> AddAdmin([FromBody] AddAdminRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.Id);
 
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+
+        user.Admin = "Yes";
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            admin = user.Admin
+        });
+    }
+
+    [HttpGet("admin")]
+    [Authorize]
+    public async Task<ActionResult> GetAdmin(int id)
+    {
+        var admins = await _context.Users
+            .Where(a => a.Admin == "Yes")
+            .Select(a => new
+            {
+                a.Id,
+                a.Name,
+                a.Age,
+                a.Sex,
+                a.Country,
+                a.Email
+            })
+            .ToListAsync();
+        return Ok(new { admins });
+    }
+
+    [HttpPut("delete-admin")]
+    [Authorize]
+    public async Task<ActionResult> DeleteAdmin([FromBody] DeleteAdminRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.Id);
+
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+
+        user.Admin = "No";
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            admin = user.Admin
+        });
+    }
+
+    [HttpPut("unblock-user")]
+    [Authorize]
+    public async Task<ActionResult> UnblockUser([FromBody] UnblockUserRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.Id);
+
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+
+        user.Block = "No";
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            block = user.Block
+        });
+    }
+
+
+    [HttpPut("block-user")]
+    [Authorize]
+    public async Task<ActionResult> BlockUser([FromBody] BlockUserRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.Id);
+
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+
+        user.Block = "Yes";
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            block = user.Block
+        });
+    }
 
 
 }
