@@ -46,6 +46,8 @@ export class Admin implements OnInit {
   isLoading4: boolean = false;
   isLoading5: boolean = false;
   isLoading6: boolean = false;
+  isLoading7: boolean = false;
+  isLoading8: boolean = false;
   permissionSuccess: boolean = false;
   showExistFriendRequest: boolean = false;
   sentRequests: number[] = [];
@@ -54,9 +56,12 @@ export class Admin implements OnInit {
   searchName: string = '';
   admins: any[] = [];
   blocks: any[] = [];
+  blueTicks: any[] = [];
   deleteAdminSuccess: boolean = false;
   blockUserSuccess: boolean = false;
   unblockUserSuccess: boolean = false;
+  rejectBlueTickSuccess: boolean = false;
+  acceptBlueTickSuccess: boolean = false;
 
 
   constructor(private http: HttpClient, private cd: ChangeDetectorRef, private router: Router, private authService: AuthService,
@@ -78,6 +83,7 @@ export class Admin implements OnInit {
     this.loadUser();
     this.loadAdmin();
     this.loadBlock();
+    this.loadBlueTick();
   };
 
   async loadUser() {
@@ -193,6 +199,31 @@ export class Admin implements OnInit {
     } catch (error: any) {
       console.error('Failed to load block requests:', error);
       this.blocks = [];
+      this.cd.detectChanges();
+    }
+  }
+
+  async loadBlueTick() {
+    try {
+      const user = this.authService.getCurrentUser();
+      if (!user) return;
+      const response: any = await firstValueFrom(
+        this.http.get(
+          `${API_CONFIG.usersEndpointBase}/bluetick`,
+          {
+            headers: {
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response && response.blueTicks) {
+        this.blueTicks = response.blueTicks;
+      }
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Failed to load block requests:', error);
+      this.blueTicks = [];
       this.cd.detectChanges();
     }
   }
@@ -384,9 +415,7 @@ export class Admin implements OnInit {
       console.error('Failed to delete admin:', error);
       this.isLoading5 = false;
       this.cd.detectChanges();
-
     }
-
   }
 
   async blockUser(request: any) {
@@ -428,5 +457,73 @@ export class Admin implements OnInit {
 
   closeUnblockUserModal() {
     this.unblockUserSuccess = false;
+  }
+
+  async rejectBlueTick(request: any) {
+    this.isLoading7 = true;
+    try {
+      const response = await firstValueFrom(
+        this.http.put(
+          `${API_CONFIG.usersEndpointBase}/reject-bluetick`,
+          {
+            id: request.id,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response) {
+        this.loadBlueTick();
+        this.rejectBlueTickSuccess = true;
+        this.isLoading7 = false;
+        this.cd.detectChanges();
+      }
+    } catch (error: any) {
+      console.error('Failed to delete admin:', error);
+      this.isLoading7 = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  async acceptBlueTick(request: any) {
+    this.isLoading8 = true;
+    try {
+      const response = await firstValueFrom(
+        this.http.put(
+          `${API_CONFIG.usersEndpointBase}/accept-bluetick`,
+          {
+            id: request.id,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response) {
+        this.loadBlueTick();
+        this.acceptBlueTickSuccess = true;
+        this.isLoading8 = false;
+        this.cd.detectChanges();
+      }
+    } catch (error: any) {
+      console.error('Failed to delete admin:', error);
+      this.isLoading8 = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  closeRejectBlueTickrModal() {
+    this.rejectBlueTickSuccess = false;
+  }
+
+  closeAcceptBlueTickrModal() {
+    this.acceptBlueTickSuccess = false;
   }
 }

@@ -48,6 +48,9 @@ namespace MyProfile.Models
         [JsonPropertyName("Admin")]
         public string? Admin { get; set; }
 
+        [JsonPropertyName("BlueTick")]
+        public string? BlueTick { get; set; }
+
         public Additional? Additional { get; set; }
 
         public Student? Student { get; set; }

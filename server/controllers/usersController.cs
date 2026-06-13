@@ -46,6 +46,7 @@ public class UsersController : ControllerBase
         user.Verify = "No";
         user.Block = "No";
         user.Admin = "No";
+        user.BlueTick = "No";
         user.Additional = new Additional
         {
             Intro = "",
@@ -341,6 +342,7 @@ MyProfile Team
                 u.Status,
                 u.Admin,
                 u.Block,
+                u.BlueTick,
                 intro = u.Additional!.Intro ?? ""
             })
             .ToListAsync();
@@ -379,6 +381,7 @@ MyProfile Team
             user.Verify,
             user.Block,
             user.Admin,
+            user.BlueTick,
             intro = user.Additional!.Intro ?? "",
             conclusion = user.Additional!.Conclusion ?? "",
             hobby = user.Additional!.Hobby ?? "",
@@ -1454,6 +1457,78 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
             portfolio = link.Portfolio ?? "",
             additional = link.Additional ?? "",
         });
+    }
+
+
+    [HttpPut("update-pending-bluetick")]
+    [Authorize]
+    public async Task<ActionResult> UpdatePendingBlueTick([FromBody] UpdatePendingRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        user.BlueTick = "Pending";
+
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "BlueTick updated successfully." });
+    }
+
+    [HttpGet("bluetick")]
+    [Authorize]
+    public async Task<ActionResult> GetBlueTick()
+    {
+        var BlueTicks = await _context.Users
+            .Where(b => b.BlueTick == "Pending")
+            .Select(b => new
+            {
+                b.Id,
+                b.Name,
+                b.Age,
+                b.Sex,
+                b.Country,
+                b.Email
+            })
+            .ToListAsync();
+        return Ok(new { BlueTicks });
+    }
+
+    [HttpPut("reject-bluetick")]
+    [Authorize]
+    public async Task<ActionResult> RejectBlueTick([FromBody] RejectBlueTickRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.Id);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        user.BlueTick = "No";
+
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "BlueTick updated successfully." });
+    }
+
+
+    [HttpPut("accept-bluetick")]
+    [Authorize]
+    public async Task<ActionResult> AcceptBlueTick([FromBody] AcceptBlueTickRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.Id);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        user.BlueTick = "Yes";
+
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "BlueTick updated successfully." });
     }
 
 

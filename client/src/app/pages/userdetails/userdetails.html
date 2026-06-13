@@ -12,9 +12,16 @@
 
         <!-- User Page Title -->
         @if (user){
-        <h1 reveal class="font-bold md:text-2xl text-xl">
-            <span class="text-purple-600">{{user.name}}</span>'s Profile
-        </h1>
+        <div class="flex flex-row gap-1">
+            <h1 reveal class="font-bold md:text-2xl text-xl">
+                <span class="text-purple-600">{{user.name}}</span>'s Profile
+            </h1>
+            @if (user.blueTick == "Yes"){
+            <div reveal>
+                <img src="bluetick.png" alt="BlueTick" class="md:w-8 w-7 rounded-full">
+            </div>
+            }
+        </div>
         }
 
         <!-- User Details (Public) -->

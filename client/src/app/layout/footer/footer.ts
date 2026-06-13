@@ -20,8 +20,13 @@ export class Footer {
 
   ngOnInit() {
     this.authService.currentUser$.subscribe(user => {
-      this.isUser = user;
-      this.isAdmin = user.admin === "Yes";
+      if (user) {
+        this.isUser = true;
+        this.isAdmin = user.admin === "Yes";
+      } else {
+        this.isUser = false;
+        this.isAdmin = false;
+      }
     });
   }
 

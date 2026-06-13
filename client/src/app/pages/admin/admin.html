@@ -205,13 +205,67 @@
                 <img src="nofriend.jpg" alt="No Friend Found" class="md:w-50 w-25 mb-6">
                 <p class="font-medium md:text-lg text-base text-black mb-6">No Blocked User Found.</p>
                 <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">Sorry, we couldn't find any
-                    block users
+                    block user
                     that you're
                     looking for.
                 </p>
             </div>
             }
         </div>
+
+        <!-- BlueTick Pending Users -->
+        <div reveal class="admin-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mt-12">
+            <h2 class="font-bold md:text-lg text-base text-black mb-6">BlueTick Pending</h2>
+            @if (blueTicks.length > 0) {
+            <div class="flex flex-col gap-4">
+                @for (blue of blueTicks; track blue.id) {
+                <div class="rounded-lg p-4 bg-purple-100">
+                    <p class="font-bold text-purple-500 md:text-lg text-base mb-4">
+                        {{ blue.name }}<span class="text-black"></span>
+                    </p>
+                    <p class="text-black md:text-base text-sm font-bold">Age: <span class="text-purple-500">
+                            {{ blue.age }}</span>
+                    </p>
+                    <p class="text-black md:text-base text-sm font-bold">Sex: <span class="text-purple-500">
+                            {{ blue.sex }}</span>
+                    </p>
+                    <p class="text-black md:text-base text-sm font-bold">Email: <span class="text-purple-500">
+                            {{ blue.email }}</span>
+                    </p>
+                    <p class="text-black md:text-base text-sm font-bold">Country: <span class="text-purple-500">
+                            {{ blue.country }}</span>
+                    </p>
+                    <div class="flex flex-row justify-end w-full gap-4 mt-4">
+                        <app-button [label]="isLoading7 ? 'Loading...' : 'Reject'" (click)="rejectBlueTick(blue)"
+                            variant="danger" class="flex">
+                        </app-button>
+                        @if (blue.id == form.Id){
+                        <p
+                            class="flex rounded-lg items-center text-white bg-gray-400 md:text-base text-sm font-medium md:px-5 px-3 py-2">
+                            Can't Accept
+                        </p>
+                        } @else{
+                        <app-button [label]="isLoading8 ? 'Loading...' : 'Accept'" (click)="acceptBlueTick(blue)"
+                            class="flex">
+                        </app-button>
+                        }
+                    </div>
+                </div>
+                }
+            </div>
+            } @else {
+            <div class="flex flex-col items-center justify-center p-8">
+                <img src="nofriend.jpg" alt="No Friend Found" class="md:w-50 w-25 mb-6">
+                <p class="font-medium md:text-lg text-base text-black mb-6">No BlueTick Pending User Found.</p>
+                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">Sorry, we couldn't find any
+                    BlueTick pending user
+                    that you're
+                    looking for.
+                </p>
+            </div>
+            }
+        </div>
+
 
         <!-- Successfully Add New Admin Modal -->
         <div *ngIf="addAdminSuccess">
@@ -269,6 +323,36 @@
                         This account is unblocked.
                     </p>
                     <app-button label="Thanks" (click)="closeUnblockUserModal()" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Successfully Reject BlueTick User Modal -->
+        <div *ngIf="rejectBlueTickSuccess">
+            <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
+                <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
+                    <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Rejected!
+                    </h2>
+                    <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
+                        This BlueTick is rejected.
+                    </p>
+                    <app-button label="Thanks" (click)="closeRejectBlueTickrModal()" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Successfully Accept BlueTick User Modal -->
+        <div *ngIf="acceptBlueTickSuccess">
+            <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
+                <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
+                    <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Applied!
+                    </h2>
+                    <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
+                        This BlueTick is applied successfully.
+                    </p>
+                    <app-button label="Thanks" (click)="closeAcceptBlueTickrModal()" />
                 </div>
             </div>
         </div>

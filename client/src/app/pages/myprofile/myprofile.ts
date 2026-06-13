@@ -76,6 +76,7 @@ export class Myprofile implements OnInit {
   skillError: string = '';
   languageError: string = '';
   birthDateError: string = '';
+  bluetick: string = '';
 
   form = {
     IdentityNumber: '',
@@ -202,6 +203,7 @@ export class Myprofile implements OnInit {
           this.form.Sex = response.sex;
           this.form.BirthDate = response.birthDate ? response.birthDate.split('T')[0]
             : '';
+          this.bluetick = response.blueTick;
 
           this.id = user.id;
         }

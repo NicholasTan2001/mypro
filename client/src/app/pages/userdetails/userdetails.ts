@@ -99,6 +99,7 @@ export class UserDetails implements OnInit {
           position: response.position,
           course: response.course,
           location: response.location,
+          blueTick: response.blueTick,
           studentStartDate: response.studentStartDate ? response.studentStartDate.split('T')[0]
             : '',
           studentEndDate: response.studentEndDate ? response.studentEndDate.split('T')[0]

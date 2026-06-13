@@ -11,9 +11,16 @@
 
     <!-- Myprofile Page Title -->
     <div class=" flex flex-col items-center justify-center">
-        <h1 reveal class="font-bold md:text-2xl text-xl mb-12"><span class="text-purple-600">{{ name
-                }}</span>'s Profile
-        </h1>
+        <div class="flex flex-row gap-1">
+            <h1 reveal class="font-bold md:text-2xl text-xl mb-12"><span class="text-purple-600">{{ name
+                    }}</span>'s Profile
+            </h1>
+            @if (bluetick == "Yes"){
+            <div reveal class="">
+                <img src="bluetick.png" alt="BlueTick" class="md:w-8 w-7 rounded-full">
+            </div>
+            }
+        </div>
 
         <!-- Introduction -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">

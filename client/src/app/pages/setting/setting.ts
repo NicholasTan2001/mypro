@@ -33,12 +33,14 @@ export class Setting implements OnInit {
     ConfirmNewPassword: ''
   }
 
+  updatePendingBlueTickSuccess: boolean = false;
   deleteSuccess: boolean = false;
   identityNumber: string = "";
   status: string = "";
   verify: string = "";
   isLoading: boolean = false;
   isLoading2: boolean = false;
+  isLoading3: boolean = false;
   passwordError: string = "";
   passwordError2: string = "";
   newPasswordError: string = "";
@@ -46,6 +48,7 @@ export class Setting implements OnInit {
   updatePasswordSuccess: boolean = false;
   isPrivate: boolean = false;
   isVerify: boolean = false;
+  isBlueTick: string = "";
 
   constructor(
     private http: HttpClient,
@@ -79,6 +82,7 @@ export class Setting implements OnInit {
           this.isPrivate = this.status === 'Private';
           this.verify = response.verify;
           this.isVerify = this.verify === 'Yes';
+          this.isBlueTick = response.blueTick;
         }
       }
       this.cd.detectChanges();
@@ -279,6 +283,43 @@ export class Setting implements OnInit {
       this.isPrivate = newVerify == 'Yes';
       this.cd.detectChanges();
     }
+  }
+
+  async onVerify() {
+    this.isLoading3 = true;
+    try {
+      const response: any = await firstValueFrom(
+        this.http.put(
+          `${API_CONFIG.usersEndpointBase}/update-pending-bluetick`,
+          {
+            identityNumber: this.identityNumber,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response) {
+        this.loadUser();
+        this.updatePendingBlueTickSuccess = true;
+        this.isLoading3 = false;
+        this.cd.detectChanges();
+      }
+    } catch (error: any) {
+      this.isLoading3 = false;
+      this.cd.detectChanges();
+    } finally {
+      this.isLoading3 = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  closePendingBlueTickModal() {
+    this.updatePendingBlueTickSuccess = false;
+
   }
 
 }
