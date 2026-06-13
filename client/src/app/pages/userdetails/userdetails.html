@@ -156,8 +156,8 @@
                         <p class="text-gray-400 md:text-sm text-xs font-bold">
                             {{ ach.date }}
                         </p>
-                        <a [href]="ach.link" target="_blank" rel="noopener noreferrer"
-                            class="text-gray-400 md:text-sm text-xs font-bold mt-2 hover:text-blue-400 hover:underline">
+                        <a [href]="getValidUrl(ach.link)" target="_blank" rel="noopener noreferrer"
+                            class="text-gray-400 md:text-sm text-xs font-bold mt-2 hover:text-blue-400 hover:underline break-words max-w-3xl">
                             {{ ach.link }}
                         </a>
                     </div>
@@ -211,6 +211,43 @@
             </div>
         </div>
         }
+        @if (user && (user.linkedinLink!=''||user.additionalLink!='' || user.portfolioLink!='') &&
+        (user.status=="Public" ||
+        friends.includes(user.id)|| user.id==id)&&
+        user.block=="No") {
+        <div class="flex flex-col lg:flex-row lg:gap-12 md:w-7/8 w-full">
+            <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">More Links</h2>
+                @if (user.linkedinLink!=''){
+                <div class="md:text-base text-sm gap-2">
+                    <p class="text-black font-bold">Linkedin: </p>
+                    <a [href]="getValidUrl(user.linkedinLink)" target="_blank" rel="noopener noreferrer"
+                        class="text-gray-400 font-bold hover:text-blue-400 hover:underline break-words max-w-3xl">
+                        {{user.linkedinLink}}
+                    </a>
+                </div>
+                }
+                @if (user.portfolioLink!=''){
+                <div class="md:text-base text-sm gap-2 mt-2">
+                    <p class="text-black font-bold">Portfolio: </p>
+                    <a [href]="getValidUrl(user.portfolioLink)" target="_blank" rel="noopener noreferrer"
+                        class="text-gray-400 font-bold hover:text-blue-400 hover:underline break-words max-w-3xl">
+                        {{user.portfolioLink}}
+                    </a>
+                </div>
+                }
+                @if (user.additionalLink!=''){
+                <div class="md:text-base text-sm gap-2 mt-2">
+                    <p class="text-black font-bold">Additional: </p>
+                    <a [href]="getValidUrl(user.additionalLink)" target="_blank" rel="noopener noreferrer"
+                        class="text-gray-400 font-bold hover:text-blue-400 hover:underline break-words max-w-3xl">
+                        {{user.additionalLink}}
+                    </a>
+                </div>
+                }
+            </div>
+        </div>
+        }
         @if (user && user.conclusion!=="" && (user.status=="Public" || friends.includes(user.id)|| user.id==id)&&
         user.block=="No"){
         <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
@@ -249,7 +286,7 @@
         }
 
         <!-- User Details (Private) -->
-        @if (user && (user.status=="private" && !friends.includes(user.id) && user.id!=id) && user.block=="No") {
+        @if (user && (user.status=="Private" && !friends.includes(user.id)) && (user.id!=id && user.block=="No")) {
         <div reveal class="user-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mt-12">
             <div class="flex flex-col items-center justify-center p-8">
                 <img src="lockprofile.jpg" alt="This Profile is Private" class="md:w-50 w-30 mx-auto mb-6">

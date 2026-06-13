@@ -54,6 +54,12 @@ public class UsersController : ControllerBase
             Language = "",
             Hobby = ""
         };
+        user.Link = new Link
+        {
+            Linkedin = "",
+            Portfolio = "",
+            Additional = ""
+        };
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
         return Ok(new
@@ -349,6 +355,7 @@ MyProfile Team
         .Include(u => u.Additional)
         .Include(u => u.Organization)
         .Include(u => u.Student)
+        .Include(u => u.Link)
         .FirstOrDefaultAsync(u => u.Id == id);
 
         if (user == null)
@@ -386,7 +393,10 @@ MyProfile Team
             company = user.Organization?.Company ?? "",
             responsible = user.Organization?.Responsible ?? "",
             empStartDate = user.Organization?.StartDate ?? null,
-            empEndDate = user.Organization?.EndDate ?? null
+            empEndDate = user.Organization?.EndDate ?? null,
+            linkedinLink = user.Link!.Linkedin ?? "",
+            portfolioLink = user.Link!.Portfolio ?? "",
+            additionalLink = user.Link!.Additional ?? ""
         });
 
     }
@@ -1296,7 +1306,7 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
 
     [HttpGet("admin")]
     [Authorize]
-    public async Task<ActionResult> GetAdmin(int id)
+    public async Task<ActionResult> GetAdmin()
     {
         var admins = await _context.Users
             .Where(a => a.Admin == "Yes")
@@ -1377,6 +1387,72 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         return Ok(new
         {
             block = user.Block
+        });
+    }
+
+    [HttpGet("block")]
+    [Authorize]
+    public async Task<ActionResult> GetBlock()
+    {
+        var Blocks = await _context.Users
+            .Where(a => a.Block == "Yes")
+            .Select(a => new
+            {
+                a.Id,
+                a.Name,
+                a.Age,
+                a.Sex,
+                a.Country,
+                a.Email
+            })
+            .ToListAsync();
+        return Ok(new { Blocks });
+    }
+
+    [HttpPut("update-link")]
+    [Authorize]
+    public async Task<ActionResult> UpdateLink([FromBody] UpdateLinkRequest request)
+    {
+        var user = await _context.Users
+            .Include(u => u.Link)
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        if (user.Link == null)
+        {
+            user.Link = new Link { UserId = user.Id };
+        }
+        user.Link.Linkedin = request.Linkedin ?? "";
+        user.Link.Portfolio = request.Portfolio ?? "";
+        user.Link.Additional = request.Additional ?? "";
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+        return Ok(new
+        {
+            linkedin = user.Link.Linkedin,
+            portfolio = user.Link.Portfolio,
+            additional = user.Link.Additional
+        });
+    }
+
+    [HttpGet("link/{id}")]
+    [Authorize]
+    public async Task<ActionResult> GetLink(int id)
+    {
+        var link = await _context.Links
+            .FirstOrDefaultAsync(a => a.UserId == id);
+
+        if (link == null)
+        {
+            return Unauthorized(new { message = "Link not found." });
+        }
+        return Ok(new
+        {
+            linkedin = link.Linkedin ?? "",
+            portfolio = link.Portfolio ?? "",
+            additional = link.Additional ?? "",
         });
     }
 

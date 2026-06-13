@@ -47,6 +47,7 @@ export class Myprofile implements OnInit {
   isLoading6: boolean = false;
   isLoading7: boolean = false;
   isLoading8: boolean = false;
+  isLoading9: boolean = false;
   nameError: string = '';
   ageError: string = '';
   emailError: string = '';
@@ -144,6 +145,12 @@ export class Myprofile implements OnInit {
     Language: '',
   }
 
+  form11 = {
+    Linkedin: '',
+    Portfolio: '',
+    Additional: '',
+  }
+
   experience: any[] = [];
   achievement: any[] = [];
   project: any[] = [];
@@ -162,6 +169,7 @@ export class Myprofile implements OnInit {
     this.loadExperience();
     this.loadAchievement();
     this.loadProject();
+    this.loadLink();
     this.authService.freshLogin$.subscribe(isFreshLogin => {
       this.loginSuccess = isFreshLogin;
     });
@@ -379,6 +387,33 @@ export class Myprofile implements OnInit {
       this.cd.detectChanges();
     } catch (error: any) {
       console.error('Failed to load projects:', error);
+      this.cd.detectChanges();
+    }
+  }
+
+  async loadLink() {
+    try {
+      const user = this.authService.getCurrentUser();
+      if (user) {
+        const response: any = await firstValueFrom(
+          this.http.get(
+            `${API_CONFIG.usersEndpointBase}/link/${user.id}`,
+            {
+              headers: {
+                'Authorization': `Bearer ${this.authService.getToken()}`
+              }
+            }
+          )
+        );
+        if (response) {
+          this.form11.Linkedin = response.linkedin;
+          this.form11.Portfolio = response.portfolio;
+          this.form11.Additional = response.additional;
+        }
+      }
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Failed to load lnk:', error);
       this.cd.detectChanges();
     }
   }
@@ -1040,6 +1075,48 @@ export class Myprofile implements OnInit {
       this.cd.detectChanges();
     }
   }
+
+  async onSubmit9() {
+    this.isLoading9 = true;
+    try {
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        this.isLoading9 = false;
+        return;
+      }
+      const response = await firstValueFrom(
+        this.http.put(
+          `${API_CONFIG.usersEndpointBase}/update-link`,
+          {
+            identityNumber: user.identityNumber,
+            linkedin: this.form11.Linkedin,
+            portfolio: this.form11.Portfolio,
+            additional: this.form11.Additional
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+
+      if (response) {
+        this.isLoading9 = false;
+        this.loadLink();
+        this.updateUserSuccess = true;
+        this.cd.detectChanges();
+      }
+    } catch (error: any) {
+      this.isLoading9 = false;
+      this.cd.detectChanges();
+    } finally {
+      this.isLoading9 = false;
+      this.cd.detectChanges();
+    }
+  }
+
 
 
 

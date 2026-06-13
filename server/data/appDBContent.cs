@@ -23,6 +23,7 @@ public class AppDbContext : DbContext
 
     public DbSet<Verification> Verifications { get; set; }
 
+    public DbSet<Link> Links { get; set; }
 
 
 

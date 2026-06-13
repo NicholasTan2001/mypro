@@ -72,7 +72,7 @@
                 <p class="text-black md:text-base text-sm font-bold">Country: <span
                         class="text-purple-500">{{result.country}}</span></p>
             </div>
-            <div class="show-section flex justify-center gap-6">
+            <div class="show-section flex justify-center md:gap-6 gap-3">
                 @if (result.admin=="Yes"){
                 <p
                     class="flex rounded-lg justify-center items-center text-white bg-gray-400 md:text-base text-sm font-medium md:px-5 px-2 py-1 w-full mt-5 ">
@@ -90,7 +90,7 @@
                 </p>
                 }@else if (result.block=="Yes"){
                 <app-button [label]="isLoading5 ? 'Loading...' : 'Unblock'" size="sm" (click)="unblockUser(result)"
-                    class=" flex flex-col mt-5 w-full">
+                    variant="danger" class=" flex flex-col mt-5 w-full">
                 </app-button>
                 } @else if (result.block=="No"){
                 <app-button [label]="isLoading5 ? 'Loading...' : 'Block'" size="sm" (click)="blockUser(result)"
@@ -107,7 +107,7 @@
 
         <!-- No Results -->
         @if (noResult){
-        <div reveal class="search-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
+        <div reveal class="admin-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
             <div class="flex flex-col items-center justify-center p-8">
                 <img src="notfound.jpg" alt="No Related User Found" class="md:w-50 w-25 mb-6">
                 <p class="font-medium md:text-lg text-base text-black mb-6">No User Found.</p>
@@ -121,7 +121,7 @@
         }
 
         <!-- Admins -->
-        <div reveal class="admin-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
+        <div reveal class="admin-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
             <h2 class="font-bold md:text-lg text-base text-black mb-6">Admins</h2>
             @if (admins.length > 0) {
             <div class="flex flex-col gap-4">
@@ -163,6 +163,49 @@
                 <p class="font-medium md:text-lg text-base text-black mb-6">No Admin Found.</p>
                 <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">Sorry, we couldn't find any
                     admin
+                    that you're
+                    looking for.
+                </p>
+            </div>
+            }
+        </div>
+
+        <!-- Block Users -->
+        <div reveal class="admin-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mt-12">
+            <h2 class="font-bold md:text-lg text-base text-black mb-6">Blocked Users</h2>
+            @if (blocks.length > 0) {
+            <div class="flex flex-col gap-4">
+                @for (blo of blocks; track blo.id) {
+                <div class="rounded-lg p-4 bg-purple-100">
+                    <p class="font-bold text-purple-500 md:text-lg text-base mb-4">
+                        {{ blo.name }}<span class="text-black"></span>
+                    </p>
+                    <p class="text-black md:text-base text-sm font-bold">Age: <span class="text-purple-500">
+                            {{ blo.age }}</span>
+                    </p>
+                    <p class="text-black md:text-base text-sm font-bold">Sex: <span class="text-purple-500">
+                            {{ blo.sex }}</span>
+                    </p>
+                    <p class="text-black md:text-base text-sm font-bold">Email: <span class="text-purple-500">
+                            {{ blo.email }}</span>
+                    </p>
+                    <p class="text-black md:text-base text-sm font-bold">Country: <span class="text-purple-500">
+                            {{ blo.country }}</span>
+                    </p>
+                    <div class="flex justify-end mt-4">
+                        <app-button [label]="isLoading6 ? 'Loading...' : 'Unblock'" (click)="unblockUser(blo)"
+                            variant="danger" class="flex justify-end">
+                        </app-button>
+                    </div>
+                </div>
+                }
+            </div>
+            } @else {
+            <div class="flex flex-col items-center justify-center p-8">
+                <img src="nofriend.jpg" alt="No Friend Found" class="md:w-50 w-25 mb-6">
+                <p class="font-medium md:text-lg text-base text-black mb-6">No Blocked User Found.</p>
+                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">Sorry, we couldn't find any
+                    block users
                     that you're
                     looking for.
                 </p>

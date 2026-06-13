@@ -45,6 +45,7 @@ export class Admin implements OnInit {
   isLoading3: boolean = false;
   isLoading4: boolean = false;
   isLoading5: boolean = false;
+  isLoading6: boolean = false;
   permissionSuccess: boolean = false;
   showExistFriendRequest: boolean = false;
   sentRequests: number[] = [];
@@ -52,6 +53,7 @@ export class Admin implements OnInit {
   addAdminSuccess: boolean = false;
   searchName: string = '';
   admins: any[] = [];
+  blocks: any[] = [];
   deleteAdminSuccess: boolean = false;
   blockUserSuccess: boolean = false;
   unblockUserSuccess: boolean = false;
@@ -75,6 +77,7 @@ export class Admin implements OnInit {
     });
     this.loadUser();
     this.loadAdmin();
+    this.loadBlock();
   };
 
   async loadUser() {
@@ -165,6 +168,31 @@ export class Admin implements OnInit {
     } catch (error: any) {
       console.error('Failed to load friend requests:', error);
       this.admins = [];
+      this.cd.detectChanges();
+    }
+  }
+
+  async loadBlock() {
+    try {
+      const user = this.authService.getCurrentUser();
+      if (!user) return;
+      const response: any = await firstValueFrom(
+        this.http.get(
+          `${API_CONFIG.usersEndpointBase}/block`,
+          {
+            headers: {
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response && response.blocks) {
+        this.blocks = response.blocks;
+      }
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Failed to load block requests:', error);
+      this.blocks = [];
       this.cd.detectChanges();
     }
   }
@@ -349,6 +377,7 @@ export class Admin implements OnInit {
         this.onSearch(this.searchName);
         this.unblockUserSuccess = true;
         this.isLoading5 = false;
+        this.loadBlock();
         this.cd.detectChanges();
       }
     } catch (error: any) {
@@ -383,6 +412,7 @@ export class Admin implements OnInit {
         this.onSearch(this.searchName);
         this.blockUserSuccess = true;
         this.isLoading5 = false;
+        this.loadBlock();
         this.cd.detectChanges();
       }
     } catch (error: any) {

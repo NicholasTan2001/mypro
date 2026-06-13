@@ -62,5 +62,8 @@ namespace MyProfile.Models
 
         public Verification? Verification { get; set; }
 
+        public Link? Link { get; set; }
+
+
     }
 }

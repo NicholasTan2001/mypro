@@ -110,8 +110,12 @@ export class UserDetails implements OnInit {
             : '',
           empEndDate: response.empEndDate ? response.empEndDate.split('T')[0]
             : '',
+          linkedinLink: response.linkedinLink,
+          portfolioLink: response.portfolioLink,
+          additionalLink: response.additionalLink,
         };
-        console.log(this.user.block);
+
+        console.log(response.linkedinLink);
         this.cd.detectChanges();
       }
     } catch (error: any) {
@@ -282,6 +286,16 @@ export class UserDetails implements OnInit {
 
   closeReportSuccessModal() {
     this.reportSuccess = false;
+  }
+
+  getValidUrl(url: string): string {
+    if (!url) return '';
+
+    if (url.startsWith('http://') || url.startsWith('https://')) {
+      return url;
+    }
+
+    return 'https://' + url;
   }
 
 }

@@ -485,6 +485,34 @@
             </div>
         </div>
 
+        <!-- Links Information -->
+        <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
+            <h2 class="font-bold md:text-lg text-base text-black">Links</h2>
+            <div class="flex flex-col">
+                <form (ngSubmit)="onSubmit9()" class="flex flex-col gap-4 mt-4">
+                    <div class="w-full expand">
+                        <app-input [(model)]="form11.Linkedin" label="Linkedin" type="text"
+                            placeholder="www.Linkedin.com" class="w-full">
+                        </app-input>
+                    </div>
+                    <div class="w-full expand">
+                        <app-input [(model)]="form11.Portfolio" label="Portfolio" type="text"
+                            placeholder="www.portfolio.com" class="w-full">
+                        </app-input>
+                    </div>
+                    <div class="w-full expand">
+                        <app-input [(model)]="form11.Additional" label="Addtional" type="text"
+                            placeholder="www.additional.com" class="w-full">
+                        </app-input>
+                    </div>
+                    <div class="flex justify-end mt-1">
+                        <app-button type="submit" [label]="isLoading9 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                        </app-button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Conclusion -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
             <h2 class="font-bold md:text-lg text-base text-black">Conclusion</h2>

@@ -13,12 +13,15 @@ import { AuthService } from '../../services/auth.service';
 export class Footer {
 
   isUser: boolean = false;
+  isAdmin: boolean = false;
+
 
   constructor(private authService: AuthService) { }
 
   ngOnInit() {
     this.authService.currentUser$.subscribe(user => {
       this.isUser = user;
+      this.isAdmin = user.admin === "Yes";
     });
   }
 
