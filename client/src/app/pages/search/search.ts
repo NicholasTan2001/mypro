@@ -22,7 +22,6 @@ import { AuthService } from '../../services/auth.service';
 export class Search {
   id: string = "";
   resultSuccess: boolean = false;
-  searchResults: any[] = [];
   isLoading: boolean = false;
   searchError: string = '';
   noResult: boolean = false;
@@ -34,6 +33,12 @@ export class Search {
   showExistFriendRequest: boolean = false;
   sentRequests: number[] = [];
   friends: number[] = [];
+  allSearchResults: any[] = [];
+  displayedResults: any[] = [];
+  isLoadingMore: boolean = false;
+  resultsPerPage: number = 5;
+  currentPage: number = 1;
+  showMoreButton: boolean = false;
 
   constructor(private http: HttpClient, private cd: ChangeDetectorRef, private router: Router, private authService: AuthService,
     private route: ActivatedRoute
@@ -90,12 +95,40 @@ export class Search {
     return this.friends.includes(friendId);
   }
 
+  updateDisplayedResults() {
+    const startIndex = 0;
+    const endIndex = this.currentPage * this.resultsPerPage;
+    this.displayedResults = this.allSearchResults.slice(startIndex, endIndex);
+
+    this.showMoreButton = endIndex < this.allSearchResults.length;
+
+    this.cd.detectChanges();
+  }
+
+  showMoreResults() {
+    this.isLoadingMore = true;
+    this.currentPage++;
+
+    setTimeout(() => {
+      this.updateDisplayedResults();
+      this.isLoadingMore = false;
+      this.cd.detectChanges();
+    }, 300);
+  }
+
+  resetPagination() {
+    this.currentPage = 1;
+    this.displayedResults = [];
+    this.showMoreButton = false;
+  }
+
   async onSearch(searchTerm: string) {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { name: searchTerm },
       queryParamsHandling: 'merge'
     });
+    this.resetPagination();
     this.performSearch(searchTerm);
   }
 
@@ -107,7 +140,8 @@ export class Search {
     this.isLoading = true;
     this.resultSuccess = false;
     this.noResult = false;
-    this.searchResults = [];
+    this.allSearchResults = [];
+    this.displayedResults = [];
     this.searchError = '';
     if (!searchTerm.trim()) {
       this.searchError = "Valid name is required.";
@@ -122,7 +156,8 @@ export class Search {
         )
       );
       if (response.users && response.users.length > 0) {
-        this.searchResults = response.users;
+        this.allSearchResults = response.users;
+        this.updateDisplayedResults();
         this.resultSuccess = true;
       } else {
         this.noResult = true;

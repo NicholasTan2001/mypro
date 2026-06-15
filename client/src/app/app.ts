@@ -4,22 +4,46 @@ import { Footer } from './layout/footer/footer';
 import { AuthService } from './services/auth.service'
 import { RouterOutlet } from '@angular/router';
 import { Scrolltop } from './component/scrolltop/scrolltop';
-
+import { ChangeDetectorRef } from '@angular/core';
+import { Button } from './component/button/button';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Navbar, Footer, Scrolltop],
+  imports: [RouterOutlet, Navbar, Footer, Scrolltop, Button],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
 export class App implements OnInit {
 
-  constructor(private authService: AuthService) { }
+  expireTokenModal: boolean = false;
+
+  constructor(
+    private authService: AuthService,
+    private cd: ChangeDetectorRef
+  ) { }
 
   ngOnInit(): void {
+    try {
 
-    this.authService.loadUserFromStorage();
+      this.authService.loadUserFromStorage();
+
+      this.authService.expireToken$.subscribe(success => {
+        this.expireTokenModal = success;
+      });
+
+      if (this.authService.isLoggedIn()) {
+        console.log('User logged in. Timer restarted.');
+      } else {
+        console.log('No active session or token expired.');
+      }
+      this.cd.detectChanges();
+    } catch (error: any) {
+      console.error('Error initializing app:', error);
+    }
   }
 
+  closeExpireTokenModal() {
+    this.expireTokenModal = false;
+  }
 }

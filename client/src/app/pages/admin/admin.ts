@@ -30,12 +30,14 @@ export class Admin implements OnInit {
     PhoneNumber: '',
     Sex: '',
     Address: '',
-    BirthDate: ''
+    BirthDate: '',
+    BlueTick: '',
   }
 
   id: any = null;
   resultSuccess: boolean = false;
-  searchResults: any[] = [];
+  allSearchResults: any[] = [];
+  displayedResults: any[] = [];
   isLoading: boolean = false;
   searchError: string = '';
   noResult: boolean = false;
@@ -48,6 +50,7 @@ export class Admin implements OnInit {
   isLoading6: boolean = false;
   isLoading7: boolean = false;
   isLoading8: boolean = false;
+  isLoadingMore: boolean = false;
   permissionSuccess: boolean = false;
   showExistFriendRequest: boolean = false;
   sentRequests: number[] = [];
@@ -61,8 +64,12 @@ export class Admin implements OnInit {
   blockUserSuccess: boolean = false;
   unblockUserSuccess: boolean = false;
   rejectBlueTickSuccess: boolean = false;
+  removeBlueTickSuccess: boolean = false
   acceptBlueTickSuccess: boolean = false;
-
+  deleteUserSuccess: boolean = false;
+  resultsPerPage: number = 5;
+  currentPage: number = 1;
+  showMoreButton: boolean = false;
 
   constructor(private http: HttpClient, private cd: ChangeDetectorRef, private router: Router, private authService: AuthService,
     private route: ActivatedRoute
@@ -107,6 +114,7 @@ export class Admin implements OnInit {
           this.form.Age = (response.age).toString();
           this.form.Country = response.country;
           this.form.Email = response.email;
+          this.form.BlueTick = response.blueTick;
         }
       }
       this.cd.detectChanges();
@@ -228,6 +236,33 @@ export class Admin implements OnInit {
     }
   }
 
+  updateDisplayedResults() {
+    const startIndex = 0;
+    const endIndex = this.currentPage * this.resultsPerPage;
+    this.displayedResults = this.allSearchResults.slice(startIndex, endIndex);
+
+    this.showMoreButton = endIndex < this.allSearchResults.length;
+
+    this.cd.detectChanges();
+  }
+
+  showMoreResults() {
+    this.isLoadingMore = true;
+    this.currentPage++;
+
+    setTimeout(() => {
+      this.updateDisplayedResults();
+      this.isLoadingMore = false;
+      this.cd.detectChanges();
+    }, 300);
+  }
+
+  resetPagination() {
+    this.currentPage = 1;
+    this.displayedResults = [];
+    this.showMoreButton = false;
+  }
+
   async onSearch(searchTerm: string) {
     this.router.navigate([], {
       relativeTo: this.route,
@@ -235,14 +270,16 @@ export class Admin implements OnInit {
       queryParamsHandling: 'merge'
     });
     this.searchName = searchTerm;
+    this.resetPagination();
     this.performSearch(searchTerm);
   }
 
   async performSearch(searchTerm: string) {
     this.isLoading = true;
     this.resultSuccess = false;
+    this.allSearchResults = [];
+    this.displayedResults = [];
     this.noResult = false;
-    this.searchResults = [];
     this.searchError = '';
     if (!searchTerm.trim()) {
       this.searchError = "Valid name is required.";
@@ -257,7 +294,8 @@ export class Admin implements OnInit {
         )
       );
       if (response.users && response.users.length > 0) {
-        this.searchResults = response.users;
+        this.allSearchResults = response.users;
+        this.updateDisplayedResults();
         this.resultSuccess = true;
       } else {
         this.noResult = true;
@@ -274,29 +312,38 @@ export class Admin implements OnInit {
     }
   }
 
-  onCardClick(result: any) {
+  async removeBlueTick(result: any) {
     this.isLoading3 = true;
-    if (this.isFriend(result.id) || result.id == this.id) {
-      this.viewUserDetail(result.id);
-    }
-    if (result.status === 'Private') {
-      this.shakingId = null;
-      this.canShake = false;
+    try {
+      const response = await firstValueFrom(
+        this.http.put(
+          `${API_CONFIG.usersEndpointBase}/reject-bluetick`,
+          {
+            id: result.id,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response) {
+        this.loadBlueTick();
+        this.onSearch(this.searchName);
+        this.removeBlueTickSuccess = true;
+        this.isLoading3 = false;
+        this.cd.detectChanges();
+      }
+    } catch (error: any) {
+      console.error('Failed to remove bluetick:', error);
+      this.isLoading3 = false;
       this.cd.detectChanges();
-      setTimeout(() => {
-        this.shakingId = result.id;
-        this.canShake = true;
-        this.cd.detectChanges();
-      }, 0);
-      setTimeout(() => {
-        this.shakingId = null;
-        this.canShake = false;
-        this.cd.detectChanges();
-      }, 600);
-    } else {
-      this.viewUserDetail(result.id);
+    } finally {
+      this.isLoading3 = false;
+      this.cd.detectChanges();
     }
-    this.isLoading3 = false;
   }
 
   viewUserDetail(userId: number) {
@@ -316,6 +363,7 @@ export class Admin implements OnInit {
         this.http.put(
           `${API_CONFIG.usersEndpointBase}/add-admin`,
           {
+            adminId: this.id,
             id: request.id,
             admin: request.admin
           },
@@ -355,6 +403,7 @@ export class Admin implements OnInit {
         this.http.put(
           `${API_CONFIG.usersEndpointBase}/delete-admin`,
           {
+            adminId: this.id,
             id: id,
           },
           {
@@ -376,9 +425,7 @@ export class Admin implements OnInit {
       console.error('Failed to delete admin:', error);
       this.isLoading4 = false;
       this.cd.detectChanges();
-
     }
-
   }
 
   closeDeleteAdminModal() {
@@ -392,6 +439,7 @@ export class Admin implements OnInit {
         this.http.put(
           `${API_CONFIG.usersEndpointBase}/unblock-user`,
           {
+            adminId: this.id,
             id: request.id,
             block: request.block
           },
@@ -425,6 +473,7 @@ export class Admin implements OnInit {
         this.http.put(
           `${API_CONFIG.usersEndpointBase}/block-user`,
           {
+            adminId: this.id,
             id: request.id,
             block: request.block
           },
@@ -466,6 +515,7 @@ export class Admin implements OnInit {
         this.http.put(
           `${API_CONFIG.usersEndpointBase}/reject-bluetick`,
           {
+            adminId: this.id,
             id: request.id,
           },
           {
@@ -496,6 +546,7 @@ export class Admin implements OnInit {
         this.http.put(
           `${API_CONFIG.usersEndpointBase}/accept-bluetick`,
           {
+            adminId: this.id,
             id: request.id,
           },
           {
@@ -508,6 +559,7 @@ export class Admin implements OnInit {
       );
       if (response) {
         this.loadBlueTick();
+        this.onSearch(this.searchName);
         this.acceptBlueTickSuccess = true;
         this.isLoading8 = false;
         this.cd.detectChanges();
@@ -519,11 +571,54 @@ export class Admin implements OnInit {
     }
   }
 
-  closeRejectBlueTickrModal() {
+  closeRejectBlueTickModal() {
     this.rejectBlueTickSuccess = false;
   }
 
-  closeAcceptBlueTickrModal() {
+  closeAcceptBlueTickModal() {
     this.acceptBlueTickSuccess = false;
   }
+
+  closeRemoveBlueTickModal() {
+    this.removeBlueTickSuccess = false;
+  }
+
+  async removeAccount(result: any) {
+    this.isLoading6 = true;
+    try {
+      const response = await firstValueFrom(
+        this.http.post(
+          `${API_CONFIG.usersEndpointBase}/delete-account-admin`,
+          {
+            adminId: this.id,
+            id: result.id,
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response) {
+        this.isLoading6 = false;
+        this.deleteUserSuccess = true;
+        this.onSearch(this.searchName);
+        this.cd.detectChanges();
+      }
+    } catch (error: any) {
+      this.isLoading6 = false;
+      console.error('Failed to delete user:', error);
+      this.cd.detectChanges();
+    } finally {
+      this.isLoading6 = false;
+      this.cd.detectChanges();
+    }
+  }
+
+  closeRemoveUserModal() {
+    this.deleteUserSuccess = false;
+  }
+
 }

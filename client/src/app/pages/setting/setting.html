@@ -48,6 +48,19 @@
             </div>
         </div>
 
+        <!-- Notofication Badge -->
+        <div reveal class="setting-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
+            <h2 class="font-bold md:text-lg text-base text-black">Notification</h2>
+            <p class="text-black font-medium md:text-base text-sm mt-4 leading-relaxed text-justify">This Notification
+                feature sends an email alert whenever a login is detected on your account. It helps you stay informed of
+                any account activity and provides an extra layer of security for your personal information. You may
+                enable this feature to enhance your account's privacy and protection. </p>
+            <div class="flex mt-4 justify-end">
+                <app-toggle-switch [isActive]="isNotification" (toggled)="onToggleNotificationMode($event)">
+                </app-toggle-switch>
+            </div>
+        </div>
+
         <!-- Second Verification -->
         <div reveal class="setting-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
             <h2 class="font-bold md:text-lg text-base text-black">OTP Verification</h2>

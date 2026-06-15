@@ -17,7 +17,7 @@
             </h1>
             @if (bluetick == "Yes"){
             <div reveal class="">
-                <img src="bluetick.png" alt="BlueTick" class="md:w-8 w-7 rounded-full">
+                <img src="bluetick.png" alt="BlueTick" class="md:w-8 w-7 rounded-full bluetick-img">
             </div>
             }
         </div>
@@ -229,7 +229,7 @@
                 @if (experience.length > 0) {
                 @for (exp of experience; track exp.id) {
                 <div
-                    class="border-1 border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-purple-100 hover:border-purple-500 transition duration-300">
+                    class="border-1 border-gray-300 rounded-lg p-4 hover:bg-purple-100 hover:border-purple-500 transition duration-300">
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="font-bold md:text-base text-sm text-black">{{ exp.position }}</h3>
                         <button (click)="deleteExperience(exp.id)"
@@ -307,7 +307,7 @@
                 @if (project.length > 0) {
                 @for (pro of project; track pro.id) {
                 <div
-                    class="border-1 border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-purple-100 hover:border-purple-500 transition duration-300">
+                    class="border-1 border-gray-300 rounded-lg p-4 hover:bg-purple-100 hover:border-purple-500 transition duration-300">
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="font-bold md:text-base text-sm text-black">{{ pro.title }}</h3>
                         <button (click)="deleteProject(pro.id)"
@@ -383,7 +383,7 @@
                     @if (achievement.length > 0) {
                     @for (ach of achievement; track ach.id) {
                     <div
-                        class="border-1 border-gray-300 rounded-lg p-4 cursor-pointer hover:bg-purple-100 hover:border-purple-500 transition duration-300">
+                        class="border-1 border-gray-300 rounded-lg p-4 hover:bg-purple-100 hover:border-purple-500 transition duration-300">
                         <div class="flex justify-between items-start mb-2">
                             <h3 class="font-bold md:text-base text-sm text-black">{{ ach.title }}</h3>
                             <button (click)="deleteAchievement(ach.id)"

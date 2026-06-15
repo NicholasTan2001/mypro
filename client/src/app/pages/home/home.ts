@@ -31,7 +31,7 @@ export class Home implements OnInit {
       const response: any = await firstValueFrom(
         this.http.get(`${API_CONFIG.usersEndpointBase}/malaysia`)
       );
-      this.malaysiaUsers = response.malaysiaUsers + 10000;
+      this.malaysiaUsers = response.malaysiaUsers;
       this.cd.detectChanges();
     } catch (error) {
       console.error('Failed to fetch user count:', error);

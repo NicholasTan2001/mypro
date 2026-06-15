@@ -51,6 +51,9 @@ namespace MyProfile.Models
         [JsonPropertyName("BlueTick")]
         public string? BlueTick { get; set; }
 
+        [JsonPropertyName("Notification")]
+        public string? Notification { get; set; }
+
         public Additional? Additional { get; set; }
 
         public Student? Student { get; set; }

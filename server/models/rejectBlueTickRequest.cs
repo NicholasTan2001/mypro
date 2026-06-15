@@ -4,6 +4,9 @@ namespace MyProfile.Models
 {
     public class RejectBlueTickRequest
     {
+        [JsonPropertyName("adminId")]
+        public int? AdminId { get; set; }
+
         [JsonPropertyName("id")]
         public int? Id { get; set; }
 

@@ -38,6 +38,7 @@ export class Setting implements OnInit {
   identityNumber: string = "";
   status: string = "";
   verify: string = "";
+  notification: string = "";
   isLoading: boolean = false;
   isLoading2: boolean = false;
   isLoading3: boolean = false;
@@ -49,6 +50,7 @@ export class Setting implements OnInit {
   isPrivate: boolean = false;
   isVerify: boolean = false;
   isBlueTick: string = "";
+  isNotification: boolean = false;
 
   constructor(
     private http: HttpClient,
@@ -83,6 +85,8 @@ export class Setting implements OnInit {
           this.verify = response.verify;
           this.isVerify = this.verify === 'Yes';
           this.isBlueTick = response.blueTick;
+          this.notification = response.notification;
+          this.isNotification = this.notification === 'Yes';
         }
       }
       this.cd.detectChanges();
@@ -209,6 +213,43 @@ export class Setting implements OnInit {
 
   loginPage() {
     this.authService.logout();
+  }
+
+  async onToggleNotificationMode(value: boolean) {
+    this.isNotification = value;
+    this.notification = value ? 'Yes' : 'No';
+    await this.updateNotification(this.notification);
+  }
+
+  async updateNotification(newNotification: string) {
+    try {
+      const response: any = await firstValueFrom(
+        this.http.put(
+          `${API_CONFIG.usersEndpointBase}/update-notification`,
+          {
+            identityNumber: this.identityNumber,
+            notification: newNotification
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response) {
+        this.loadUser();
+        this.isNotification = response.notification == 'Yes';
+        this.cd.detectChanges();
+      }
+    } catch (error: any) {
+      this.isNotification = newNotification == 'Yes';
+      this.cd.detectChanges();
+    } finally {
+      this.isNotification = newNotification == 'Yes';
+      this.cd.detectChanges();
+    }
   }
 
   async onTogglePrivateMode(value: boolean) {

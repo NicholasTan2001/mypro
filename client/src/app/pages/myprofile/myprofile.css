@@ -30,3 +30,12 @@ h1 {
         transform: translateY(0);
     }
 }
+
+/* BlueTick Effact */
+.bluetick-img {
+    transition: transform 0.8s ease;
+}
+
+.bluetick-img:hover {
+    transform: rotate(360deg);
+}

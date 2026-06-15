@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace MyProfile.Models
 {
-    public class AcceptBlueTickRequest
+    public class DeleteUserRequest
     {
         [JsonPropertyName("adminId")]
         public int? AdminId { get; set; }

@@ -47,6 +47,7 @@ public class UsersController : ControllerBase
         user.Block = "No";
         user.Admin = "No";
         user.BlueTick = "No";
+        user.Notification = "No";
         user.Additional = new Additional
         {
             Intro = "",
@@ -122,6 +123,11 @@ public class UsersController : ControllerBase
             }
         }
         var token = GenerateJwtToken(user);
+
+        if (user.Notification == "Yes")
+        {
+            await SendNotificationEmail(user.Name ?? "", user.IdentityNumber ?? "", user.Email ?? "");
+        }
         return Ok(new
         {
             token,
@@ -143,6 +149,49 @@ public class UsersController : ControllerBase
                 user.Admin
             }
         });
+    }
+
+    private async Task SendNotificationEmail(string name, string identityNumber, string email)
+    {
+        try
+        {
+            using (var client = new System.Net.Mail.SmtpClient("smtp.gmail.com"))
+            {
+                client.Port = 587;
+                client.Credentials = new System.Net.NetworkCredential("nicholastankaejer2001@gmail.com", "tefk njkh merf nwik");
+                client.EnableSsl = true;
+
+                var mailMessage = new System.Net.Mail.MailMessage();
+                mailMessage.From = new System.Net.Mail.MailAddress(
+                    "nicholastankaejer2001@gmail.com",
+                    "MyProfile Developer"
+                );
+
+                mailMessage.To.Add(email ?? "");
+                mailMessage.Subject = $"MyProfile -  Notification";
+
+                mailMessage.Body = $@"
+Dear {identityNumber} - {name}, 
+
+Someone is logined your account in MyProfile websie. Make sure the user is the right person.
+
+If you are the person, please ignore this email. However, please inform MyProfile Team to block it immediately.
+
+Thanks.
+
+Best regards,
+MyProfile Team
+            ";
+
+                mailMessage.IsBodyHtml = false;
+                await client.SendMailAsync(mailMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Email sending failed: {ex.Message}");
+            throw;
+        }
     }
 
     private string GenerateJwtToken(User user)
@@ -382,6 +431,7 @@ MyProfile Team
             user.Block,
             user.Admin,
             user.BlueTick,
+            user.Notification,
             intro = user.Additional!.Intro ?? "",
             conclusion = user.Additional!.Conclusion ?? "",
             hobby = user.Additional!.Hobby ?? "",
@@ -511,6 +561,29 @@ MyProfile Team
         return Ok(new
         {
             verify = user.Verify
+        });
+    }
+
+    [HttpPut("update-notification")]
+    [Authorize]
+    public async Task<ActionResult> UpdateNotification([FromBody] UpdateNotificationRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        if (request.Notification != "Yes" && request.Notification != "No")
+        {
+            return BadRequest(new { message = "Invalid Notification. Use 'Yes' or 'No'." });
+        }
+        user.Notification = request.Notification;
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+        return Ok(new
+        {
+            notification = user.Notification
         });
     }
 
@@ -1248,11 +1321,11 @@ MyProfile Team
                 var mailMessage = new System.Net.Mail.MailMessage();
                 mailMessage.From = new System.Net.Mail.MailAddress(
                     "nicholastankaejer2001@gmail.com",
-                    "MyProfile System"
+                    "MyProfile Developer"
                 );
 
                 mailMessage.To.Add("nicholastankaejer2001@gmail.com");
-                mailMessage.Subject = $"MyProfile Report - {reportedUserName}";
+                mailMessage.Subject = $"MyProfile - Report to {reportedUserName}";
 
                 mailMessage.Body = $@"
 New Report Submitted
@@ -1289,18 +1362,21 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
     [Authorize]
     public async Task<ActionResult> AddAdmin([FromBody] AddAdminRequest request)
     {
+        var admin = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.AdminId);
+        if (admin?.Admin == "No")
+        {
+            return Unauthorized(new { message = "User not admin not found." });
+        }
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Id == request.Id);
-
         if (user == null)
         {
             return Unauthorized(new { message = "User not found." });
         }
-
         user.Admin = "Yes";
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-
         return Ok(new
         {
             admin = user.Admin
@@ -1320,7 +1396,8 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
                 a.Age,
                 a.Sex,
                 a.Country,
-                a.Email
+                a.Email,
+                a.BlueTick
             })
             .ToListAsync();
         return Ok(new { admins });
@@ -1330,18 +1407,21 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
     [Authorize]
     public async Task<ActionResult> DeleteAdmin([FromBody] DeleteAdminRequest request)
     {
+        var admin = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.AdminId);
+        if (admin?.Admin == "No")
+        {
+            return Unauthorized(new { message = "User not admin not found." });
+        }
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Id == request.Id);
-
         if (user == null)
         {
             return Unauthorized(new { message = "User not found." });
         }
-
         user.Admin = "No";
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-
         return Ok(new
         {
             admin = user.Admin
@@ -1352,18 +1432,21 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
     [Authorize]
     public async Task<ActionResult> UnblockUser([FromBody] UnblockUserRequest request)
     {
+        var admin = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.AdminId);
+        if (admin?.Admin == "No")
+        {
+            return Unauthorized(new { message = "User not admin not found." });
+        }
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Id == request.Id);
-
         if (user == null)
         {
             return Unauthorized(new { message = "User not found." });
         }
-
         user.Block = "No";
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-
         return Ok(new
         {
             block = user.Block
@@ -1375,18 +1458,21 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
     [Authorize]
     public async Task<ActionResult> BlockUser([FromBody] BlockUserRequest request)
     {
+        var admin = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.AdminId);
+        if (admin?.Admin == "No")
+        {
+            return Unauthorized(new { message = "User not admin not found." });
+        }
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Id == request.Id);
-
         if (user == null)
         {
             return Unauthorized(new { message = "User not found." });
         }
-
         user.Block = "Yes";
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-
         return Ok(new
         {
             block = user.Block
@@ -1406,7 +1492,8 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
                 a.Age,
                 a.Sex,
                 a.Country,
-                a.Email
+                a.Email,
+                a.BlueTick
             })
             .ToListAsync();
         return Ok(new { Blocks });
@@ -1459,7 +1546,6 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         });
     }
 
-
     [HttpPut("update-pending-bluetick")]
     [Authorize]
     public async Task<ActionResult> UpdatePendingBlueTick([FromBody] UpdatePendingRequest request)
@@ -1471,7 +1557,6 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
             return Unauthorized(new { message = "User not found." });
         }
         user.BlueTick = "Pending";
-
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
         return Ok(new { message = "BlueTick updated successfully." });
@@ -1496,10 +1581,17 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         return Ok(new { BlueTicks });
     }
 
+
     [HttpPut("reject-bluetick")]
     [Authorize]
     public async Task<ActionResult> RejectBlueTick([FromBody] RejectBlueTickRequest request)
     {
+        var admin = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.AdminId);
+        if (admin?.Admin == "No")
+        {
+            return Unauthorized(new { message = "User not admin not found." });
+        }
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Id == request.Id);
         if (user == null)
@@ -1507,7 +1599,6 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
             return Unauthorized(new { message = "User not found." });
         }
         user.BlueTick = "No";
-
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
         return Ok(new { message = "BlueTick updated successfully." });
@@ -1518,6 +1609,12 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
     [Authorize]
     public async Task<ActionResult> AcceptBlueTick([FromBody] AcceptBlueTickRequest request)
     {
+        var admin = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.AdminId);
+        if (admin?.Admin == "No")
+        {
+            return Unauthorized(new { message = "User not admin not found." });
+        }
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Id == request.Id);
         if (user == null)
@@ -1525,11 +1622,30 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
             return Unauthorized(new { message = "User not found." });
         }
         user.BlueTick = "Yes";
-
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
         return Ok(new { message = "BlueTick updated successfully." });
     }
 
+    [HttpPost("delete-account-admin")]
+    [Authorize]
+    public async Task<ActionResult> DeleteAccountAdmin([FromBody] DeleteUserRequest request)
+    {
+        var admin = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.AdminId);
+        if (admin?.Admin == "No")
+        {
+            return Unauthorized(new { message = "User not admin not found." });
+        }
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.Id);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        _context.Users.Remove(user);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Account deleted successfully." });
+    }
 
 }
