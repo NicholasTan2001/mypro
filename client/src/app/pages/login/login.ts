@@ -89,7 +89,7 @@ export class Login implements OnInit {
       this.authService.setToken(response.token, response.user);
       this.router.navigate(['/myprofile']);
     } catch (error: any) {
-      if (error.error.message = "Block Account") {
+      if (error.error.message == "Blocked Account") {
         this.blockedAccountSuccess = true;
         this.cd.detectChanges();
         return;

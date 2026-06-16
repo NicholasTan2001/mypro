@@ -318,10 +318,10 @@ export class Setting implements OnInit {
         this.cd.detectChanges();
       }
     } catch (error: any) {
-      this.isPrivate = newVerify == 'Yes';
+      this.isVerify = newVerify == 'Yes';
       this.cd.detectChanges();
     } finally {
-      this.isPrivate = newVerify == 'Yes';
+      this.isVerify = newVerify == 'Yes';
       this.cd.detectChanges();
     }
   }
