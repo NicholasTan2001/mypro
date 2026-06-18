@@ -25,6 +25,8 @@ public class AppDbContext : DbContext
 
     public DbSet<Link> Links { get; set; }
 
+    public DbSet<Activity> Activities { get; set; }
+
 
 
 }

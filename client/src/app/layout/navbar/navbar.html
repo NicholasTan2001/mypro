@@ -63,7 +63,14 @@
     </div>
 
     <!-- Right Side -->
-    <div class="flex items-center gap-4">
+    <div class="flex items-center gap-6">
+
+        <!-- Activity Button -->
+        @if (isUser){
+        <a class="relative group font-bold text-2xl transition duration-300 hover:text-yellow-200"
+            routerLink="/activity" routerLinkActive="active-link-3">🕭
+        </a>
+        }
 
         <!-- Login / Logout Button -->
         @if (isUser){

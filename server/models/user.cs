@@ -54,6 +54,9 @@ namespace MyProfile.Models
         [JsonPropertyName("Notification")]
         public string? Notification { get; set; }
 
+        [JsonPropertyName("ViewNum")]
+        public int? ViewNum { get; set; }
+
         public Additional? Additional { get; set; }
 
         public Student? Student { get; set; }
@@ -69,6 +72,8 @@ namespace MyProfile.Models
         public Verification? Verification { get; set; }
 
         public Link? Link { get; set; }
+
+        public Activity? Activity { get; set; }
 
 
     }

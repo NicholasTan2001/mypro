@@ -64,6 +64,7 @@ export class UserDetails implements OnInit {
       this.loadProject(userId);
       this.loadRelationship(userId);
       this.userId = userId;
+      this.updateView(userId);
       this.profileUrl = `http://192.168.1.6:4200/user/${userId}`;
     }
   }
@@ -88,8 +89,8 @@ export class UserDetails implements OnInit {
           sex: response.sex,
           address: response.address,
           block: response.block,
-          birthDate: response.birthDate ? response.birthDate.split('T')[0]
-            : '',
+          viewNum: response.viewNum,
+          birthDate: response.birthDate,
           status: response.status,
           intro: response.intro,
           conclusion: response.conclusion,
@@ -100,23 +101,17 @@ export class UserDetails implements OnInit {
           course: response.course,
           location: response.location,
           blueTick: response.blueTick,
-          studentStartDate: response.studentStartDate ? response.studentStartDate.split('T')[0]
-            : '',
-          studentEndDate: response.studentEndDate ? response.studentEndDate.split('T')[0]
-            : '',
+          studentStartDate: response.studentStartDate,
+          studentEndDate: response.studentEndDat,
           role: response.role,
           company: response.company,
           responsible: response.responsible,
-          empStartDate: response.empStartDate ? response.empStartDate.split('T')[0]
-            : '',
-          empEndDate: response.empEndDate ? response.empEndDate.split('T')[0]
-            : '',
+          empStartDate: response.empStartDate,
+          empEndDate: response.empEndDate,
           linkedinLink: response.linkedinLink,
           portfolioLink: response.portfolioLink,
           additionalLink: response.additionalLink,
         };
-
-        console.log(response.linkedinLink);
         this.cd.detectChanges();
       }
     } catch (error: any) {
@@ -143,8 +138,8 @@ export class UserDetails implements OnInit {
           position: exp.position,
           company: exp.company,
           responsible: exp.responsible,
-          startDate: exp.startDate ? exp.startDate.split('T')[0] : '',
-          endDate: exp.endDate ? exp.endDate.split('T')[0] : ''
+          startDate: exp.startDate,
+          endDate: exp.endDate
         }));
       }
       this.cd.detectChanges();
@@ -172,8 +167,8 @@ export class UserDetails implements OnInit {
           title: pro.title,
           type: pro.type,
           feature: pro.feature,
-          startDate: pro.startDate ? pro.startDate.split('T')[0] : '',
-          endDate: pro.endDate ? pro.endDate.split('T')[0] : ''
+          startDate: pro.startDate,
+          endDate: pro.endDate
         }));
       }
       this.cd.detectChanges();
@@ -201,7 +196,7 @@ export class UserDetails implements OnInit {
           type: ach.type,
           title: ach.title,
           link: ach.link,
-          date: ach.date ? ach.date.split('T')[0] : '',
+          date: ach.date,
         }));
       }
       this.cd.detectChanges();
@@ -297,6 +292,36 @@ export class UserDetails implements OnInit {
     }
 
     return 'https://' + url;
+  }
+
+  async updateView(userId: any) {
+    try {
+      const user = this.authService.getCurrentUser();
+      if (!user) {
+        return;
+      }
+      const response = await firstValueFrom(
+        this.http.put(
+          `${API_CONFIG.usersEndpointBase}/update-view`,
+          {
+            id: Number(userId),
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${this.authService.getToken()}`
+            }
+          }
+        )
+      );
+      if (response) {
+        this.cd.detectChanges();
+      }
+    } catch (error: any) {
+      this.cd.detectChanges();
+    } finally {
+      this.cd.detectChanges();
+    }
   }
 
 }

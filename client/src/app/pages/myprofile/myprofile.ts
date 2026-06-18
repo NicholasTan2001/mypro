@@ -77,6 +77,7 @@ export class Myprofile implements OnInit {
   languageError: string = '';
   birthDateError: string = '';
   bluetick: string = '';
+  viewNum: number = 0;
 
   form = {
     IdentityNumber: '',
@@ -87,7 +88,7 @@ export class Myprofile implements OnInit {
     PhoneNumber: '',
     Sex: '',
     Address: '',
-    BirthDate: ''
+    BirthDate: '',
   }
 
   form2 = {
@@ -204,7 +205,7 @@ export class Myprofile implements OnInit {
           this.form.BirthDate = response.birthDate ? response.birthDate.split('T')[0]
             : '';
           this.bluetick = response.blueTick;
-
+          this.viewNum = response.viewNum;
           this.id = user.id;
         }
       }

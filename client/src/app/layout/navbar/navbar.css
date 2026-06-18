@@ -38,6 +38,12 @@
     background-color: rgb(247, 85, 85) !important;
 }
 
+.active-link-3 {
+    color: rgb(247, 227, 49);
+    transform: rotate(-25deg);
+    transition: all 0.3s ease-in-out;
+}
+
 /* Mobile Active Link */
 .mobile-active-link {
     background-color: rgb(139, 23, 248);

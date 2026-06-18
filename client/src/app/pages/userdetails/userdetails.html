@@ -12,17 +12,25 @@
 
         <!-- User Page Title -->
         @if (user){
-        <div class="flex flex-row gap-1">
-            <h1 reveal class="font-bold md:text-2xl text-xl">
-                <span class="text-purple-600">{{user.name}}</span>'s Profile
-            </h1>
-            @if (user.blueTick == "Yes"){
-            <div reveal>
-                <img src="bluetick.png" alt="BlueTick" class="md:w-8 w-7 rounded-full bluetick-img">
+        <div reveal class="flex md:flex-row flex-col gap-1">
+            <div class="flex flex-row gap-1">
+                <h1 class="font-bold md:text-2xl text-xl">
+                    <span class="text-purple-600">{{user.name}}</span>'s Profile
+                </h1>
+                @if (user.blueTick == "Yes"){
+                <div>
+                    <img src="bluetick.png" alt="BlueTick" class="md:w-8 w-7 rounded-full bluetick-img">
+                </div>
+                }
             </div>
-            }
+            <div class="flex flex-col items-center justify-center">
+                <h1 class="font-bold md:text-2xl text-xl">
+                    [ <span class="text-purple-500">{{user.viewNum}}</span> views ]
+                </h1>
+            </div>
         </div>
         }
+
 
         <!-- User Details (Public) -->
         @if (user && user.intro!=="" && (user.status=="Public" || friends.includes(user.id) || user.id==id)&&
@@ -44,11 +52,14 @@
                 <p class="text-black font-bold">Name: <span class="text-purple-500">{{ user.name }}</span></p>
                 <p class="text-black font-bold">Sex: <span class="text-purple-500">{{ user.sex }}</span></p>
                 <p class="text-black font-bold">Age: <span class="text-purple-500">{{ user.age }}</span></p>
-                <p class="text-black font-bold">Date of Bith: <span class="text-purple-500"> {{ user.birthDate }}</span>
+                <p class="text-black font-bold">Date of Bith: <span class="text-purple-500"> {{ user.birthDate |
+                        date:'d MMMM, y' }}</span>
                 </p>
                 <p class="text-black font-bold">Email: <span class="text-purple-500"> {{ user.email }}</span></p>
-                <p class="text-black font-bold">Phone: <span class="text-purple-500"> {{ user.phoneNumber }}</span></p>
-                <p class="text-black font-bold">Address: <span class="text-purple-500"> {{ user.address }}</span></p>
+                <p class="text-black font-bold">Phone: <span class="text-purple-500"> {{ user.phoneNumber }}</span>
+                </p>
+                <p class="text-black font-bold">Address: <span class="text-purple-500"> {{ user.address }}</span>
+                </p>
                 <p class="text-black font-bold">Country: <span class="text-purple-500">{{ user.country }}</span></p>
             </div>
         </div>
@@ -60,14 +71,16 @@
                 <h2 class="font-bold md:text-lg text-base text-black mb-4">Professional Information</h2>
                 <p class="text-black font-bold">Position: <span class="text-purple-500">Student</span></p>
                 <p class="text-black font-bold">Course: <span class="text-purple-500">{{ user.course }}</span></p>
-                <p class="text-black font-bold">Location: <span class="text-purple-500">{{ user.location }}</span></p>
+                <p class="text-black font-bold">Location: <span class="text-purple-500">{{ user.location }}</span>
+                </p>
                 <div class="flex flex-col md:flex-row gap-2 md:gap-12">
 
-                    <p class="text-black font-bold">Start Date: <span class="text-purple-500">{{ user.studentStartDate
-                            }}</span></p>
+                    <p class="text-black font-bold">Start Date: <span class="text-purple-500">{{
+                            user.studentStartDate |
+                            date:'d MMMM, y' }}</span></p>
                     <p class="text-black font-bold">End Date: <span class="text-purple-500">{{
                             user.studentEndDate
-                            }}</span></p>
+                            | date:'d MMMM, y' }}</span></p>
                 </div>
             </div>
         </div>
@@ -85,10 +98,10 @@
                 </p>
                 <p class="text-black font-bold">Company: <span class="text-purple-500">{{ user.company }}</span></p>
                 <div class="flex flex-col md:flex-row gap-2 md:gap-12">
-                    <p class="text-black font-bold">Start Date: <span class="text-purple-500">{{ user.empStartDate
-                            }}</span></p>
-                    <p class="text-black font-bold">End Date: <span class="text-purple-500">{{ user.empEndDate
-                            }}</span></p>
+                    <p class="text-black font-bold">Start Date: <span class="text-purple-500">{{ user.empStartDate |
+                            date:'d MMMM, y' }}</span></p>
+                    <p class="text-black font-bold">End Date: <span class="text-purple-500">{{ user.empEndDate |
+                            date:'d MMMM, y' }}</span></p>
                 </div>
             </div>
         </div>
@@ -110,8 +123,10 @@
                         </div>
                         <p class="text-gray-400 md:text-sm text-xs mb-2 font-bold">{{ exp.responsible }}</p>
                         <p class="text-gray-400 md:text-sm text-xs font-bold">
-                            {{ exp.startDate }} until
-                            {{ exp.endDate }}
+                            {{ exp.startDate |
+                            date:'d MMMM, y' }} until
+                            {{ exp.endDate |
+                            date:'d MMMM, y' }}
                         </p>
                     </div>
                     }
@@ -136,8 +151,10 @@
                         </div>
                         <p class="text-gray-400 md:text-sm text-xs mb-2 font-bold">{{ pro.feature }}</p>
                         <p class="text-gray-400 md:text-sm text-xs font-bold">
-                            {{ pro.startDate }} until
-                            {{ pro.endDate }}
+                            {{ pro.startDate |
+                            date:'d MMMM, y' }} until
+                            {{ pro.endDate |
+                            date:'d MMMM, y' }}
                         </p>
                     </div>
                     }
@@ -160,11 +177,12 @@
                                 <p class="md:text-sm text-xs text-purple-400 font-bold mt-2">{{ ach.type }}</p>
                             </div>
                         </div>
-                        <p class="text-gray-400 md:text-sm text-xs font-bold">
-                            {{ ach.date }}
+                        <p class="text-gray-400 md:text-sm text-xs font-bold mb-2">
+                            {{ ach.date |
+                            date:'d MMMM, y' }}
                         </p>
                         <a [href]="getValidUrl(ach.link)" target="_blank" rel="noopener noreferrer"
-                            class="text-gray-400 md:text-sm text-xs font-bold mt-2 hover:text-blue-400 hover:underline break-words max-w-3xl">
+                            class="text-gray-400 md:text-sm text-xs font-bold hover:text-blue-400 hover:underline break-words max-w-3xl">
                             {{ ach.link }}
                         </a>
                     </div>

@@ -8,6 +8,7 @@ using MyProfile.Models;
 using BCrypt.Net;
 using System.Security.Cryptography;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Identity.Client;
 
 [Route("api/users")]
 [ApiController]
@@ -48,6 +49,7 @@ public class UsersController : ControllerBase
         user.Admin = "No";
         user.BlueTick = "No";
         user.Notification = "No";
+        user.ViewNum = 0;
         user.Additional = new Additional
         {
             Intro = "",
@@ -64,6 +66,8 @@ public class UsersController : ControllerBase
         };
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
+        string history = "New account is registered.";
+        await AddActivity(user.Id, history);
         return Ok(new
         {
             message = "Registration successful.",
@@ -255,6 +259,8 @@ MyProfile Team
         }
         user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
         _context.Users.Update(user);
+        string history = "Account password is changed.";
+        await AddActivity(user.Id, history);
         await _context.SaveChangesAsync();
         return Ok(new { message = "Password changed successfully." });
     }
@@ -264,21 +270,17 @@ MyProfile Team
     {
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
-
         if (user == null)
         {
             return BadRequest(new { message = "Identity number not found." });
         }
-
         string tempPassword = Guid.NewGuid().ToString().Substring(0, 12);
-
         user.Password = BCrypt.Net.BCrypt.HashPassword(tempPassword);
-
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-
         await SendPasswordResetEmail(user, tempPassword);
-
+        string history = "Account password is changed into temporary password.";
+        await AddActivity(user.Id, history);
         return Ok(new { message = "Password reset instructions sent to your email." });
     }
 
@@ -363,9 +365,11 @@ MyProfile Team
         {
             user.BirthDate = request.BirthDate;
         }
+        string history = "General Personal Information is updated.";
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-        return Ok(new { message = "Profile updated successfully.", user });
+        await AddActivity(user.Id, history);
+        return Ok(new { message = "Profile updated successfully." });
     }
 
     [HttpGet("search")]
@@ -379,6 +383,7 @@ MyProfile Team
         var users = await _context.Users
         .Include(u => u.Additional)
             .Where(u => u.Name!.ToLower().Contains(name.ToLower()))
+            .OrderByDescending(u => u.ViewNum)
             .Select(u => new
             {
                 u.Id,
@@ -392,10 +397,10 @@ MyProfile Team
                 u.Admin,
                 u.Block,
                 u.BlueTick,
+                u.ViewNum,
                 intro = u.Additional!.Intro ?? ""
             })
             .ToListAsync();
-
         return Ok(new { users });
     }
 
@@ -432,6 +437,7 @@ MyProfile Team
             user.Admin,
             user.BlueTick,
             user.Notification,
+            user.ViewNum,
             intro = user.Additional!.Intro ?? "",
             conclusion = user.Additional!.Conclusion ?? "",
             hobby = user.Additional!.Hobby ?? "",
@@ -507,6 +513,10 @@ MyProfile Team
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
 
+        string history = "Introduction is updated.";
+
+        await AddActivity(user.Id, history);
+
         return Ok(new { message = "Introduction updated successfully." });
     }
 
@@ -530,10 +540,12 @@ MyProfile Team
         user.Status = request.Status;
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-
+        string history = "Private Profile Visibility settings is updated.";
+        int idNum = Convert.ToInt32(user?.Id);
+        await AddActivity(idNum, history);
         return Ok(new
         {
-            status = user.Status
+            status = user?.Status
         });
     }
 
@@ -556,11 +568,13 @@ MyProfile Team
 
         user.Verify = request.Verify;
         _context.Users.Update(user);
+        string history = "OTP Verification settings is updated.";
+        int idNum = Convert.ToInt32(user?.Id);
+        await AddActivity(idNum, history);
         await _context.SaveChangesAsync();
-
         return Ok(new
         {
-            verify = user.Verify
+            verify = user?.Verify
         });
     }
 
@@ -581,9 +595,12 @@ MyProfile Team
         user.Notification = request.Notification;
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
+        string history = "Notification settings is updated.";
+        int idNum = Convert.ToInt32(user?.Id);
+        await AddActivity(idNum, history);
         return Ok(new
         {
-            notification = user.Notification
+            notification = user?.Notification
         });
     }
 
@@ -606,10 +623,10 @@ MyProfile Team
         }
 
         user.Additional.Conclusion = request.Conclusion ?? "";
-
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-
+        string history = "Conclusion is updated.";
+        await AddActivity(user.Id, history);
         return Ok(new { message = "Conclusion updated successfully." });
     }
 
@@ -681,6 +698,8 @@ MyProfile Team
             _context.Organizations.Remove(organization);
         }
 
+        string history = "Profesional Information is updated.";
+        await AddActivity(user.Id, history);
         await _context.SaveChangesAsync();
         return Ok(new
         {
@@ -732,7 +751,8 @@ MyProfile Team
         {
             _context.Students.Remove(student);
         }
-
+        string history = "Profesional Information is updated.";
+        await AddActivity(user.Id, history);
         await _context.SaveChangesAsync();
         return Ok(new
         {
@@ -758,7 +778,6 @@ MyProfile Team
                 e.EndDate
             })
             .ToListAsync();
-
         return Ok(new { experiences });
     }
 
@@ -784,6 +803,8 @@ MyProfile Team
         };
         _context.Experiences.Add(experience);
         await _context.SaveChangesAsync();
+        string history = "Woking Experience is added.";
+        await AddActivity(user.Id, history);
         return Ok(new
         {
             message = "Experience added successfully.",
@@ -800,9 +821,10 @@ MyProfile Team
         {
             return NotFound(new { message = "Experience not found." });
         }
+        string history = "Working Experience is deleted.";
+        await AddActivity(experience.UserId, history);
         _context.Experiences.Remove(experience);
         await _context.SaveChangesAsync();
-
         return Ok(new { message = "Experience deleted successfully." });
     }
 
@@ -826,10 +848,10 @@ MyProfile Team
             Link = request.Link,
             Date = request.Date
         };
-
         _context.Achievements.Add(achievement);
         await _context.SaveChangesAsync();
-
+        string history = "Achievement is added.";
+        await AddActivity(user.Id, history);
         return Ok(new
         {
             message = "Achievement added successfully.",
@@ -852,7 +874,6 @@ MyProfile Team
                 a.Date
             })
             .ToListAsync();
-
         return Ok(new { achievements });
     }
 
@@ -862,15 +883,14 @@ MyProfile Team
     {
         var achievement = await _context.Achievements
             .FirstOrDefaultAsync(a => a.Id == id);
-
         if (achievement == null)
         {
             return NotFound(new { message = "Achievement not found." });
         }
-
+        string history = "Achievement is deleted.";
+        await AddActivity(achievement.UserId, history);
         _context.Achievements.Remove(achievement);
         await _context.SaveChangesAsync();
-
         return Ok(new { message = "Achievement deleted successfully." });
     }
 
@@ -895,6 +915,8 @@ MyProfile Team
         };
         _context.Projects.Add(project);
         await _context.SaveChangesAsync();
+        string history = "Project is added.";
+        await AddActivity(user.Id, history);
         return Ok(new
         {
             message = "Project added successfully.",
@@ -932,6 +954,8 @@ MyProfile Team
         {
             return NotFound(new { message = "Project not found." });
         }
+        string history = "Project is deleted.";
+        await AddActivity(project.UserId, history);
         _context.Projects.Remove(project);
         await _context.SaveChangesAsync();
         return Ok(new { message = "Project deleted successfully." });
@@ -966,7 +990,8 @@ MyProfile Team
 
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-
+        string history = "Additional Information is updated.";
+        await AddActivity(user.Id, history);
         return Ok(new
         {
             hobby = user.Additional.Hobby,
@@ -1007,6 +1032,15 @@ MyProfile Team
             UserId = user.Id,
             Permission = request.Permission
         };
+        var friendId1 = await _context.Users
+           .FirstOrDefaultAsync(u => u.Id == request.Permission);
+        string history1 = "Friend Request is sent to " + friendId1?.Name + ".";
+        await AddActivity(user.Id, history1);
+        var friendId2 = await _context.Users
+   .FirstOrDefaultAsync(u => u.Id == user.Id);
+        string history2 = "Friend Request is received from " + friendId2?.Name + ".";
+        int idNum = Convert.ToInt32(request.Permission);
+        await AddActivity(idNum, history2);
         _context.Relationships.Add(relationship);
         await _context.SaveChangesAsync();
         return Ok(new { message = "Permission added successfully." });
@@ -1066,7 +1100,6 @@ MyProfile Team
     [Authorize]
     public async Task<ActionResult> AcceptFriendRequest([FromBody] UpdateFriendRequest request)
     {
-        Console.WriteLine(request.IdentityNumber);
         var user = await _context.Users
            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
         if (user == null)
@@ -1091,6 +1124,16 @@ MyProfile Team
         };
         _context.Relationships.Add(reverseRelationship);
         await _context.SaveChangesAsync();
+
+        var friendId1 = await _context.Users
+           .FirstOrDefaultAsync(u => u.Id == user.Id);
+        string history1 = friendId1?.Name + " is your friend now.";
+        int idNum = Convert.ToInt32(friendRequest.UserId);
+        await AddActivity(idNum, history1);
+        var friendId2 = await _context.Users
+   .FirstOrDefaultAsync(u => u.Id == idNum);
+        string history2 = "Accepted friend request. " + friendId2?.Name + " is your friend now.";
+        await AddActivity(user.Id, history2);
         return Ok(new { message = "Friend request accepted." });
     }
 
@@ -1106,6 +1149,16 @@ MyProfile Team
         }
         _context.Relationships.Remove(relationship);
         await _context.SaveChangesAsync();
+        var friendId1 = await _context.Users
+   .FirstOrDefaultAsync(u => u.Id == relationship.Permission);
+        string history1 = "Friend Request is rejected by " + friendId1?.Name + ".";
+        int idNum1 = Convert.ToInt32(relationship.UserId);
+        await AddActivity(idNum1, history1);
+        var friendId2 = await _context.Users
+.FirstOrDefaultAsync(u => u.Id == relationship.UserId);
+        string history2 = "Friend Request from " + friendId2?.Name + " is rejected.";
+        int idNum2 = Convert.ToInt32(relationship.Permission);
+        await AddActivity(idNum2, history2);
         return Ok(new { message = "Relationship deleted successfully." });
     }
 
@@ -1162,6 +1215,17 @@ MyProfile Team
         _context.Relationships.Remove(relationship);
         _context.Relationships.Remove(relationship2);
         await _context.SaveChangesAsync();
+
+        var friendId1 = await _context.Users
+   .FirstOrDefaultAsync(u => u.Id == relationship.Friend);
+        string history1 = "Friendship between you and " + friendId1?.Name + " is removed.";
+        int idNum1 = Convert.ToInt32(relationship.UserId);
+        await AddActivity(idNum1, history1);
+        var friendId2 = await _context.Users
+   .FirstOrDefaultAsync(u => u.Id == relationship.UserId);
+        string history2 = "Friendship between you and " + friendId2?.Name + " is removed.";
+        int idNum2 = Convert.ToInt32(relationship.Friend);
+        await AddActivity(idNum2, history2);
         return Ok(new { message = "Relationship deleted successfully." });
     }
 
@@ -1197,7 +1261,6 @@ MyProfile Team
     {
         var verification = await _context.Verifications
             .FirstOrDefaultAsync(u => u.Id == id);
-
         if (verification == null)
         {
             return Unauthorized(new { message = "Verification not found." });
@@ -1299,7 +1362,11 @@ MyProfile Team
         try
         {
             await SendReportEmail(request.Email ?? "", request.Name ?? "", request.IdentityNumber ?? "", user.Email ?? "", user.Name ?? "", user.IdentityNumber ?? "", request.Report ?? "");
-
+            var tmpUser = await _context.Users
+                        .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+            string history = "Friendship between you and is removed.";
+            int idNum = Convert.ToInt32(tmpUser?.Id);
+            await AddActivity(idNum, history);
             return Ok(new { message = "Report sent successfully." });
         }
         catch (Exception ex)
@@ -1377,9 +1444,15 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         user.Admin = "Yes";
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
+        string history1 = user.Name + " is added as MyProfile admin.";
+        int idNum1 = Convert.ToInt32(admin?.Id);
+        await AddActivity(idNum1, history1);
+        string history2 = "Account added as MyProfile admin.";
+        int idNum2 = Convert.ToInt32(user?.Id);
+        await AddActivity(idNum2, history2);
         return Ok(new
         {
-            admin = user.Admin
+            admin = user?.Admin
         });
     }
 
@@ -1422,9 +1495,15 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         user.Admin = "No";
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
+        string history1 = user.Name + " is removed from MyProfile admin.";
+        int idNum1 = Convert.ToInt32(admin?.Id);
+        await AddActivity(idNum1, history1);
+        string history2 = "Account removed from MyProfile admin.";
+        int idNum2 = Convert.ToInt32(user?.Id);
+        await AddActivity(idNum2, history2);
         return Ok(new
         {
-            admin = user.Admin
+            admin = user?.Admin
         });
     }
 
@@ -1447,9 +1526,15 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         user.Block = "No";
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
+        string history1 = user.Name + "'s account is unblocked.";
+        int idNum1 = Convert.ToInt32(admin?.Id);
+        await AddActivity(idNum1, history1);
+        string history2 = "Account is unblocked.";
+        int idNum2 = Convert.ToInt32(user?.Id);
+        await AddActivity(idNum2, history2);
         return Ok(new
         {
-            block = user.Block
+            block = user?.Block
         });
     }
 
@@ -1472,10 +1557,16 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         }
         user.Block = "Yes";
         _context.Users.Update(user);
+        string history1 = user.Name + "'s account is blocked.";
+        int idNum1 = Convert.ToInt32(admin?.Id);
+        await AddActivity(idNum1, history1);
+        string history2 = "Account is blocked.";
+        int idNum2 = Convert.ToInt32(user?.Id);
+        await AddActivity(idNum2, history2);
         await _context.SaveChangesAsync();
         return Ok(new
         {
-            block = user.Block
+            block = user?.Block
         });
     }
 
@@ -1519,6 +1610,8 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         user.Link.Additional = request.Additional ?? "";
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
+        string history = "Links are updated.";
+        await AddActivity(user.Id, history);
         return Ok(new
         {
             linkedin = user.Link.Linkedin,
@@ -1558,7 +1651,9 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         }
         user.BlueTick = "Pending";
         _context.Users.Update(user);
-        await _context.SaveChangesAsync();
+        string history = "BlueTick Badge request is sent.";
+        int idNum = Convert.ToInt32(user?.Id);
+        await AddActivity(idNum, history);
         return Ok(new { message = "BlueTick updated successfully." });
     }
 
@@ -1581,7 +1676,6 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         return Ok(new { BlueTicks });
     }
 
-
     [HttpPut("reject-bluetick")]
     [Authorize]
     public async Task<ActionResult> RejectBlueTick([FromBody] RejectBlueTickRequest request)
@@ -1601,9 +1695,14 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         user.BlueTick = "No";
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-        return Ok(new { message = "BlueTick updated successfully." });
+        string history1 = user.Name + "'s BlueTick Badge is rejected.";
+        int idNum1 = Convert.ToInt32(admin?.Id);
+        await AddActivity(idNum1, history1);
+        string history2 = "BlueTick Badge is rejected.";
+        int idNum2 = Convert.ToInt32(user?.Id);
+        await AddActivity(idNum2, history2);
+        return Ok(new { message = "BlueTick  updated successfully." });
     }
-
 
     [HttpPut("accept-bluetick")]
     [Authorize]
@@ -1624,6 +1723,12 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         user.BlueTick = "Yes";
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
+        string history1 = user.Name + "'s BlueTick Badge is applied.";
+        int idNum1 = Convert.ToInt32(admin?.Id);
+        await AddActivity(idNum1, history1);
+        string history2 = "BlueTick Badge is applied.";
+        int idNum2 = Convert.ToInt32(user?.Id);
+        await AddActivity(idNum2, history2);
         return Ok(new { message = "BlueTick updated successfully." });
     }
 
@@ -1645,7 +1750,91 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         }
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
+        string history = user.Name + "'s account is removed";
+        int idNum = Convert.ToInt32(admin?.Id);
+        await AddActivity(idNum, history);
         return Ok(new { message = "Account deleted successfully." });
     }
 
+    private async Task AddActivity(int userId, string activity)
+    {
+        try
+        {
+            var activityLog = new Activity
+            {
+                UserId = userId,
+                History = activity,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.Activities.Add(activityLog);
+            await _context.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error logging activity: {ex.Message}");
+        }
+    }
+
+    [HttpGet("history/{id}")]
+    [Authorize]
+    public async Task<ActionResult> GetHistory(int id)
+    {
+        var activities = await _context.Activities
+            .Where(a => a.UserId == id)
+            .OrderByDescending(a => a.CreatedAt)
+            .Select(a => new
+            {
+                a.Id,
+                a.History,
+                a.CreatedAt,
+            })
+            .ToListAsync();
+        return Ok(new { activities });
+    }
+
+    [HttpPost("delete-history")]
+    [Authorize]
+    public async Task<ActionResult> DeleteHistory([FromBody] DeleteHistoryRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+        bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
+        if (!isPasswordValid)
+        {
+            return Unauthorized(new { message = "Invalid password." });
+        }
+        var history = await _context.Activities
+            .Where(a => a.UserId == user.Id)
+            .ToListAsync();
+        if (history == null || history.Count <= 0)
+        {
+            return Unauthorized(new { message = "History is empty." });
+        }
+        _context.Activities.RemoveRange(history);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "Account deleted successfully." });
+    }
+
+    [HttpPut("update-view")]
+    [Authorize]
+    public async Task<ActionResult> UpdateView([FromBody] UpdateViewRequest request)
+    {
+        var user = await _context.Users
+            .FirstOrDefaultAsync(u => u.Id == request.Id);
+        if (user == null)
+        {
+            return Unauthorized(new { message = "User not found." });
+        }
+
+        user.ViewNum = user.ViewNum + 1;
+
+        _context.Users.Update(user);
+        await _context.SaveChangesAsync();
+        return Ok(new { message = "View number is updated successfully." });
+    }
 }

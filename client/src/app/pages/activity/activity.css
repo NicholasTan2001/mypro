@@ -1,0 +1,10 @@
+/* h1 Color */
+h1 {
+    color: white;
+}
+
+/* Activity Card */
+.activity-card {
+    box-shadow: 0 0 40px rgba(227, 224, 224, 0.8),
+        0 0 60px rgba(20, 20, 20, 0.95);
+}

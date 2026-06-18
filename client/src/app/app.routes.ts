@@ -10,6 +10,7 @@ import { UserDetails } from './pages/userdetails/userdetails';
 import { Friend } from './pages/friend/friend';
 import { Verify } from './pages/verify/verify';
 import { Admin } from './pages/admin/admin';
+import { Activity } from './pages/activity/activity';
 
 import { AuthGuardService, PublicGuardService } from './services/auth.guard';
 import { VerifyGuard } from './services/verify.guard';
@@ -39,6 +40,11 @@ export const routes: Routes = [
     {
         path: 'friend',
         component: Friend,
+        canActivate: [AuthGuardService, VerifyGuard]
+    },
+    {
+        path: 'activity',
+        component: Activity,
         canActivate: [AuthGuardService, VerifyGuard]
     },
     {

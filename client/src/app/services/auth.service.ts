@@ -150,6 +150,7 @@ export class AuthService {
 
     if (token && this.isTokenExpired()) {
       console.warn("Token expired. Clearing data...");
+      this.expireTokenSubject.next(true);
       this.logout();
       return;
     }

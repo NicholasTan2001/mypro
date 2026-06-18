@@ -319,6 +319,7 @@ export class Admin implements OnInit {
         this.http.put(
           `${API_CONFIG.usersEndpointBase}/reject-bluetick`,
           {
+            adminId: this.id,
             id: result.id,
           },
           {
@@ -541,6 +542,7 @@ export class Admin implements OnInit {
 
   async acceptBlueTick(request: any) {
     this.isLoading8 = true;
+    this.isLoading3 = true;
     try {
       const response = await firstValueFrom(
         this.http.put(
@@ -562,11 +564,13 @@ export class Admin implements OnInit {
         this.onSearch(this.searchName);
         this.acceptBlueTickSuccess = true;
         this.isLoading8 = false;
+        this.isLoading3 = false;
         this.cd.detectChanges();
       }
     } catch (error: any) {
       console.error('Failed to delete admin:', error);
       this.isLoading8 = false;
+      this.isLoading3 = false;
       this.cd.detectChanges();
     }
   }
