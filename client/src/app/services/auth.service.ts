@@ -44,8 +44,8 @@ export class AuthService {
     @Inject(PLATFORM_ID) private platformId: Object
   ) { }
 
-  login(form: any): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, form);
+  login(form: any, language: string): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(`${this.apiUrl}/login`, { ...form, language });
   }
 
   register(form: any): Observable<any> {

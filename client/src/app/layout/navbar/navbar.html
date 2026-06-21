@@ -7,7 +7,7 @@
         <div class="flex items-center gap-4 text-xl font-bold">
             <img src="logo.png" alt="MyProfile Logo" class="md:w-10 md:h-10 w-8 h-8">
             <a routerLink="/home" class="md:text-2xl text-xl font-bold no-underline text-white">
-                <span class="text-purple-600">My</span>Profile
+                <span class="text-purple-600"> {{ 'nav.my' | translate }}</span>{{ 'nav.profile' | translate }}
             </a>
         </div>
 
@@ -15,38 +15,38 @@
         <div class="hidden xl:flex items-center gap-6">
             <a routerLink="/home" routerLinkActive="active-link" [routerLinkActiveOptions]="{ exact: true }"
                 class="relative group font-medium px-3 py-2 transition duration-300 hover:text-purple-300">
-                Home
+                {{ 'nav.home' | translate }}
                 <span
                     class="absolute left-0 -bottom-1 w-0 h-[2px] bg-purple-300 transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a routerLink="/about" routerLinkActive="active-link"
                 class="relative group font-medium px-3 py-2 transition duration-300 hover:text-purple-300">
-                About Us
+                {{ 'nav.about' | translate }}
                 <span
                     class="absolute left-0 -bottom-1 w-0 h-[2px] bg-purple-300 transition-all duration-300 group-hover:w-full"></span>
             </a>
             @if (isUser){
             <a routerLink="/myprofile" routerLinkActive="active-link-2"
                 class="relative group font-medium px-3 py-2 transition duration-300 hover:text-red-300">
-                MyProfile
+                {{ 'nav.myprofile' | translate }}
                 <span
                     class="absolute left-0 -bottom-1 w-0 h-[2px] bg-red-300 transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a routerLink="/search" routerLinkActive="active-link-2"
                 class="relative group font-medium px-3 py-2 transition duration-300 hover:text-red-300">
-                Search
+                {{ 'nav.search' | translate }}
                 <span
                     class="absolute left-0 -bottom-1 w-0 h-[2px] bg-red-300 transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a routerLink="/friend" routerLinkActive="active-link-2"
                 class="relative group font-medium px-3 py-2 transition duration-300 hover:text-red-300">
-                Friends
+                {{ 'nav.friends' | translate }}
                 <span
                     class="absolute left-0 -bottom-1 w-0 h-[2px] bg-red-300 transition-all duration-300 group-hover:w-full"></span>
             </a>
             <a routerLink="/setting" routerLinkActive="active-link-2"
                 class="relative group font-medium px-3 py-2 transition duration-300 hover:text-red-300">
-                Settings
+                {{ 'nav.settings' | translate }}
                 <span
                     class="absolute left-0 -bottom-1 w-0 h-[2px] bg-red-300 transition-all duration-300 group-hover:w-full"></span>
             </a>
@@ -54,7 +54,7 @@
             @if (isUser && isAdmin){
             <a routerLink="/admin" routerLinkActive="active-link-2"
                 class="relative group font-medium px-3 py-2 transition duration-300 hover:text-red-300">
-                Admin
+                {{ 'nav.admin' | translate }}
                 <span
                     class="absolute left-0 -bottom-1 w-0 h-[2px] bg-red-300 transition-all duration-300 group-hover:w-full"></span>
             </a>
@@ -63,7 +63,7 @@
     </div>
 
     <!-- Right Side -->
-    <div class="flex items-center gap-6">
+    <div class="flex items-center md:gap-6 gap-4">
 
         <!-- Activity Button -->
         @if (isUser){
@@ -72,11 +72,34 @@
         </a>
         }
 
+        <!-- Language Button -->
+        <div class="language-menu">
+            <button type="button" class="font-bold md:text-base text-sm px-3 py-2 cursor-pointer hover:text-purple-300"
+                (click)="toggleLanguageMenu()" [attr.aria-expanded]="languageMenuOpen" [ngClass]="{
+    'text-purple-500': languageMenuOpen
+  }">
+                {{ languageService.currentLanguage === 'en' ? 'English' : '中文' }}
+            </button>
+
+            @if (languageMenuOpen) {
+            <div class="language-menu-options">
+                <button type="button" class="language-menu-option md:text-base text-sm"
+                    [class.selected-language]="languageService.currentLanguage === 'en'" (click)="selectLanguage('en')">
+                    English
+                </button>
+                <button type="button" class="language-menu-option md:text-base text-sm"
+                    [class.selected-language]="languageService.currentLanguage === 'zh'" (click)="selectLanguage('zh')">
+                    中文
+                </button>
+            </div>
+            }
+        </div>
+
         <!-- Login / Logout Button -->
         @if (isUser){
-        <app-button label="Logout" variant="danger" (click)="logout()" />
+        <app-button [label]="'nav.logout' | translate" variant="danger" (click)="logout()" />
         } @else{
-        <app-button routerLink="/login" label="Login" />
+        <app-button routerLink="/login" [label]="'nav.login' | translate" />
         }
 
         <!-- Hamburger Icon -->
@@ -92,34 +115,34 @@
         <a routerLink="/home" (click)="closeMenu()" routerLinkActive="mobile-active-link"
             [routerLinkActiveOptions]="{ exact: true }"
             class="px-6 py-3 font-medium hover:bg-purple-400 hover:text-white hover:px-12 transition duration-300">
-            Home
+            {{ 'nav.home' | translate }}
         </a>
         <a routerLink="/about" (click)="closeMenu()" routerLinkActive="mobile-active-link"
             class="px-6 py-3 font-medium hover:bg-purple-400 hover:text-white hover:px-12 transition duration-300">
-            About
+            {{ 'nav.about' | translate }}
         </a>
         @if (isUser){
         <a routerLink="/myprofile" (click)="closeMenu()" routerLinkActive="mobile-active-link-2"
             class="px-6 py-3 font-medium hover:bg-red-400 hover:text-white hover:px-12 transition duration-300">
-            MyProfile
+            {{ 'nav.myprofile' | translate }}
         </a>
         <a routerLink="/search" (click)="closeMenu()" routerLinkActive="mobile-active-link-2"
             class="px-6 py-3 font-medium hover:bg-red-400 hover:text-white hover:px-12 transition duration-300">
-            Search
+            {{ 'nav.search' | translate }}
         </a>
         <a routerLink="/friend" (click)="closeMenu()" routerLinkActive="mobile-active-link-2"
             class="px-6 py-3 font-medium hover:bg-red-400 hover:text-white hover:px-12 transition duration-300">
-            Friends
+            {{ 'nav.friends' | translate }}
         </a>
         <a routerLink="/setting" (click)="closeMenu()" routerLinkActive="mobile-active-link-2"
             class="px-6 py-3 font-medium hover:bg-red-400 hover:text-white hover:px-12 transition duration-300">
-            Settings
+            {{ 'nav.settings' | translate }}
         </a>
         }
         @if (isUser && isAdmin){
         <a routerLink="/admin" (click)="closeMenu()" routerLinkActive="mobile-active-link-2"
             class="px-6 py-3 font-medium hover:bg-red-400 hover:text-white hover:px-12 transition duration-300">
-            Admin
+            {{ 'nav.admin' | translate }}
         </a>
         }
     </div>

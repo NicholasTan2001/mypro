@@ -11,10 +11,13 @@ import { Button } from '../../component/button/button';
 import { FormsModule } from '@angular/forms';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router } from '@angular/router';
 import { privateDecrypt } from 'crypto';
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-verify',
-  imports: [CommonModule, Reveal, InputComponent, Button, FormsModule],
+  imports: [CommonModule, Reveal, InputComponent, Button, FormsModule, TranslateModule],
   standalone: true,
   templateUrl: './verify.html',
   styleUrl: './verify.css'
@@ -36,12 +39,16 @@ export class Verify implements OnInit {
   isLoading: boolean = false;
   passwordError: string = '';
   otp: string = '';
+  language: string = '';
 
   constructor(
     private authService: AuthService,
     private http: HttpClient,
     private cd: ChangeDetectorRef,
-    private router: Router
+    private router: Router,
+    private translate: TranslateService,
+    public languageService: LanguageService
+
   ) { }
 
   ngOnInit() {
@@ -49,13 +56,14 @@ export class Verify implements OnInit {
   }
 
   async loadVerification() {
+    this.language = this.languageService.currentLanguage;
     try {
       const user = this.authService.getCurrentUser();
       if (!user) return;
       this.form.name = user.name;
       const response: any = await firstValueFrom(
         this.http.get(
-          `${API_CONFIG.usersEndpointBase}/verification/${user.id}`,
+          `${API_CONFIG.usersEndpointBase}/verification/${user.id}/${this.language}`,
           {
             headers: {
               'Authorization': `Bearer ${this.authService.getToken()}`
@@ -83,25 +91,25 @@ export class Verify implements OnInit {
     this.passwordError = '';
     this.isLoading = true;
     if (!this.form2.password) {
-      this.passwordError = "OTP password is required.";
+      this.passwordError = this.translate.instant('verify.errorpassword1');
       this.isLoading = false;
       this.cd.detectChanges();
       return;
     }
     if (this.form2.password.length < 6) {
-      this.passwordError = "Valid OTP password is required.";
+      this.passwordError = this.translate.instant('verify.errorpassword2');
       this.isLoading = false;
       this.cd.detectChanges();
       return;
     }
     if (this.form2.password != this.otp) {
-      this.passwordError = "OTP password is wrong.";
+      this.passwordError = this.translate.instant('verify.errorpassword3');
       this.isLoading = false;
       this.cd.detectChanges();
       return;
     }
     if (new Date(this.form.expiredAt).getTime() < new Date().getTime()) {
-      this.passwordError = "OTP Password is expired.";
+      this.passwordError = this.translate.instant('verify.errorpassword4');
       this.isLoading = false;
       this.cd.detectChanges();
       return;

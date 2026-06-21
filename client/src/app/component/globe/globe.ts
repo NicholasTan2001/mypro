@@ -1,8 +1,11 @@
 import { Component, OnInit, ElementRef, ViewChild, OnDestroy, PLATFORM_ID, Inject } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-globe',
+  imports: [TranslateModule],
   standalone: true,
   templateUrl: './globe.html',
 })
@@ -18,7 +21,7 @@ export class Globe implements OnInit, OnDestroy {
   private velocity = [0, 0];
   private animFrame = 0;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object) { }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object,) { }
 
   ngOnInit() {
     if (!isPlatformBrowser(this.platformId)) return;

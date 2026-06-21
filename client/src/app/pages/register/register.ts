@@ -10,11 +10,14 @@ import { CommonModule } from "@angular/common";
 import { Reveal } from "../../directive/reveal";
 import { ChangeDetectorRef } from '@angular/core';
 import { API_CONFIG } from '../../config/api.config';
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule, InputComponent, RouterLink, Button, CommonModule, Reveal],
+  imports: [FormsModule, InputComponent, RouterLink, Button, CommonModule, Reveal, TranslateModule],
   templateUrl: './register.html',
   styleUrl: './register.css'
 })
@@ -50,7 +53,8 @@ export class Register {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private translate: TranslateService
   ) { }
 
   async onSubmit() {
@@ -66,72 +70,72 @@ export class Register {
     this.birthDateError = '';
     try {
       if (!this.form.IdentityNumber) {
-        this.identityNumberError = 'Identity number is required.';
+        this.identityNumberError = this.translate.instant('register.errorid1');
         this.isLoading = false;
         return;
       }
       if (!/^\d{12}$/.test(this.form.IdentityNumber)) {
-        this.identityNumberError = 'Valid identity number is required.';
+        this.identityNumberError = this.translate.instant('register.errorid2');
         this.isLoading = false;
         return;
       }
       if (!this.form.Name) {
-        this.nameError = 'Name is required.';
+        this.nameError = this.translate.instant('register.errorname');
         this.isLoading = false;
         return;
       }
       if (!this.form.Age) {
-        this.ageError = 'Age is required.';
+        this.ageError = this.translate.instant('register.errorage1');
         this.isLoading = false;
         return;
       }
       if (Number(this.form.Age) <= 0 || Number(this.form.Age) > 120 || isNaN(Number(this.form.Age))) {
-        this.ageError = 'Valid age is required.';
+        this.ageError = this.translate.instant('register.errorage2');
         this.isLoading = false;
         return;
       }
       if (!this.form.BirthDate) {
-        this.birthDateError = 'Date of birth is required.';
+        this.birthDateError = this.translate.instant('register.errordate');
         this.isLoading = false;
         return;
       }
       if (!this.form.Email) {
-        this.ageError = 'Email is required.';
+        this.ageError = this.translate.instant('register.erroremail1');
         this.isLoading = false;
         return;
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.Email)) {
-        this.emailError = 'Valid email is required.';
+        this.emailError = this.translate.instant('register.erroremail2');
         this.isLoading = false;
         return;
       }
       if (!this.form.PhoneNumber) {
-        this.phoneNumberError = 'Phone number is required.';
+        this.phoneNumberError = this.translate.instant('register.errorphone1');
         this.isLoading = false;
         return;
       }
       if (!/^\d{10}$/.test(this.form.PhoneNumber)) {
-        this.phoneNumberError = 'Valid phone number is required.';
+        this.phoneNumberError = this.translate.instant('register.errorphone2');
         this.isLoading = false;
         return;
       }
       if (!this.form.Password) {
-        this.passwordError = 'Password is required.';
+        this.passwordError = this.translate.instant('register.errorpassword1');
         this.isLoading = false;
         return;
       }
       if (this.form.Password.length < 8) {
-        this.passwordError = 'Password must be at least 8 characters long.';
+        this.passwordError = this.translate.instant('register.errorpassword2');
         this.isLoading = false;
         return;
       }
       if (this.form.Password !== this.form.ConfirmPassword) {
-        this.confirmPasswordError = 'Passwords do not match.';
+        this.confirmPasswordError = this.translate.instant('register.errorconfirmpassword');
         this.isLoading = false;
         return;
       }
       if (!this.form.Address) {
-        this.addressError = 'Address is required.';
+        this.addressError = this.translate.instant('register.erroraddress');
         this.isLoading = false;
         return;
       }
@@ -153,9 +157,10 @@ export class Register {
       }
     } catch (error: any) {
       this.isLoading = false;
-      console.log('Register error:', error);
       const message = error?.error?.message || 'Registration failed. Please try again.';
-      this.identityNumberError = message;
+      if (message == "Identity number already registered.") {
+        this.identityNumberError = this.translate.instant('register.errorid3');
+      }
       this.cd.detectChanges();
     }
   }

@@ -11,20 +11,25 @@
     <div class=" flex flex-col items-center justify-center">
 
         <!-- Login Title-->
-        <h1 reveal class="font-bold md:text-2xl text-xl mb-12">Login <span class="text-purple-600">My</span>Profile
+        <h1 reveal class="font-bold md:text-2xl text-xl mb-12">{{ 'login.login' |
+            translate }}<span class="text-purple-600">{{ 'nav.my' |
+                translate }}</span>{{ 'nav.profile' |
+            translate }}
         </h1>
 
         <!-- Login Form-->
         <div reveal class="login-card flex flex-col bg-white rounded-lg p-6 md:w-120 w-full mb-12">
-            <h2 class="text-center font-bold md:text-lg text-base text-purple-600">Login Now</h2>
+            <h2 class="text-center font-bold md:text-lg text-base text-purple-600">{{ 'login.loginnow' |
+                translate }}</h2>
             <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 mt-4">
-                <app-input [(model)]="form.IdentityNumber" label="Identity Number" type="text"
-                    placeholder="010118145248" maxlength="12" inputmode="numeric">
+                <app-input [(model)]="form.IdentityNumber" label="{{ 'login.id' |
+            translate }}" type="text" placeholder="010118145248" maxlength="12" inputmode="numeric">
                 </app-input>
                 <p *ngIf="identityNumberError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ identityNumberError }}
                 </p>
-                <app-input [(model)]="form.Password" label="Password" type="password" placeholder="Qwer1234.">
+                <app-input [(model)]="form.Password" label="{{ 'login.password' |
+            translate }}" type="password" placeholder="Qwer1234.">
                 </app-input>
                 <p *ngIf="passwordError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ passwordError }}
@@ -32,37 +37,43 @@
                 <div class="flex md:flex-row flex-col md:gap-5 gap-6 md:justify-between items-end">
                     <div class="flex flex-col w-full gap-1 md:w-3/4 font-medium">
                         <label class="md:text-base text-sm text-gray-400 font-medium">
-                            Country
+                            {{ 'login.country' |
+                            translate }}
                         </label>
                         <select [(ngModel)]="form.Country" name="Country"
                             class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white">
-                            <option value="Malaysia">🇲🇾 Malaysia</option>
-                            <option value="coming-soon" disabled>Coming Soon ...</option>
+                            <option value="Malaysia">🇲🇾 {{ 'login.malaysia' |
+                                translate }}</option>
+                            <option value="coming-soon" disabled>{{ 'login.comingsoon' |
+                                translate }}</option>
                         </select>
                     </div>
-                    <app-button type="submit" [label]="isLoading ? 'Loading...' : 'Login'"
-                        class=" flex flex-col w-full md:w-1/4">
+                    <app-button type="submit"
+                        [label]="isLoading ? ('login.loading' | translate) : ('login.button1' | translate)"
+                        class="flex flex-col w-full md:w-1/4">
                     </app-button>
                 </div>
-                <app-button label="Register Now" routerLink="/register" class="flex flex-col mt-5 w-full" />
+                <app-button label="{{ 'login.button2' |
+            translate }}" routerLink="/register" class="flex flex-col mt-5 w-full" />
             </form>
         </div>
 
         <!-- Reset Password Form-->
         <div reveal class="login-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
-            <h2 class="font-bold md:text-lg text-base text-purple-600">Reset Password
+            <h2 class="font-bold md:text-lg text-base text-purple-600">{{ 'login.resetpassword' |
+                translate }}
             </h2>
-            <p class="text-black font-medium md:text-base text-sm mt-4 leading-relaxed text-justify mb-3">Forgot your
-                password? No worries. We will send a temporary password to the email address linked to your
-                account. Please provide your identification number below for verification purposes.
-                If you no longer remember the email address associated with this account, you may contact the website
-                administrator for further assistance.
+            <p class="text-black font-medium md:text-base text-sm mt-4 leading-relaxed text-justify mb-3">{{
+                'login.description'
+                |
+                translate }}
             </p>
             <form (ngSubmit)="onSubmit2()" class="flex flex-row items-end justify-between gap-4">
-                <app-input [(model)]="form2.IdentityNumber" label="Identity Number" type="text"
-                    placeholder="010118145248" maxlength="12" inputmode="numeric" class="w-full">
+                <app-input [(model)]="form2.IdentityNumber" label="{{ 'login.id' |
+                translate }}" type="text" placeholder="010118145248" maxlength="12" inputmode="numeric" class="w-full">
                 </app-input>
-                <app-button type="submit" [label]="isLoading2 ? 'Loading...' : 'Send'">
+                <app-button type="submit" class="flex flex-col w-25"
+                    [label]="isLoading2 ? ('login.loading' | translate) : ('login.button3' | translate)">
                 </app-button>
             </form>
             <p *ngIf="identityNumberError2" class="text-red-500 md:text-sm text-xs font-medium mt-3">
@@ -75,12 +86,15 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white login-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Logout!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{ 'login.modalheader1' |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        Remember login back to update your latest personal information.
+                        {{ 'login.modaldescription1' |
+                        translate }}
                     </p>
-                    <app-button label="Yes, I will" (click)="closeLogout()" />
+                    <app-button label="{{ 'login.modalbutton1' |
+                        translate }}" (click)="closeLogout()" />
                 </div>
             </div>
         </div>
@@ -90,12 +104,15 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white login-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Deleted Account!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{ 'login.modalheader2' |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        Please register back account if you miss us.
+                        {{ 'login.modaldescription2' |
+                        translate }}
                     </p>
-                    <app-button label="Yes, I will" (click)="closeDeleteAccount()" />
+                    <app-button label="{{ 'login.modalbutton2' |
+                        translate }}" (click)="closeDeleteAccount()" />
                 </div>
             </div>
         </div>
@@ -105,12 +122,15 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white login-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Sent!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{ 'login.modalheader3' |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        Please check your email now.
+                        {{ 'login.modaldescription3' |
+                        translate }}
                     </p>
-                    <app-button label="Yes, I will" (click)="closeResetPassword()" />
+                    <app-button label="{{ 'login.modalbutton3' |
+                        translate }}" (click)="closeResetPassword()" />
                 </div>
             </div>
         </div>
@@ -120,12 +140,14 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white login-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-red-500 font-bold">✗</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">This Account is Blocked!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2"> {{ 'login.modalheader4' |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        This account is temporary blocked, please inform to MyProfile Team to get more information.
-                    </p>
-                    <app-button label="Thanks" (click)="closeBlocked()" />
+                        {{ 'login.modaldescription4' |
+                        translate }} </p>
+                    <app-button label=" {{ 'login.modalbutton4' |
+                        translate }}" (click)="closeBlocked()" />
                 </div>
             </div>
         </div>

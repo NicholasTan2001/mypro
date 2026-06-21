@@ -11,73 +11,88 @@
     <div class=" flex flex-col items-center justify-center">
 
         <!-- Register Title-->
-        <h1 reveal class="font-bold md:text-2xl text-xl mb-12">Register <span class="text-purple-600">My</span>Profile
+        <h1 reveal class="font-bold md:text-2xl text-xl mb-12">{{ 'register.register' |
+            translate }}<span class="text-purple-600">{{ 'nav.my' |
+                translate }}</span>{{ 'nav.profile' |
+            translate }}
         </h1>
 
         <!-- Register Form-->
         <div reveal class="register-card flex flex-col bg-white rounded-lg p-6 md:w-120 w-full">
-            <h2 class="text-center font-bold md:text-lg text-base text-black">Register Now</h2>
+            <h2 class="text-center font-bold md:text-lg text-base text-black">{{ 'register.registernow' |
+                translate }}</h2>
             <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 mt-4">
-                <app-input [(model)]="form.IdentityNumber" label="Identity Number" type="text"
-                    placeholder="010118145248" maxlength="12" inputmode="numeric">
+                <app-input [(model)]="form.IdentityNumber" label="{{ 'register.id' |
+            translate }}" type="text" placeholder="010118145248" maxlength="12" inputmode="numeric">
                 </app-input>
                 <p *ngIf="identityNumberError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ identityNumberError }}
                 </p>
-                <app-input [(model)]="form.Name" label="Full Name" type="text" placeholder="John Doe">
+                <app-input [(model)]="form.Name" label="{{ 'register.fullname' |
+            translate }}" type="text" placeholder="{{ 'register.place1' |
+                        translate }}">
                 </app-input>
                 <p *ngIf="nameError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ nameError }}
                 </p>
                 <div class="flex md:flex-row flex-col md:gap-5 gap-6 md:justify-between">
-                    <app-input [(model)]="form.Age" label="Age" type="text" placeholder="25" inputmode="numeric">
+                    <app-input [(model)]="form.Age" label="{{ 'register.age' |
+            translate }}" type="text" placeholder="25" inputmode="numeric">
                     </app-input>
                     <div class="flex flex-col w-full gap-1 md:w-3/4 font-medium">
                         <label class="md:text-base text-sm text-gray-400 font-medium">
-                            Sex
+                            {{ 'register.sex' |
+                            translate }}
                         </label>
                         <select [(ngModel)]="form.Sex" name="Sex"
                             class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white">
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="coming-soon" disabled>Coming Soon ...</option>
+                            <option value="Male">{{ 'register.male' |
+                                translate }}</option>
+                            <option value="Female">{{ 'register.female' |
+                                translate }}</option>
+                            <option value="coming-soon" disabled>{{ 'register.comingsoon' |
+                                translate }}</option>
                         </select>
                     </div>
                 </div>
                 <p *ngIf="ageError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ ageError }}
                 </p>
-                <app-input [(model)]="form.BirthDate" label="Date of Birth" type="date" class="w-full">
+                <app-input [(model)]="form.BirthDate" label="{{ 'register.dateofbirth' |
+                            translate }}" type="date" class="w-full">
                 </app-input>
                 <p *ngIf="birthDateError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ birthDateError }}
                 </p>
-                <app-input [(model)]="form.Email" label="Email" type="text" placeholder="Users_123@gmail.com ">
+                <app-input [(model)]="form.Email" label="{{ 'register.email' |
+                            translate }}" type="text" placeholder="Users_123@gmail.com ">
                 </app-input>
                 <p *ngIf=" emailError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ emailError }}
                 </p>
-                <app-input [(model)]="form.PhoneNumber" label="Phone Number" type="text" placeholder="0121231231"
-                    maxlength="10" inputmode="numeric">
+                <app-input [(model)]="form.PhoneNumber" label="{{ 'register.phonenumber' |
+                            translate }}" type="text" placeholder="0121231231" maxlength="10" inputmode="numeric">
                 </app-input>
                 <p *ngIf="phoneNumberError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ phoneNumberError }}
                 </p>
-                <app-input [(model)]="form.Password" label="Password" type="password" placeholder="Qwer1234.">
+                <app-input [(model)]="form.Password" label="{{ 'register.password' |
+                            translate }}" type="password" placeholder="Qwer1234.">
                 </app-input>
                 <p *ngIf="passwordError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ passwordError }}
                 </p>
-                <app-input [(model)]="form.ConfirmPassword" label="Confirm Password" type="password"
-                    placeholder="Qwer1234.">
+                <app-input [(model)]="form.ConfirmPassword" label="{{ 'register.confirmpassword' |
+                            translate }}" type="password" placeholder="Qwer1234.">
                 </app-input>
                 <p *ngIf="confirmPasswordError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ confirmPasswordError }}
                 </p>
                 <div class="flex flex-col gap-1 w-full">
-                    <label class="md:text-base text-sm text-gray-400 font-medium">Address</label>
-                    <textarea [(ngModel)]="form.Address" name="address"
-                        placeholder="No 45, Jalan Puncak 1/1, Taman Puncak Utama, 43000 Kajang, Selangor" rows="4"
+                    <label class="md:text-base text-sm text-gray-400 font-medium">{{ 'register.address' |
+                        translate }}</label>
+                    <textarea [(ngModel)]="form.Address" name="address" placeholder="{{ 'register.place2' |
+                        translate }}" rows="4"
                         class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium">
   </textarea>
                 </div>
@@ -87,19 +102,24 @@
                 <div class="flex md:flex-row flex-col md:gap-5 gap-6 md:justify-between items-end">
                     <div class="flex flex-col w-full gap-1 md:w-3/4 font-medium">
                         <label class="md:text-base text-sm text-gray-400 font-medium">
-                            Country
+                            {{ 'register.country' |
+                            translate }}
                         </label>
                         <select [(ngModel)]="form.Country" name="Country"
                             class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white">
-                            <option value="Malaysia">🇲🇾 Malaysia</option>
-                            <option value="coming-soon" disabled>Coming Soon ...</option>
+                            <option value="Malaysia">🇲🇾 {{ 'register.malaysia' |
+                                translate }}</option>
+                            <option value="coming-soon" disabled>{{ 'register.comingsoon' |
+                                translate }}</option>
                         </select>
                     </div>
-                    <app-button type="submit" [label]="isLoading ? 'Loading...' : 'Register'"
+                    <app-button type="submit"
+                        [label]="isLoading ? ('register.loading' | translate) : ('register.button1' | translate)"
                         class=" flex flex-col w-full md:w-1/4">
                     </app-button>
                 </div>
-                <app-button label="Back to Login" routerLink="/login" class="flex flex-col mt-5 w-full">
+                <app-button label="{{ 'register.button2' |
+                                translate }}" routerLink="/login" class="flex flex-col mt-5 w-full">
                 </app-button>
             </form>
         </div>
@@ -109,11 +129,13 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Registered!</h2>
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{ 'register.modalheader' |
+                        translate }}</h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        Your account has been registered successfully. Try login now.
-                    </p>
-                    <app-button label="Login Now" (click)="loginPage()" />
+                        {{ 'register.modaldescription' |
+                        translate }}</p>
+                    <app-button label="{{ 'register.button3' |
+                        translate }}" (click)="loginPage()" />
                 </div>
             </div>
         </div>

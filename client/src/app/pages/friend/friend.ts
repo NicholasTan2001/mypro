@@ -8,10 +8,11 @@ import { Reveal } from '../../directive/reveal';
 import { Button } from '../../component/button/button';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-friend',
-  imports: [Reveal, Button, CommonModule, RouterLink],
+  imports: [Reveal, Button, CommonModule, RouterLink, TranslateModule],
   standalone: true,
   templateUrl: './friend.html',
   styleUrl: './friend.css',

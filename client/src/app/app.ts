@@ -32,11 +32,6 @@ export class App implements OnInit {
         this.expireTokenModal = success;
       });
 
-      if (this.authService.isLoggedIn()) {
-        console.log('User logged in. Timer restarted.');
-      } else {
-        console.log('No active session or token expired.');
-      }
       this.cd.detectChanges();
     } catch (error: any) {
       console.error('Error initializing app:', error);

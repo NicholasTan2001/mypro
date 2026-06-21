@@ -12,22 +12,17 @@
     <!-- Logo Section -->
     <div reveal class=" flex flex-col text-center">
         <img src="logo.png" alt="MyProfile Logo" class="md:w-32 w-25 mx-auto mb-5 logo-animation">
-        <h1 class="md:text-4xl text-3xl font-bold mb-20 gradient-text">MyProfile</h1>
+        <h1 class="md:text-4xl text-3xl font-bold mb-20 gradient-text">{{ 'home.myprofile' | translate }}</h1>
     </div>
 
     <!-- MyProfile Explaination 1 -->
     <div reveal class="flex md:flex-row flex-col gap-20 items-center justify-center mb-20">
         <div class="text-center w-full md:w-3/4">
-            <h1 reveal class="font-bold md:text-2xl text-xl mb-4">What is <span
-                    class="text-purple-600">My</span>Profile?
+            <h1 reveal class="font-bold md:text-2xl text-xl mb-4">{{ 'home.header1' | translate }}<span
+                    class="text-purple-600">{{ 'nav.my' | translate }}</span>{{ 'nav.profile' | translate }}?
             </h1>
-            <p reveal class="font-medium md:text-base text-sm leading-relaxed text-justify">MyProfile
-                is a digital
-                platform
-                that allows
-                you to create and manage your personal profile, showcasing your information, skills, experiences,
-                and achievements. Whether you're a student, professional, or freelancer. MyProfile helps you
-                present yourself in the best light to public.</p>
+            <p reveal class="font-medium md:text-base text-sm leading-relaxed text-justify">{{ 'home.description1' |
+                translate }}</p>
         </div>
         <div reveal class="flex justify-center w-3/5 md:w-2/3">
             <img src="image_1.png" alt="Image 1"
@@ -44,22 +39,19 @@
             </div>
         </div>
         <div reveal class="text-center w-full md:w-3/4  order-1 md:order-2">
-            <h1 reveal class="font-bold md:text-2xl text-xl mb-4">Why choose <span
-                    class="text-purple-600">My</span>Profile?
+            <h1 reveal class="font-bold md:text-2xl text-xl mb-4">{{ 'home.header2' | translate }}<span
+                    class="text-purple-600">{{ 'nav.my' | translate }}</span>{{ 'nav.profile' | translate }}?
             </h1>
             <p reveal class="font-medium md:text-base text-sm leading-relaxed text-justify">
-                In the future, MyProfile aims to become a professional international platform that enables the public to
-                learn more about you and your professional backgrounds. The platform will also serve as a trusted
-                source of authentic information, allowing important individuals and organizations worldwide to access
-                reliable your profiles and details.
+                {{ 'home.description2' | translate }}
             </p>
         </div>
     </div>
 
     <!-- MyProfile Locations -->
     <div class="flex flex-col text-center items-center justify-center">
-        <h1 reveal class="font-bold md:text-2xl text-xl mb-4"><span class="text-purple-600">My</span>Profile is
-            available in?
+        <h1 reveal class="font-bold md:text-2xl text-xl mb-4"><span class="text-purple-600">{{ 'nav.my' | translate
+                }}</span>{{ 'nav.profile' | translate }}{{ 'home.header3' | translate }}?
         </h1>
         <app-globe reveal class="mb-4" />
         <div reveal
@@ -68,30 +60,27 @@
                 <div class="country-card  rounded-lg p-5 flex flex-col items-center justify-center">
                     <img src="malaysia.webp" alt="MalaysiaFlag" class="rounded-lg">
                     <h3 class=" font-bold md:text-xl text-lg leading-relaxed mt-5 text-red-500">
-                        {{ malaysiaUsers}}+
+                        {{ malaysiaUsers }}+
                     </h3>
                     <p class="font-medium md:text-lg text-base leading-relaxed mt-2">
-                        in Malaysia
+                        {{ 'home.description4' | translate }}
                     </p>
                 </div>
                 <div class="country-card rounded-lg p-5 flex flex-col items-center justify-center">
                     <p class="font-medium md:text-lg text-base leading-relaxed  mt-5">
-                        Coming Soon ...
+                        {{ 'home.description5' | translate }}
                     </p>
                 </div>
             </div>
         </div>
         <p reveal class="font-medium md:text-base text-sm leading-relaxed text-justify mb-12">
-            MyProfile is a secure and trusted platform approved and recognized by the respective government authorities
-            in each country where it operates. It is widely adopted by users, including government institutions and
-            partner organizations, ensuring reliability and credibility across both public and private sectors. All
-            profiles undergo verification and compliance checks to ensure users are protected and the information shared
-            remains safe, accurate, and trustworthy.
+            {{ 'home.description6' | translate }}
         </p>
     </div>
 
     <!-- About Us -->
-    <app-button reveal routerLink="/about" label="About Us" class="flex flex-col items-center justify-center" />
+    <app-button reveal routerLink="/about" label="{{ 'home.button' | translate }}"
+        class="flex flex-col items-center justify-center" />
 </body>
 
 </html>

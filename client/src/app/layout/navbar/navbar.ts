@@ -4,11 +4,13 @@ import { Button } from '../../component/button/button';
 import { AuthService } from '../../services/auth.service';
 import { CommonModule } from '@angular/common';
 import { LogoutService } from '../../services/logout.service';
+import { TranslateModule } from '@ngx-translate/core';
+import { LanguageService, SupportedLanguage } from '../../services/language.service';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive, Button, CommonModule],
+  imports: [RouterLink, RouterLinkActive, Button, CommonModule, TranslateModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
@@ -18,8 +20,10 @@ export class Navbar {
   isUser: boolean = false;
   isAdmin: boolean = false;
   menuOpen = false;
+  languageMenuOpen = false;
 
   constructor(private authService: AuthService, private logoutService: LogoutService,
+    public languageService: LanguageService
   ) { }
 
   ngOnInit() {
@@ -44,9 +48,18 @@ export class Navbar {
     this.menuOpen = false;
   }
 
+  toggleLanguageMenu() {
+    this.languageMenuOpen = !this.languageMenuOpen;
+  }
+
   logout() {
     this.logoutService.showLogoutSuccess();
     this.authService.logout();
+  }
+
+  selectLanguage(language: SupportedLanguage) {
+    this.languageService.useLanguage(language);
+    this.languageMenuOpen = false;
   }
 
 }

@@ -14,7 +14,9 @@
         <div reveal class="flex md:flex-row flex-col gap-1">
             <div class="flex flex-row gap-1">
                 <h1 class="font-bold md:text-2xl text-xl md:mb-12"><span class="text-purple-600">{{ name
-                        }}</span>'s Profile
+                        }}</span>{{ 'myprofile.s' |
+                    translate }}{{ 'nav.profile' |
+                    translate }}
                 </h1>
                 @if (bluetick == "Yes"){
                 <div>
@@ -24,24 +26,29 @@
             </div>
             <div class="flex flex-col items-center justify-center mb-12">
                 <h1 class="font-bold md:text-2xl text-xl">
-                    [ <span class="text-purple-500">{{viewNum}}</span> views ]
+                    [ <span class="text-purple-500">{{viewNum}}</span> {{ 'myprofile.views' |
+                    translate }} ]
                 </h1>
             </div>
         </div>
 
         <!-- Introduction -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
-            <h2 class="font-bold md:text-lg text-base text-black">Introduction</h2>
+            <h2 class="font-bold md:text-lg text-base text-black">{{ 'myprofile.header1' |
+                translate }}</h2>
             <form (ngSubmit)="onSubmit2()" class="flex flex-col gap-4 mt-4">
                 <div class="flex flex-col gap-1 w-full">
-                    <label class="md:text-base text-sm text-gray-400 font-medium">Biography</label>
-                    <textarea [(ngModel)]="form2.Intro" name="intro" placeholder="Hello, My name is John Doe ..."
-                        rows="4"
+                    <label class="md:text-base text-sm text-gray-400 font-medium">{{ 'myprofile.bio' |
+                        translate }}</label>
+                    <textarea [(ngModel)]="form2.Intro" name="intro" placeholder="{{ 'myprofile.place2' |
+                    translate }}" rows="4"
                         class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium">
   </textarea>
                 </div>
                 <div class="flex justify-end mt-1">
-                    <app-button type="submit" [label]="isLoading2 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                    <app-button type="submit"
+                        [label]="isLoading2 ? ('myprofile.loading' | translate) : ('myprofile.button1' | translate)"
+                        class=" flex flex-col">
                     </app-button>
                 </div>
             </form>
@@ -50,38 +57,48 @@
         <!-- General Personal Information -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
             <div class="flex md:flex-row flex-col gap-4 justify-between">
-                <h2 class="font-bold md:text-lg text-base text-black">General Personal Information</h2>
+                <h2 class="font-bold md:text-lg text-base text-black">{{ 'myprofile.header2' |
+                    translate }}</h2>
                 <p class="text-gray-500 md:text-lg text-base font-bold"> ID:
                     {{ id }}
                 </p>
             </div>
             <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4 mt-4">
                 <div class="flex md:flex-row flex-col gap-4">
-                    <app-input [(model)]="form.IdentityNumber" label="Identity Number" type="text"
-                        placeholder="010118145248" maxlength="12" inputmode="numeric" [readonly]="true" class="w-full">
+                    <app-input [(model)]="form.IdentityNumber" label="{{ 'myprofile.id' |
+                        translate }}" type="text" placeholder="010118145248" maxlength="12" inputmode="numeric"
+                        [readonly]="true" class="w-full">
                     </app-input>
-                    <app-input [(model)]="form.Name" label="Name" type="text" class="w-full">
+                    <app-input [(model)]="form.Name" label="{{ 'myprofile.name' |
+                        translate }}" type="text" placeholder="{{ 'myprofile.place1' |
+                    translate }}" class="w-full">
                     </app-input>
                 </div>
                 <p *ngIf="nameError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ nameError }}
                 </p>
                 <div class="flex md:flex-row flex-col gap-4">
-                    <app-input [(model)]="form.Age" label="Age" type="text" placeholder="25" inputmode="numeric">
+                    <app-input [(model)]="form.Age" label="{{ 'myprofile.age' |
+                        translate }}" type="text" placeholder="25" inputmode="numeric">
                     </app-input>
                     <div class="flex flex-col w-full gap-1 md:w-3/4 font-medium">
                         <label class="md:text-base text-sm text-gray-400 font-medium">
-                            Sex
+                            {{ 'myprofile.sex' |
+                            translate }}
                         </label>
                         <select [(ngModel)]="form.Sex" name="Sex"
                             class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white">
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="coming-soon" disabled>Coming Soon ...</option>
+                            <option value="Male">{{ 'myprofile.male' |
+                                translate }}</option>
+                            <option value="Female">{{ 'myprofile.female' |
+                                translate }}</option>
+                            <option value="coming-soon" disabled>{{ 'myprofile.comingsoon' |
+                                translate }}</option>
                         </select>
                     </div>
                 </div>
-                <app-input [(model)]="form.BirthDate" label="Date of Birth" type="date" class="w-full">
+                <app-input [(model)]="form.BirthDate" label="{{ 'myprofile.dateofbirth' |
+                        translate }}" type="date" class="w-full">
                 </app-input>
                 <p *ngIf="birthDateError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ birthDateError }}
@@ -89,78 +106,90 @@
                 <p *ngIf="ageError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ ageError }}
                 </p>
-                <app-input [(model)]="form.Email" label="Email" type="text" placeholder="Users_123@gmail.com "
-                    class="w-full">
+                <app-input [(model)]="form.Email" label="{{ 'myprofile.email' |
+                        translate }}" type="text" placeholder="Users_123@gmail.com " class="w-full">
                 </app-input>
                 <p *ngIf="emailError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ emailError }}
                 </p>
-                <app-input [(model)]="form.PhoneNumber" label="Phone Number" type="text" placeholder="0121231231"
-                    inputmode="numeric" maxlength="10" class="w-full">
+                <app-input [(model)]="form.PhoneNumber" label="{{ 'myprofile.phone' |
+                        translate }}" type="text" placeholder="0121231231" inputmode="numeric" maxlength="10"
+                    class="w-full">
                 </app-input>
                 <p *ngIf="phoneNumberError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ phoneNumberError }}
                 </p>
                 <div class="flex flex-col gap-1 w-full">
-                    <label class="md:text-base text-sm text-gray-400 font-medium">Address</label>
-                    <textarea [(ngModel)]="form.Address" name="Address"
-                        placeholder="No 45, Jalan Puncak 1/1, Taman Puncak Utama, 43000 Kajang, Selangor" rows="4"
+                    <label class="md:text-base text-sm text-gray-400 font-medium">{{ 'myprofile.address' |
+                        translate }}</label>
+                    <textarea [(ngModel)]="form.Address" name="Address" placeholder="{{ 'myprofile.place8' |
+                        translate }}" rows="4"
                         class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
   </textarea>
                 </div>
                 <p *ngIf="addressError" class="text-red-500 md:text-sm text-xs font-medium">
                     {{ addressError }}
                 </p>
-                <div class="flex flex-row justify-between items-end gap-4">
-                    <div class=" flex flex-col w-full gap-1 md:w-full font-medium">
-                        <label class="md:text-base text-sm text-gray-400 font-medium">
-                            Country
-                        </label>
-                        <select [(ngModel)]="form.Country" name="Country"
-                            class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white">
-                            <option value="Malaysia">🇲🇾 Malaysia</option>
-                            <option value="coming-soon" disabled>Coming Soon ...</option>
-                        </select>
-                    </div>
-                    <div class="flex justify-end mt-1">
-                        <app-button type="submit" [label]="isLoading ? 'Loading...' : 'Update'" class=" flex flex-col">
-                        </app-button>
-                    </div>
+                <div class="flex flex-col w-full gap-1 font-medium">
+                    <label class="md:text-base text-sm text-gray-400 font-medium">
+                        {{ 'myprofile.country' |
+                        translate }}
+                    </label>
+                    <select [(ngModel)]="form.Country" name="Country"
+                        class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white">
+                        <option value="Malaysia">🇲🇾 {{ 'myprofile.malaysia' |
+                            translate }}</option>
+                        <option value="coming-soon" disabled>{{ 'myprofile.comingsoon' |
+                            translate }}</option>
+                    </select>
+                </div>
+                <div class="flex justify-end mt-1">
+                    <app-button type="submit" class="flex flex-col"
+                        [label]="isLoading ? ('myprofile.loading' | translate) : ('myprofile.button1' | translate)">
+                    </app-button>
                 </div>
             </form>
         </div>
 
         <!-- Professional Information -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
-            <h2 class="font-bold md:text-lg text-base text-black">Profesional Information</h2>
+            <h2 class="font-bold md:text-lg text-base text-black">{{ 'myprofile.header3' |
+                translate }}</h2>
             <form (ngSubmit)="onSubmit4()" class="flex flex-col mt-4">
                 <div class="flex md:flex-row flex-col gap-4">
                     <div class="flex flex-col md:w-2/3 gap-1 font-medium">
                         <label class="md:text-base text-sm text-gray-400 font-medium">
-                            Position
+                            {{ 'myprofile.position' |
+                            translate }}
                         </label>
                         <select [(ngModel)]="form4.Position" name="Position"
                             class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white">
-                            <option value="Student">Student</option>
-                            <option value="Employee">Employee</option>
-                            <option value="Employer">Employer</option>
-                            <option value="coming-soon" disabled>Coming Soon ...</option>
+                            <option value="Student">{{ 'myprofile.student' |
+                                translate }}</option>
+                            <option value="Employee">{{ 'myprofile.employee' |
+                                translate }}</option>
+                            <option value="Employer">{{ 'myprofile.employer' |
+                                translate }}</option>
+                            <option value="coming-soon" disabled>{{ 'myprofile.comingsoon' |
+                                translate }}</option>
                         </select>
                     </div>
                 </div>
                 @if (form4.Position === 'Student') {
                 <div class="flex flex-col gap-4 mt-4">
                     <div class="position-section w-full expand">
-                        <app-input [(model)]="form5.Course" label="Course" type="text" placeholder="Computer Science"
-                            class="w-full">
+                        <app-input [(model)]="form5.Course" label="{{ 'myprofile.course' |
+                                translate }}" type="text" placeholder="{{ 'myprofile.place6' |
+                                translate }}" class="w-full">
                         </app-input>
                         <p *ngIf="courseError" class="text-red-500 md:text-sm text-xs font-medium mt-4">
                             {{ courseError }}
                         </p>
                     </div>
                     <div class="position-section w-full expand">
-                        <app-input [(model)]="form5.Location" label="Location" type="text"
-                            placeholder="University of Malaya" class="w-full">
+                        <app-input [(model)]="form5.Location" label="{{ 'myprofile.location' |
+                                translate }}" type="text" placeholder="{{ 'myprofile.place7' |
+                                translate }}" class="w-full">
                         </app-input>
                         <p *ngIf="locationError" class="text-red-500 md:text-sm text-xs font-medium mt-4">
                             {{ locationError }}
@@ -169,11 +198,13 @@
                 </div>
                 <div class="flex md:flex-row flex-col gap-4 mt-4">
                     <div class="position-section w-full expand ">
-                        <app-input [(model)]="form5.StartDate" label="Start Date" type="date" class="w-full">
+                        <app-input [(model)]="form5.StartDate" label="{{ 'myprofile.startdate' |
+                                translate }}" type="date" class="w-full">
                         </app-input>
                     </div>
                     <div class="position-section w-full expand">
-                        <app-input [(model)]="form5.EndDate" label="End Date" type="date" class="w-full">
+                        <app-input [(model)]="form5.EndDate" label="{{ 'myprofile.expectedenddate' |
+                                translate }}" type="date" class="w-full">
                         </app-input>
                     </div>
                 </div>
@@ -183,17 +214,19 @@
                 }
                 @if (form4.Position === 'Employee' || form4.Position === 'Employer') {
                 <div class="position-section w-full expand mt-4">
-                    <app-input [(model)]="form6.Role" label="Role" type="text" placeholder="Software Engineer"
-                        class="w-full">
+                    <app-input [(model)]="form6.Role" label="{{ 'myprofile.role' |
+                                translate }}" type="text" placeholder="{{ 'myprofile.place3' |
+                                translate }}" class="w-full">
                     </app-input>
                     <p *ngIf="roleError" class="text-red-500 md:text-sm text-xs font-medium mt-4">
                         {{ roleError }}
                     </p>
                 </div>
                 <div class="position-section w-full expand mt-4">
-                    <label class="md:text-base text-sm text-gray-400 font-medium">Responsibilities</label>
-                    <textarea [(ngModel)]="form6.Responsible" name="responsible"
-                        placeholder="Software Testing, Code Review, Bug Fixing" rows="4"
+                    <label class="md:text-base text-sm text-gray-400 font-medium">{{ 'myprofile.responsibilities' |
+                        translate }}</label>
+                    <textarea [(ngModel)]="form6.Responsible" name="responsible" placeholder="{{ 'myprofile.place4' |
+                                translate }}" rows="4"
                         class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
   </textarea>
                     <p *ngIf="responsibleError" class="text-red-500 md:text-sm text-xs font-medium mt-3">
@@ -201,8 +234,9 @@
                     </p>
                 </div>
                 <div class="position-section w-full expand mt-2">
-                    <app-input [(model)]="form6.Company" label="Company" type="text" placeholder="Google Inc."
-                        class="w-full">
+                    <app-input [(model)]="form6.Company" label="{{ 'myprofile.company' |
+                                translate }}" type="text" placeholder="{{ 'myprofile.place5' |
+                                translate }}" class="w-full">
                     </app-input>
                     <p *ngIf="companyError" class="text-red-500 md:text-sm text-xs font-medium mt-4">
                         {{ companyError }}
@@ -210,11 +244,13 @@
                 </div>
                 <div class="flex md:flex-row flex-col gap-4 mt-4">
                     <div class="position-section w-full expand ">
-                        <app-input [(model)]="form6.StartDate" label="Start Date" type="date" class="w-full">
+                        <app-input [(model)]="form6.StartDate" label="{{ 'myprofile.startdate' |
+                                translate }}" type="date" class="w-full">
                         </app-input>
                     </div>
                     <div class="position-section w-full expand">
-                        <app-input [(model)]="form6.EndDate" label="Expected End Date" type="date" class="w-full">
+                        <app-input [(model)]="form6.EndDate" label="{{ 'myprofile.expectedenddate' |
+                                translate }}" type="date" class="w-full">
                         </app-input>
                     </div>
                 </div>
@@ -223,7 +259,9 @@
                 </p>
                 }
                 <div class="flex justify-end mt-5">
-                    <app-button type="submit" [label]="isLoading4 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                    <app-button type="submit"
+                        [label]="isLoading4 ? ('myprofile.loading' | translate) : ('myprofile.button1' | translate)"
+                        class=" flex flex-col">
                     </app-button>
                 </div>
             </form>
@@ -231,7 +269,8 @@
 
         <!-- Working Experiences -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
-            <h2 class="font-bold md:text-lg text-base text-black">Working Experiences</h2>
+            <h2 class="font-bold md:text-lg text-base text-black">{{ 'myprofile.header4' |
+                translate }}</h2>
             <div class="flex flex-col gap-4 mt-6">
                 @if (experience.length > 0) {
                 @for (exp of experience; track exp.id) {
@@ -241,38 +280,45 @@
                         <h3 class="font-bold md:text-base text-sm text-black">{{ exp.position }}</h3>
                         <button (click)="deleteExperience(exp.id)"
                             class="text-red-500 md:text-sm text-xs font-bold hover:text-red-300 cursor-pointer">
-                            Delete
+                            {{ 'myprofile.button2' |
+                            translate }}
                         </button>
                     </div>
                     <p class="text-black md:text-sm text-xs font-medium mb-2">
                         {{ exp.company }}
                     </p>
                     <p class="text-gray-500 md:text-sm text-xs font-medium">
-                        {{ exp.startDate }} until
-                        {{ exp.endDate }}
+                        {{ exp.startDate |
+                        date:'dd-MM-y' }} {{ 'myprofile.until' |
+                        translate }}
+                        {{ exp.endDate |
+                        date:'dd-MM-y' }}
                     </p>
                 </div>
                 }
                 } @else {
                 <div class="flex flex-col justify-center items-center">
                     <img src="noworkingexperiences.png" alt="No Working Experiences Found" class="md:w-35 w-25">
-                    <p class="font-medium md:text-base text-sm text-black">No Woking Experience.</p>
+                    <p class="font-medium md:text-base text-sm text-black">{{ 'myprofile.noworkingexperiences' |
+                        translate }}</p>
                 </div>
                 }
             </div>
             <form (ngSubmit)="onSubmit5()" class="flex flex-col mt-4">
                 <div class="w-full expand">
-                    <app-input [(model)]="form7.Position" label="Position" type="text" placeholder="Software Engineer"
-                        class="w-full">
+                    <app-input [(model)]="form7.Position" label="{{ 'myprofile.position' |
+                                translate }}" type="text" placeholder="{{ 'myprofile.place3' |
+                                translate }}" class="w-full">
                     </app-input>
                     <p *ngIf="positionError" class="text-red-500 md:text-sm text-xs font-medium mt-4">
                         {{ positionError }}
                     </p>
                 </div>
                 <div class="w-full expand mt-4">
-                    <label class="md:text-base text-sm text-gray-400 font-medium">Responsibilities</label>
-                    <textarea [(ngModel)]="form7.Responsible" name="responsible"
-                        placeholder="Software Testing, Code Review, Bug Fixing." rows="4"
+                    <label class="md:text-base text-sm text-gray-400 font-medium">{{ 'myprofile.responsibilities' |
+                        translate }}</label>
+                    <textarea [(ngModel)]="form7.Responsible" name="responsible" placeholder="{{ 'myprofile.place4' |
+                                translate }}" rows="4"
                         class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
   </textarea>
                     <p *ngIf="workingResponsibleError" class="text-red-500 md:text-sm text-xs font-medium mt-3">
@@ -280,8 +326,9 @@
                     </p>
                 </div>
                 <div class="w-full expand mt-2">
-                    <app-input [(model)]="form7.Company" label="Company" type="text" placeholder="Google Inc."
-                        class="w-full">
+                    <app-input [(model)]="form7.Company" label="{{ 'myprofile.company' |
+                                translate }}" type="text" placeholder="{{ 'myprofile.place4' |
+                                translate }}" class="w-full">
                     </app-input>
                     <p *ngIf="workingCompanyError" class="text-red-500 md:text-sm text-xs font-medium mt-4">
                         {{ workingCompanyError }}
@@ -289,11 +336,13 @@
                 </div>
                 <div class="flex md:flex-row flex-col gap-4 mt-4">
                     <div class="w-full expand ">
-                        <app-input [(model)]="form7.StartDate" label="Start Date" type="date" class="w-full">
+                        <app-input [(model)]="form7.StartDate" label="{{ 'myprofile.startdate' |
+                                translate }}" type="date" class="w-full">
                         </app-input>
                     </div>
                     <div class="w-full expand">
-                        <app-input [(model)]="form7.EndDate" label="Expected End Date" type="date" class="w-full">
+                        <app-input [(model)]="form7.EndDate" label="{{ 'myprofile.enddate' |
+                                translate }}" type="date" class="w-full">
                         </app-input>
                     </div>
                 </div>
@@ -301,7 +350,9 @@
                     {{ workingDateError }}
                 </p>
                 <div class="flex justify-end mt-5">
-                    <app-button type="submit" [label]="isLoading5 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                    <app-button type="submit"
+                        [label]="isLoading5 ? ('myprofile.loading' | translate) : ('myprofile.button1' | translate)"
+                        class=" flex flex-col">
                     </app-button>
                 </div>
             </form>
@@ -309,7 +360,8 @@
 
         <!-- Projects -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
-            <h2 class="font-bold md:text-lg text-base text-black">Projects</h2>
+            <h2 class="font-bold md:text-lg text-base text-black">{{ 'myprofile.header5' |
+                translate }}</h2>
             <div class="flex flex-col gap-4 mt-6">
                 @if (project.length > 0) {
                 @for (pro of project; track pro.id) {
@@ -319,42 +371,51 @@
                         <h3 class="font-bold md:text-base text-sm text-black">{{ pro.title }}</h3>
                         <button (click)="deleteProject(pro.id)"
                             class="text-red-500 md:text-sm text-xs font-bold hover:text-red-300 cursor-pointer">
-                            Delete
+                            {{ 'myprofile.button2' |
+                            translate }}
                         </button>
                     </div>
                     <p class="text-black md:text-sm text-xs font-medium mb-2">
                         {{ pro.type }}
                     </p>
                     <p class="text-gray-500 md:text-sm text-xs font-medium">
-                        {{ pro.startDate }} until
-                        {{ pro.endDate }}
+                        {{ pro.startDate |
+                        date:'dd-MM-y' }} {{ 'myprofile.until' |
+                        translate }}
+                        {{ pro.endDate |
+                        date:'dd-MM-y' }}
                     </p>
                 </div>
                 }
                 } @else {
                 <div class="flex flex-col justify-center items-center">
                     <img src="noproject.jpg" alt="No Achievement Found" class="md:w-35 w-25">
-                    <p class="font-medium md:text-base text-sm text-black">No Project.</p>
+                    <p class="font-medium md:text-base text-sm text-black">{{ 'myprofile.noproject' |
+                        translate }}</p>
                 </div>
                 }
             </div>
             <div class="flex flex-col">
                 <form (ngSubmit)="onSubmit6()" class="flex flex-col gap-4 mt-4">
-                    <app-input [(model)]="form8.Title" label="Title" type="text" placeholder="MyProfile" class="w-full">
+                    <app-input [(model)]="form8.Title" label="{{ 'myprofile.title' |
+                translate }}" type="text" placeholder="{{ 'myprofile.place9' |
+                                translate }}" class="w-full">
                     </app-input>
                     <p *ngIf="projectTitleError" class="text-red-500 md:text-sm text-xs font-medium">
                         {{ projectTitleError }}
                     </p>
-                    <app-input [(model)]="form8.Type" label="Type" type="text" placeholder="Website Application"
-                        class="w-full">
+                    <app-input [(model)]="form8.Type" label="{{ 'myprofile.type' |
+                translate }}" type="text" placeholder="{{ 'myprofile.place10' |
+                                translate }}" class="w-full">
                     </app-input>
                     <p *ngIf="projectTypeError" class="text-red-500 md:text-sm text-xs font-medium">
                         {{ projectTypeError }}
                     </p>
                     <div class="w-full expand">
-                        <label class="md:text-base text-sm text-gray-400 font-medium">Features</label>
-                        <textarea [(ngModel)]="form8.Feature" name="feature"
-                            placeholder="Collect Real Data, Showcase Real Data to Public" rows="4"
+                        <label class="md:text-base text-sm text-gray-400 font-medium">{{ 'myprofile.features' |
+                            translate }}</label>
+                        <textarea [(ngModel)]="form8.Feature" name="feature" placeholder="{{ 'myprofile.place11' |
+                                translate }}" rows="4"
                             class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
   </textarea>
                         <p *ngIf="projectFeatureError" class="text-red-500 md:text-sm text-xs font-medium mt-3">
@@ -363,11 +424,13 @@
                     </div>
                     <div class="flex md:flex-row flex-col gap-4">
                         <div class="w-full expand ">
-                            <app-input [(model)]="form8.StartDate" label="Start Date" type="date" class="w-full">
+                            <app-input [(model)]="form8.StartDate" label="{{ 'myprofile.startdate' |
+                translate }}" type="date" class="w-full">
                             </app-input>
                         </div>
                         <div class="w-full expand">
-                            <app-input [(model)]="form8.EndDate" label="Expected End Date" type="date" class="w-full">
+                            <app-input [(model)]="form8.EndDate" label="{{ 'myprofile.enddate' |
+                translate }}" type="date" class="w-full">
                             </app-input>
                         </div>
                     </div>
@@ -375,7 +438,9 @@
                         {{ projectDateError }}
                     </p>
                     <div class="flex justify-end mt-1">
-                        <app-button type="submit" [label]="isLoading6 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                        <app-button type="submit"
+                            [label]="isLoading6 ? ('myprofile.loading' | translate) : ('myprofile.button1' | translate)"
+                            class=" flex flex-col">
                         </app-button>
                     </div>
                 </form>
@@ -384,7 +449,8 @@
 
         <!-- Achievements -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
-            <h2 class="font-bold md:text-lg text-base text-black">Achievements</h2>
+            <h2 class="font-bold md:text-lg text-base text-black">{{ 'myprofile.header6' |
+                translate }}</h2>
             <div class="flex flex-col">
                 <div class="flex flex-col gap-4 mt-6">
                     @if (achievement.length > 0) {
@@ -395,21 +461,24 @@
                             <h3 class="font-bold md:text-base text-sm text-black">{{ ach.title }}</h3>
                             <button (click)="deleteAchievement(ach.id)"
                                 class="text-red-500 md:text-sm text-xs font-bold hover:text-red-300 cursor-pointer">
-                                Delete
+                                {{ 'myprofile.button2' |
+                                translate }}
                             </button>
                         </div>
                         <p class="text-black md:text-sm text-xs font-medium mb-2">
                             {{ ach.type }}
                         </p>
                         <p class="text-gray-500 md:text-sm text-xs font-medium">
-                            {{ ach.date}}
+                            {{ ach.date |
+                            date:'dd-MM-y' }}
                         </p>
                     </div>
                     }
                     } @else {
                     <div class="flex flex-col justify-center items-center">
                         <img src="noachievement.png" alt="No Achievement Found" class="md:w-35 w-25">
-                        <p class="font-medium md:text-base text-sm text-black">No Achievement.</p>
+                        <p class="font-medium md:text-base text-sm text-black">{{ 'myprofile.noachievements' |
+                            translate }}</p>
                     </div>
                     }
                 </div>
@@ -417,39 +486,50 @@
                     <div class="flex flex-col md:flex-row gap-4">
                         <div class="flex flex-col gap-1 font-medium w-full">
                             <label class="md:text-base text-sm text-gray-400 font-medium">
-                                Type
+                                {{ 'myprofile.type' |
+                                translate }}
                             </label>
                             <select [(ngModel)]="form9.Type" name="Type"
                                 class="border border-gray-600 text-black rounded-lg p-2 md:text-base text-sm w-full cursor-pointer focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white">
-                                <option value="Certificate">Certificate</option>
-                                <option value="Award">Award</option>
-                                <option value="Badge">Badge</option>
-                                <option value="License">License</option>
-                                <option value="coming-soon" disabled>Coming Soon ...</option>
+                                <option value="Certificate">{{ 'myprofile.certificate' |
+                                    translate }}</option>
+                                <option value="Award">{{ 'myprofile.award' |
+                                    translate }}</option>
+                                <option value="Badge">{{ 'myprofile.badge' |
+                                    translate }}</option>
+                                <option value="License">{{ 'myprofile.license' |
+                                    translate }}</option>
+                                <option value="coming-soon" disabled>{{ 'myprofile.comingsoon' |
+                                    translate }}</option>
                             </select>
                         </div>
                         <div class="flex flex-col font-medium w-full">
-                            <app-input [(model)]="form9.Date" label="Date" type="date" class="w-full">
+                            <app-input [(model)]="form9.Date" label="{{ 'myprofile.date' |
+                                translate }}" type="date" class="w-full">
                             </app-input>
                         </div>
                     </div>
                     <p *ngIf="achiveDateError" class="text-red-500 md:text-sm text-xs font-medium">
                         {{ achiveDateError }}
                     </p>
-                    <app-input [(model)]="form9.Title" label="Title" type="text" placeholder="AWS Data Engineering"
-                        class="w-full">
+                    <app-input [(model)]="form9.Title" label="{{ 'myprofile.title' |
+                                translate }}" type="text" placeholder="{{ 'myprofile.place12' |
+                                translate }}" class="w-full">
                     </app-input>
                     <p *ngIf="titleError" class="text-red-500 md:text-sm text-xs font-medium">
                         {{ titleError }}
                     </p>
-                    <app-input [(model)]="form9.Link" label="Link" type="text"
-                        placeholder="https://aws.amazon.com/training/" class="w-full">
+                    <app-input [(model)]="form9.Link" label="{{ 'myprofile.link' |
+                                translate }}" type="text" placeholder="https://aws.amazon.com/training/"
+                        class="w-full">
                     </app-input>
                     <p *ngIf="linkError" class="text-red-500 md:text-sm text-xs font-medium">
                         {{ linkError }}
                     </p>
                     <div class="flex justify-end mt-1">
-                        <app-button type="submit" [label]="isLoading7 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                        <app-button type="submit"
+                            [label]="isLoading7 ? ('myprofile.loading' | translate) : ('myprofile.button1' | translate)"
+                            class=" flex flex-col">
                         </app-button>
                     </div>
                 </form>
@@ -458,13 +538,15 @@
 
         <!-- Additional Information -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
-            <h2 class="font-bold md:text-lg text-base text-black">Additional Information</h2>
+            <h2 class="font-bold md:text-lg text-base text-black">{{ 'myprofile.header7' |
+                translate }}</h2>
             <div class="flex flex-col">
                 <form (ngSubmit)="onSubmit8()" class="flex flex-col gap-4 mt-4">
                     <div class="w-full expand">
-                        <label class="md:text-base text-sm text-gray-400 font-medium">Hobbies</label>
-                        <textarea [(ngModel)]="form10.Hobby" name="hobby" placeholder="Play Badminton, Play Chess"
-                            rows="2"
+                        <label class="md:text-base text-sm text-gray-400 font-medium">{{ 'myprofile.hobbies' |
+                            translate }}</label>
+                        <textarea [(ngModel)]="form10.Hobby" name="hobby" placeholder="{{ 'myprofile.place13' |
+                                translate }}" rows="2"
                             class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
   </textarea>
                         <p *ngIf="hobbyError" class="text-red-500 md:text-sm text-xs font-medium mt-3">
@@ -472,9 +554,10 @@
                         </p>
                     </div>
                     <div class="w-full expand">
-                        <label class="md:text-base text-sm text-gray-400 font-medium">Skills</label>
-                        <textarea [(ngModel)]="form10.Skill" name="skill" placeholder="HTML, CSS, JavaScript, PHP"
-                            rows="2"
+                        <label class="md:text-base text-sm text-gray-400 font-medium">{{ 'myprofile.skills' |
+                            translate }}</label>
+                        <textarea [(ngModel)]="form10.Skill" name="skill" placeholder="{{ 'myprofile.place14' |
+                                translate }}" rows="2"
                             class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
   </textarea>
                         <p *ngIf="skillError" class="text-red-500 md:text-sm text-xs font-medium mt-3">
@@ -482,9 +565,10 @@
                         </p>
                     </div>
                     <div class="w-full expand">
-                        <label class="md:text-base text-sm text-gray-400 font-medium">Languages</label>
-                        <textarea [(ngModel)]="form10.Language" name="language" placeholder="English, Mandarin, Malay"
-                            rows="2"
+                        <label class="md:text-base text-sm text-gray-400 font-medium">{{ 'myprofile.languages' |
+                            translate }}</label>
+                        <textarea [(ngModel)]="form10.Language" name="language" placeholder="{{ 'myprofile.place15' |
+                                translate }}" rows="2"
                             class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
   </textarea>
                         <p *ngIf="languageError" class="text-red-500 md:text-sm text-xs font-medium mt-3">
@@ -492,7 +576,9 @@
                         </p>
                     </div>
                     <div class="flex justify-end mt-1">
-                        <app-button type="submit" [label]="isLoading8 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                        <app-button type="submit"
+                            [label]="isLoading8 ? ('myprofile.loading' | translate) : ('myprofile.button1' | translate)"
+                            class=" flex flex-col">
                         </app-button>
                     </div>
                 </form>
@@ -501,26 +587,29 @@
 
         <!-- Links Information -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
-            <h2 class="font-bold md:text-lg text-base text-black">Links</h2>
+            <h2 class="font-bold md:text-lg text-base text-black">{{ 'myprofile.header8' |
+                translate }}</h2>
             <div class="flex flex-col">
                 <form (ngSubmit)="onSubmit9()" class="flex flex-col gap-4 mt-4">
                     <div class="w-full expand">
-                        <app-input [(model)]="form11.Linkedin" label="Linkedin" type="text"
-                            placeholder="www.Linkedin.com" class="w-full">
+                        <app-input [(model)]="form11.Linkedin" label="{{ 'myprofile.linkedin' |
+                translate }}" type="text" placeholder="www.Linkedin.com" class="w-full">
                         </app-input>
                     </div>
                     <div class="w-full expand">
-                        <app-input [(model)]="form11.Portfolio" label="Portfolio" type="text"
-                            placeholder="www.portfolio.com" class="w-full">
+                        <app-input [(model)]="form11.Portfolio" label="{{ 'myprofile.portfolio' |
+                translate }}" type="text" placeholder="www.portfolio.com" class="w-full">
                         </app-input>
                     </div>
                     <div class="w-full expand">
-                        <app-input [(model)]="form11.Additional" label="Addtional" type="text"
-                            placeholder="www.additional.com" class="w-full">
+                        <app-input [(model)]="form11.Additional" label="{{ 'myprofile.additional' |
+                translate }}" type="text" placeholder="www.additional.com" class="w-full">
                         </app-input>
                     </div>
                     <div class="flex justify-end mt-1">
-                        <app-button type="submit" [label]="isLoading9 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                        <app-button type="submit"
+                            [label]="isLoading9 ? ('myprofile.loading' | translate) : ('myprofile.button1' | translate)"
+                            class=" flex flex-col">
                         </app-button>
                     </div>
                 </form>
@@ -529,17 +618,21 @@
 
         <!-- Conclusion -->
         <div reveal class="myProfile-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
-            <h2 class="font-bold md:text-lg text-base text-black">Conclusion</h2>
+            <h2 class="font-bold md:text-lg text-base text-black">{{ 'myprofile.header9' |
+                translate }}</h2>
             <form (ngSubmit)="onSubmit3()" class="flex flex-col gap-4 mt-4">
                 <div class="flex flex-col gap-1 w-full">
-                    <label class="md:text-base text-sm text-gray-400 font-medium">Message</label>
-                    <textarea [(ngModel)]="form3.Conclusion" name="conclusion"
-                        placeholder="Please send email to me if you have any questions." rows="4"
+                    <label class="md:text-base text-sm text-gray-400 font-medium">{{ 'myprofile.message' |
+                        translate }}</label>
+                    <textarea [(ngModel)]="form3.Conclusion" name="conclusion" placeholder="{{ 'myprofile.place16' |
+                                translate }}" rows="4"
                         class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
   </textarea>
                 </div>
                 <div class="flex justify-end mt-1">
-                    <app-button type="submit" [label]="isLoading3 ? 'Loading...' : 'Update'" class=" flex flex-col">
+                    <app-button type="submit"
+                        [label]="isLoading3 ? ('myprofile.loading' | translate) : ('myprofile.button1' | translate)"
+                        class=" flex flex-col">
                     </app-button>
                 </div>
             </form>
@@ -550,12 +643,15 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Login!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{ 'myprofile.modalheader1' |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        Welcome, Let's update your profile now.
+                        {{ 'myprofile.modaldescription1' |
+                        translate }}
                     </p>
-                    <app-button label="Yes, I will" (click)="closeLoginSuccessModal()" />
+                    <app-button label="{{ 'myprofile.button3' |
+                translate }}" (click)="closeLoginSuccessModal()" />
                 </div>
             </div>
         </div>
@@ -565,12 +661,15 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Updated!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{ 'myprofile.modalheader2' |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        Your profile is updated.
+                        {{ 'myprofile.modaldescription2' |
+                        translate }}
                     </p>
-                    <app-button label="Okay" (click)="closeUpdateUserModal()" />
+                    <app-button label="{{ 'myprofile.button4' |
+                translate }}" (click)="closeUpdateUserModal()" />
                 </div>
             </div>
         </div>

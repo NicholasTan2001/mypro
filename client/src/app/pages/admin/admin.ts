@@ -9,11 +9,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Searchbar } from '../../component/searchbar/searchbar';
 import { CommonModule } from '@angular/common';
 import { Button } from '../../component/button/button';
+import { TranslateModule } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-admin',
-  imports: [Searchbar, Reveal, CommonModule, Button],
+  imports: [Searchbar, Reveal, CommonModule, Button, TranslateModule],
   standalone: true,
   templateUrl: './admin.html',
   styleUrl: './admin.css',

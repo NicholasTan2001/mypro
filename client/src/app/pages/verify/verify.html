@@ -13,25 +13,32 @@
 
         <!-- Verification Page Title -->
         <h1 reveal class="font-bold md:text-2xl text-xl mb-12">
-            <span class="text-purple-600">{{form.name}}</span>'s OTP Verification
+            <span class="text-purple-600">{{form.name}}</span>{{
+            'verify.title' |
+            translate }}
         </h1>
 
         <!-- OTP Form -->
         <div reveal class="verify-card flex flex-col bg-white rounded-lg p-6 md:w-180 w-full">
-            <h2 class="text-center font-bold md:text-lg text-base text-black">OTP Verification</h2>
-            <p class="text-black font-medium md:text-base text-sm mt-4 leading-relaxed text-justify"> OTP Password is
-                sent to your email. Please check your email now. If you dont receive, you may refresh the page to get a
-                new OTP password. The OTP password will automatically delete after 60 seconds to protect user account.
+            <h2 class="text-center font-bold md:text-lg text-base text-black">{{
+                'verify.header' |
+                translate }}</h2>
+            <p class="text-black font-medium md:text-base text-sm mt-4 leading-relaxed text-justify"> {{
+                'verify.description' |
+                translate }}
             </p>
             <form (ngSubmit)="onSubmit()" class="mt-4">
                 <div class="flex flex-col">
-                    <app-input [(model)]="form2.password" label="OTP Password" type="text" placeholder="123456"
-                        maxlength="6" inputmode="numeric" class="w-full">
+                    <app-input [(model)]="form2.password" label="{{
+                        'verify.otppassword' |
+                        translate }}" type="text" placeholder="123456" maxlength="6" inputmode="numeric"
+                        class="w-full">
                     </app-input>
                     <p *ngIf="passwordError" class="text-red-500 md:text-sm text-xs font-medium mt-4">
                         {{ passwordError }}
                     </p>
-                    <app-button type="submit" [label]="isLoading ? 'Loading...' : 'Submit'"
+                    <app-button type="submit"
+                        [label]="isLoading ? ('verify.loading' | translate) : ('verify.button' | translate)"
                         class="flex flex-col items-end mt-5">
                     </app-button>
                 </div>

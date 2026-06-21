@@ -12,10 +12,14 @@ import { LogoutService } from '../../services/logout.service';
 import { HttpClient } from '@angular/common/http';
 import { DeleteAcccountService } from '../../services/delete-account.service';
 import { API_CONFIG } from '../../config/api.config';
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
+
 
 @Component({
   selector: 'app-login',
-  imports: [Button, RouterLink, Reveal, InputComponent, CommonModule, FormsModule],
+  imports: [Button, RouterLink, Reveal, InputComponent, CommonModule, FormsModule, TranslateModule],
   standalone: true,
   templateUrl: './login.html',
   styleUrl: './login.css',
@@ -25,7 +29,7 @@ export class Login implements OnInit {
   form = {
     IdentityNumber: '',
     Password: '',
-    Country: 'Malaysia'
+    Country: 'Malaysia',
   };
 
   form2 = {
@@ -41,6 +45,7 @@ export class Login implements OnInit {
   identityNumberError: string = '';
   identityNumberError2: string = '';
   passwordError: string = '';
+  language: string = '';
 
   constructor(
     private authService: AuthService,
@@ -48,10 +53,14 @@ export class Login implements OnInit {
     private http: HttpClient,
     private cd: ChangeDetectorRef,
     private logoutService: LogoutService,
-    private deleteAccountService: DeleteAcccountService
+    private deleteAccountService: DeleteAcccountService,
+    private translate: TranslateService,
+    public languageService: LanguageService
+
   ) { }
 
   ngOnInit() {
+    this.language = this.languageService.currentLanguage;
     this.logoutService.logoutSuccess$.subscribe(success => {
       this.logoutSuccess = success;
     });
@@ -64,28 +73,29 @@ export class Login implements OnInit {
     this.isLoading = true;
     this.identityNumberError = '';
     this.passwordError = '';
+    this.language = this.languageService.currentLanguage;
     try {
       if (!this.form.IdentityNumber) {
-        this.identityNumberError = 'Identity number is required.';
+        this.identityNumberError = this.translate.instant('login.errorid1');
         this.isLoading = false;
         return;
       }
       if (!/^\d{12}$/.test(this.form.IdentityNumber)) {
-        this.identityNumberError = 'Valid identity number is required.';
+        this.identityNumberError = this.translate.instant('login.errorid2');
         this.isLoading = false;
         return;
       }
       if (!this.form.Password) {
-        this.passwordError = 'Password is required.';
+        this.passwordError = this.translate.instant('login.errorpassword1');
         this.isLoading = false;
         return;
       }
       if (this.form.Password.length < 8) {
-        this.passwordError = 'Password must be at least 8 characters long.';
+        this.passwordError = this.translate.instant('login.errorpassword2');
         this.isLoading = false;
         return;
       }
-      const response = await firstValueFrom(this.authService.login(this.form));
+      const response = await firstValueFrom(this.authService.login(this.form, this.language));
       this.authService.setToken(response.token, response.user);
       this.router.navigate(['/myprofile']);
     } catch (error: any) {
@@ -95,7 +105,9 @@ export class Login implements OnInit {
         return;
       }
       const message = error?.error?.message || 'Login failed. Please try again.';
-      this.passwordError = message;
+      if (message == "Invalid credentials.") {
+        this.passwordError = this.translate.instant('login.errorpassword3');
+      }
       this.isLoading = false;
       this.cd.detectChanges();
     } finally {
@@ -117,14 +129,16 @@ export class Login implements OnInit {
   async onSubmit2() {
     this.isLoading2 = true;
     this.identityNumberError2 = '';
+    this.language = this.languageService.currentLanguage;
+
     try {
       if (!this.form2.IdentityNumber) {
-        this.identityNumberError2 = 'Identity number is required.';
+        this.identityNumberError2 = this.translate.instant('login.errorid1');
         this.isLoading2 = false;
         return;
       }
       if (!/^\d{12}$/.test(this.form2.IdentityNumber)) {
-        this.identityNumberError2 = 'Valid identity number is required.';
+        this.identityNumberError2 = this.translate.instant('login.errorid2');
         this.isLoading2 = false;
         return;
       }
@@ -132,7 +146,8 @@ export class Login implements OnInit {
         this.http.post(
           `${API_CONFIG.usersEndpointBase}/forgot-password`,
           {
-            identityNumber: this.form2.IdentityNumber
+            identityNumber: this.form2.IdentityNumber,
+            language: this.language
           }
         )
       );
@@ -145,7 +160,9 @@ export class Login implements OnInit {
     } catch (error: any) {
       this.isLoading2 = false;
       const message = error?.error?.message || 'Failed to send reset instructions. Please try again.';
-      this.identityNumberError2 = message;
+      if (message == "Identity number not found.") {
+        this.identityNumberError2 = this.translate.instant('login.errorid3');
+      }
       this.cd.detectChanges();
     } finally {
       this.isLoading2 = false;

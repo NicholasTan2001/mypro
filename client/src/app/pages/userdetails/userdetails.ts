@@ -10,11 +10,13 @@ import { QRCodeComponent } from 'angularx-qrcode';
 import { AuthService } from '../../services/auth.service';
 import { Button } from '../../component/button/button';
 import { FormsModule } from '@angular/forms';
-
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
+import { LanguageService } from '../../services/language.service';
 
 @Component({
   selector: 'app-userdetails',
-  imports: [CommonModule, Reveal, QRCodeComponent, Button, FormsModule],
+  imports: [CommonModule, Reveal, QRCodeComponent, Button, FormsModule, TranslateModule],
   standalone: true,
   templateUrl: './userdetails.html',
   styleUrl: './userdetails.css'
@@ -36,6 +38,7 @@ export class UserDetails implements OnInit {
   isLoading: boolean = false;
   reportError: string = '';
   reportSuccess: boolean = false;
+  language: string = '';
 
   form = {
     Report: '',
@@ -46,9 +49,13 @@ export class UserDetails implements OnInit {
     private route: ActivatedRoute,
     private http: HttpClient,
     private cd: ChangeDetectorRef,
+    private translate: TranslateService,
+    public languageService: LanguageService
+
   ) { }
 
   ngOnInit() {
+    this.language = this.languageService.currentLanguage;
     const user = this.authService.getCurrentUser();
     if (user) {
       this.id = user.id;
@@ -238,9 +245,10 @@ export class UserDetails implements OnInit {
   async onSubmit() {
     this.isLoading = true;
     this.reportError = '';
+    this.language = this.languageService.currentLanguage;
 
     if (!this.form.Report) {
-      this.reportError = "Report message is required."
+      this.reportError = this.translate.instant('details.errorreport');
       this.isLoading = false;
       this.cd.detectChanges();
       return;
@@ -249,6 +257,7 @@ export class UserDetails implements OnInit {
       const response: any = await firstValueFrom(
         this.http.post(`${API_CONFIG.usersEndpointBase}/report`,
           {
+            language: this.language,
             reportThisId: this.userId,
             email: this.email,
             identityNumber: this.identityNumber,

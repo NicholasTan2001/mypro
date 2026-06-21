@@ -7,10 +7,12 @@ import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { ChangeDetectorRef } from '@angular/core';
 import { API_CONFIG } from '../../config/api.config';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-home',
-  imports: [Globe, Reveal, Button, RouterLink],
+  imports: [Globe, Reveal, Button, RouterLink, TranslateModule],
   standalone: true,
   templateUrl: './home.html',
   styleUrl: './home.css',
@@ -20,7 +22,7 @@ export class Home implements OnInit {
 
   malaysiaUsers: number = 0;
 
-  constructor(private http: HttpClient, private cd: ChangeDetectorRef,) { }
+  constructor(private http: HttpClient, private cd: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.fetchMalaysiaUserCount();

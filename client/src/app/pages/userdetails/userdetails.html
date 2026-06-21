@@ -15,7 +15,9 @@
         <div reveal class="flex md:flex-row flex-col gap-1">
             <div class="flex flex-row gap-1">
                 <h1 class="font-bold md:text-2xl text-xl">
-                    <span class="text-purple-600">{{user.name}}</span>'s Profile
+                    <span class="text-purple-600">{{user.name}}</span>{{
+                    'details.title' |
+                    translate }}
                 </h1>
                 @if (user.blueTick == "Yes"){
                 <div>
@@ -25,7 +27,9 @@
             </div>
             <div class="flex flex-col items-center justify-center">
                 <h1 class="font-bold md:text-2xl text-xl">
-                    [ <span class="text-purple-500">{{user.viewNum}}</span> views ]
+                    [ <span class="text-purple-500">{{user.viewNum}}</span> {{
+                    'details.views' |
+                    translate }} ]
                 </h1>
             </div>
         </div>
@@ -37,7 +41,9 @@
         user.block=="No"){
         <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
-                <h2 class="font-bold md:text-lg text-base text-black mb-4">Introduction</h2>
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">{{
+                    'details.header1' |
+                    translate }}</h2>
                 <p class="text-black font-bold"><span class="text-purple-500">{{ user.intro }}</span></p>
             </div>
         </div>
@@ -46,21 +52,43 @@
         <div reveal class="user-card bg-white rounded-lg p-6 md:w-2/3 w-full shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
                 <div class="flex flex-col md:flex-row justify-between">
-                    <h2 class="font-bold md:text-lg text-base text-black">General Personal Information</h2>
+                    <h2 class="font-bold md:text-lg text-base text-black">{{
+                        'details.header2' |
+                        translate }}</h2>
                     <h2 class="font-bold md:text-lg text-base text-gray-500 mb-4">ID: {{user.id}}</h2>
                 </div>
-                <p class="text-black font-bold">Name: <span class="text-purple-500">{{ user.name }}</span></p>
-                <p class="text-black font-bold">Sex: <span class="text-purple-500">{{ user.sex }}</span></p>
-                <p class="text-black font-bold">Age: <span class="text-purple-500">{{ user.age }}</span></p>
-                <p class="text-black font-bold">Date of Bith: <span class="text-purple-500"> {{ user.birthDate |
-                        date:'d MMMM, y' }}</span>
+                <p class="text-black font-bold">{{
+                    'details.name' |
+                    translate }}: <span class="text-purple-500">{{ user.name }}</span></p>
+                <p class="text-black font-bold">{{
+                    'details.sex' |
+                    translate }}: <span class="text-purple-500">{{ user.sex }}</span></p>
+                <p class="text-black font-bold">{{
+                    'details.age' |
+                    translate }}: <span class="text-purple-500">{{ user.age }}</span></p>
+                <p class="text-black font-bold">{{
+                    'details.dateofbirth' |
+                    translate }}: <span class="text-purple-500"> {{ user.birthDate |
+                        date:'dd-MM-y' }}</span>
                 </p>
-                <p class="text-black font-bold">Email: <span class="text-purple-500"> {{ user.email }}</span></p>
-                <p class="text-black font-bold">Phone: <span class="text-purple-500"> {{ user.phoneNumber }}</span>
+                <p class="text-black font-bold">{{
+                    'details.email' |
+                    translate }}: <span class="text-purple-500"> {{ user.email }}</span></p>
+                <p class="text-black font-bold">{{
+                    'details.phone' |
+                    translate }}: <span class="text-purple-500"> {{ user.phoneNumber }}</span>
                 </p>
-                <p class="text-black font-bold">Address: <span class="text-purple-500"> {{ user.address }}</span>
+                <p class="text-black font-bold">{{
+                    'details.address' |
+                    translate }}: <span class="text-purple-500"> {{ user.address }}</span>
                 </p>
-                <p class="text-black font-bold">Country: <span class="text-purple-500">{{ user.country }}</span></p>
+                @if (user.country == "Malaysia"){
+                <p class="text-black font-bold">{{
+                    'details.country' |
+                    translate }}: <span class="text-purple-500">{{
+                        'details.malaysia' |
+                        translate }}</span></p>
+                }
             </div>
         </div>
         }
@@ -68,19 +96,33 @@
         user.block=="No") {
         <div reveal class="user-card bg-white rounded-lg p-6 w-full md:w-2/3 shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
-                <h2 class="font-bold md:text-lg text-base text-black mb-4">Professional Information</h2>
-                <p class="text-black font-bold">Position: <span class="text-purple-500">Student</span></p>
-                <p class="text-black font-bold">Course: <span class="text-purple-500">{{ user.course }}</span></p>
-                <p class="text-black font-bold">Location: <span class="text-purple-500">{{ user.location }}</span>
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">{{
+                    'details.header3' |
+                    translate }}</h2>
+                <p class="text-black font-bold">{{
+                    'details.position' |
+                    translate }}: <span class="text-purple-500">{{
+                        'details.student' |
+                        translate }}</span></p>
+                <p class="text-black font-bold">{{
+                    'details.course' |
+                    translate }}: <span class="text-purple-500">{{ user.course }}</span></p>
+                <p class="text-black font-bold">{{
+                    'details.location' |
+                    translate }}: <span class="text-purple-500">{{ user.location }}</span>
                 </p>
                 <div class="flex flex-col md:flex-row gap-2 md:gap-12">
 
-                    <p class="text-black font-bold">Start Date: <span class="text-purple-500">{{
+                    <p class="text-black font-bold">{{
+                        'details.startdate' |
+                        translate }}: <span class="text-purple-500">{{
                             user.studentStartDate |
-                            date:'d MMMM, y' }}</span></p>
-                    <p class="text-black font-bold">End Date: <span class="text-purple-500">{{
+                            date:'dd-MM-y' }}</span></p>
+                    <p class="text-black font-bold">{{
+                        'details.expectedenddate' |
+                        translate }}: <span class="text-purple-500">{{
                             user.studentEndDate
-                            | date:'d MMMM, y' }}</span></p>
+                            | date:'dd-MM-y' }}</span></p>
                 </div>
             </div>
         </div>
@@ -90,18 +132,30 @@
         <div reveal class="user-card bg-white rounded-lg p-6 w-full md:w-2/3 shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
                 <h2 class="font-bold md:text-lg text-base text-black mb-4">Professional Information</h2>
-                <p class="text-black font-bold">Position: <span class="text-purple-500">{{ user.position }}</span>
+                <p class="text-black font-bold">{{
+                    'details.position' |
+                    translate }}: <span class="text-purple-500">{{ user.position }}</span>
                 </p>
-                <p class="text-black font-bold">Role: <span class="text-purple-500">{{ user.role }}</span></p>
-                <p class="text-black font-bold">Responsibilities: <span class="text-purple-500">{{ user.responsible
+                <p class="text-black font-bold">{{
+                    'details.role' |
+                    translate }}: <span class="text-purple-500">{{ user.role }}</span></p>
+                <p class="text-black font-bold">{{
+                    'details.responsibilities' |
+                    translate }}: <span class="text-purple-500">{{ user.responsible
                         }}</span>
                 </p>
-                <p class="text-black font-bold">Company: <span class="text-purple-500">{{ user.company }}</span></p>
+                <p class="text-black font-bold">{{
+                    'details.company' |
+                    translate }}: <span class="text-purple-500">{{ user.company }}</span></p>
                 <div class="flex flex-col md:flex-row gap-2 md:gap-12">
-                    <p class="text-black font-bold">Start Date: <span class="text-purple-500">{{ user.empStartDate |
-                            date:'d MMMM, y' }}</span></p>
-                    <p class="text-black font-bold">End Date: <span class="text-purple-500">{{ user.empEndDate |
-                            date:'d MMMM, y' }}</span></p>
+                    <p class="text-black font-bold">{{
+                        'details.startdate' |
+                        translate }}: <span class="text-purple-500">{{ user.empStartDate |
+                            date:'dd-MM-y' }}</span></p>
+                    <p class="text-black font-bold">{{
+                        'details.expectedenddate' |
+                        translate }}: <span class="text-purple-500">{{ user.empEndDate |
+                            date:'dd-MM-y' }}</span></p>
                 </div>
             </div>
         </div>
@@ -110,7 +164,9 @@
         user.block=="No") {
         <div reveal class="user-card bg-white rounded-lg p-6 md:w-2/3 w-full shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
-                <h2 class="font-bold md:text-lg text-base text-black mb-4">Working Experiences</h2>
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">{{
+                    'details.header4' |
+                    translate }}</h2>
                 <div class="flex flex-col gap-4">
                     @for (exp of experience; track exp.id) {
                     <div
@@ -124,9 +180,11 @@
                         <p class="text-gray-400 md:text-sm text-xs mb-2 font-bold">{{ exp.responsible }}</p>
                         <p class="text-gray-400 md:text-sm text-xs font-bold">
                             {{ exp.startDate |
-                            date:'d MMMM, y' }} until
+                            date:'dd-MM-y' }} {{
+                            'details.until' |
+                            translate }}
                             {{ exp.endDate |
-                            date:'d MMMM, y' }}
+                            date:'dd-MM-y' }}
                         </p>
                     </div>
                     }
@@ -138,7 +196,9 @@
         user.block=="No") {
         <div reveal class="user-card bg-white rounded-lg p-6 md:w-2/3 w-full shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
-                <h2 class="font-bold md:text-lg text-base text-black mb-4">Projects</h2>
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">{{
+                    'details.header5' |
+                    translate }}</h2>
                 <div class="flex flex-col gap-4">
                     @for (pro of project; track pro.id) {
                     <div
@@ -152,9 +212,11 @@
                         <p class="text-gray-400 md:text-sm text-xs mb-2 font-bold">{{ pro.feature }}</p>
                         <p class="text-gray-400 md:text-sm text-xs font-bold">
                             {{ pro.startDate |
-                            date:'d MMMM, y' }} until
+                            date:'dd-MM-y' }} {{
+                            'details.until' |
+                            translate }}
                             {{ pro.endDate |
-                            date:'d MMMM, y' }}
+                            date:'dd-MM-y' }}
                         </p>
                     </div>
                     }
@@ -166,20 +228,42 @@
         user.block=="No") {
         <div reveal class="user-card bg-white rounded-lg p-6 md:w-2/3 w-full shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
-                <h2 class="font-bold md:text-lg text-base text-black mb-4">Achievements</h2>
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">{{
+                    'details.header6' |
+                    translate }}</h2>
                 <div class="flex flex-col gap-4">
                     @for (ach of achievement; track ach.id) {
                     <div
                         class="border border-gray-300 rounded-lg p-4 hover:bg-purple-100 hover:border-purple-500 transition duration-300">
                         <div class="flex justify-between items-start mb-2">
                             <div class="flex-1">
-                                <p class="md:text-base text-sm text-purple-500 font-bold">{{ ach.title }}</p>
-                                <p class="md:text-sm text-xs text-purple-400 font-bold mt-2">{{ ach.type }}</p>
+                                <p class="md:text-base text-sm text-purple-500 font-bold">{{ ach.title }}
+                                </p>
+                                @if (ach.type == "Certificate"){
+                                <p class="md:text-sm text-xs text-purple-400 font-bold mt-2">{{
+                                    'details.certificate' |
+                                    translate }}</p>
+                                }
+                                @if (ach.type == "Badge"){
+                                <p class="md:text-sm text-xs text-purple-400 font-bold mt-2">{{
+                                    'details.badge' |
+                                    translate }}</p>
+                                }
+                                @if (ach.type == "Award"){
+                                <p class="md:text-sm text-xs text-purple-400 font-bold mt-2">{{
+                                    'details.award' |
+                                    translate }}</p>
+                                }
+                                @if (ach.type == "License"){
+                                <p class="md:text-sm text-xs text-purple-400 font-bold mt-2">{{
+                                    'details.license' |
+                                    translate }}</p>
+                                }
                             </div>
                         </div>
                         <p class="text-gray-400 md:text-sm text-xs font-bold mb-2">
                             {{ ach.date |
-                            date:'d MMMM, y' }}
+                            date:'dd-MM-y' }}
                         </p>
                         <a [href]="getValidUrl(ach.link)" target="_blank" rel="noopener noreferrer"
                             class="text-gray-400 md:text-sm text-xs font-bold hover:text-blue-400 hover:underline break-words max-w-3xl">
@@ -196,7 +280,9 @@
         <div class="flex flex-col lg:flex-row lg:gap-12 md:w-7/8 w-full">
             <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
                 <div class="flex flex-col gap-2 md:text-base text-sm">
-                    <h2 class="font-bold md:text-lg text-base text-black mb-4">Hobbies</h2>
+                    <h2 class="font-bold md:text-lg text-base text-black mb-4">{{
+                        'details.header7' |
+                        translate }}</h2>
                     <div class="flex flex-wrap gap-3">
                         @for (hobby of user.hobby.split(','); track hobby) {
                         <span
@@ -209,7 +295,9 @@
             </div>
             <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
                 <div class="flex flex-col gap-2 md:text-base text-sm">
-                    <h2 class="font-bold md:text-lg text-base text-black mb-4">Skills</h2>
+                    <h2 class="font-bold md:text-lg text-base text-black mb-4">{{
+                        'details.header8' |
+                        translate }}</h2>
                     <div class="flex flex-wrap gap-2">
                         @for (skill of user.skill.split(','); track skill) {
                         <span
@@ -223,7 +311,9 @@
             </div>
             <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
                 <div class="flex flex-col gap-2 md:text-base text-sm">
-                    <h2 class="font-bold md:text-lg text-base text-black mb-4">Languages</h2>
+                    <h2 class="font-bold md:text-lg text-base text-black mb-4">{{
+                        'details.header9' |
+                        translate }}</h2>
                     <div class="flex flex-wrap gap-2">
                         @for (language of user.language.split(','); track language) {
                         <span
@@ -242,10 +332,14 @@
         user.block=="No") {
         <div class="flex flex-col lg:flex-row lg:gap-12 md:w-7/8 w-full">
             <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
-                <h2 class="font-bold md:text-lg text-base text-black mb-4">More Links</h2>
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">{{
+                    'details.header10' |
+                    translate }}</h2>
                 @if (user.linkedinLink!=''){
                 <div class="md:text-base text-sm gap-2">
-                    <p class="text-black font-bold">Linkedin: </p>
+                    <p class="text-black font-bold">{{
+                        'details.linkedin' |
+                        translate }}: </p>
                     <a [href]="getValidUrl(user.linkedinLink)" target="_blank" rel="noopener noreferrer"
                         class="text-gray-400 font-bold hover:text-blue-400 hover:underline break-words max-w-3xl">
                         {{user.linkedinLink}}
@@ -254,7 +348,9 @@
                 }
                 @if (user.portfolioLink!=''){
                 <div class="md:text-base text-sm gap-2 mt-2">
-                    <p class="text-black font-bold">Portfolio: </p>
+                    <p class="text-black font-bold">{{
+                        'details.portfolio' |
+                        translate }}: </p>
                     <a [href]="getValidUrl(user.portfolioLink)" target="_blank" rel="noopener noreferrer"
                         class="text-gray-400 font-bold hover:text-blue-400 hover:underline break-words max-w-3xl">
                         {{user.portfolioLink}}
@@ -263,7 +359,9 @@
                 }
                 @if (user.additionalLink!=''){
                 <div class="md:text-base text-sm gap-2 mt-2">
-                    <p class="text-black font-bold">Additional: </p>
+                    <p class="text-black font-bold">{{
+                        'details.additional' |
+                        translate }}: </p>
                     <a [href]="getValidUrl(user.additionalLink)" target="_blank" rel="noopener noreferrer"
                         class="text-gray-400 font-bold hover:text-blue-400 hover:underline break-words max-w-3xl">
                         {{user.additionalLink}}
@@ -277,7 +375,9 @@
         user.block=="No"){
         <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg mt-12">
             <div class="flex flex-col gap-2 md:text-base text-sm">
-                <h2 class="font-bold md:text-lg text-base text-black mb-4">Conclusion</h2>
+                <h2 class="font-bold md:text-lg text-base text-black mb-4">{{
+                    'details.header11' |
+                    translate }}</h2>
                 <p class="text-black font-bold"><span class="text-purple-500">{{ user.conclusion
                         }}</span>
                 </p>
@@ -294,18 +394,24 @@
             </div>
         </div>
         <div reveal class="user-card bg-white rounded-lg p-6 w-full shadow-lg md:w-2/3 mt-12">
-            <h2 class="font-bold md:text-lg text-base text-black mb-4">Report</h2>
-            <label class="md:text-base text-sm text-gray-400 font-medium">Report Message</label>
+            <h2 class="font-bold md:text-lg text-base text-black mb-4">{{
+                'details.header12' |
+                translate }}</h2>
+            <label class="md:text-base text-sm text-gray-400 font-medium">{{
+                'details.report' |
+                translate }}</label>
             <form (ngSubmit)="onSubmit()" class="flex flex-col">
-                <textarea [(ngModel)]="form.Report" name="report"
-                    placeholder="This Identity Number is fake. Please check it now!" rows="4"
+                <textarea [(ngModel)]="form.Report" name="report" placeholder="{{
+                'details.reportdescription' |
+                translate }}" rows="4"
                     class="border border-gray-600  text-black rounded-lg p-3 mt-1 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 focus:border-white font-medium">
                 </textarea>
                 <p *ngIf="reportError" class="text-red-500 md:text-sm text-xs font-medium mt-4">
                     {{ reportError }}
                 </p>
-                <app-button type="submit" [label]="isLoading ? 'Loading...' : 'Report'" variant="danger"
-                    class="flex justify-end mt-4" />
+                <app-button type="submit"
+                    [label]="isLoading ? ('details.loading' | translate) : ('details.button1' | translate)"
+                    variant="danger" class="flex justify-end mt-4" />
             </form>
         </div>
         }
@@ -315,11 +421,12 @@
         <div reveal class="user-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mt-12">
             <div class="flex flex-col items-center justify-center p-8">
                 <img src="lockprofile.jpg" alt="This Profile is Private" class="md:w-50 w-30 mx-auto mb-6">
-                <p class="font-medium md:text-lg text-base text-black mb-6">This Profile is Private.</p>
-                <p class="font-medium md:text-sm text-xs leading-relaxed text-gray-500">Sorry, we couldn't let
-                    you
-                    view
-                    this profile since this profile is private.
+                <p class="font-medium md:text-lg text-base text-black mb-6">{{
+                    'details.profileprivate' |
+                    translate }}</p>
+                <p class="font-medium md:text-sm text-xs leading-relaxed text-gray-500">{{
+                    'details.profileprivatedescription' |
+                    translate }}
                 </p>
             </div>
         </div>
@@ -330,13 +437,12 @@
         <div reveal class="user-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
             <div class="flex flex-col items-center justify-center p-8">
                 <img src="notfound.jpg" alt="No Related User Found" class="md:w-50 w-30 mx-auto mb-6">
-                <p class="font-medium md:text-lg text-base text-black mb-6">No User Found.</p>
-                <p class="font-medium md:text-sm text-xs leading-relaxed text-gray-500">Sorry, we couldn't find
-                    any
-                    user
-                    that you're
-                    looking
-                    for.
+                <p class="font-medium md:text-lg text-base text-black mb-6">{{
+                    'details.nouser' |
+                    translate }}</p>
+                <p class="font-medium md:text-sm text-xs leading-relaxed text-gray-500">{{
+                    'details.nouserdescription' |
+                    translate }}
                 </p>
             </div>
         </div>
@@ -347,11 +453,12 @@
         <div reveal class="user-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mt-12">
             <div class="flex flex-col items-center justify-center p-8">
                 <img src="lockprofile.jpg" alt="This Profile is Blocked" class="md:w-50 w-30 mx-auto mb-6">
-                <p class="font-medium md:text-lg text-base text-black mb-6">This Profile is Blocked.</p>
-                <p class="font-medium md:text-sm text-xs leading-relaxed text-gray-500">Sorry, we couldn't let
-                    you
-                    view
-                    this profile since this profile is blocked.
+                <p class="font-medium md:text-lg text-base text-black mb-6">{{
+                    'details.profileblock' |
+                    translate }}</p>
+                <p class="font-medium md:text-sm text-xs leading-relaxed text-gray-500">{{
+                    'details.profileblockdescription' |
+                    translate }}
                 </p>
             </div>
         </div>
@@ -362,12 +469,18 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Reported!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{
+                        'details.modalheader' |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        Your report is sent successfully to MyProfile Team.
+                        {{
+                        'details.modaldescription' |
+                        translate }}
                     </p>
-                    <app-button label="Thanks" (click)="closeReportSuccessModal()" />
+                    <app-button label="{{
+                'details.button2' |
+                translate }}" (click)="closeReportSuccessModal()" />
                 </div>
             </div>
         </div>

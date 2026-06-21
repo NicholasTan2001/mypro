@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
+
 
 @Component({
   selector: 'app-footer',
-  imports: [RouterLink],
+  imports: [RouterLink, TranslateModule],
   standalone: true,
   templateUrl: './footer.html',
   styleUrl: './footer.css',

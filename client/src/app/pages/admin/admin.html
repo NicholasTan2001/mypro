@@ -12,14 +12,15 @@
     <!-- Admin Page Title -->
     <div class=" flex flex-col items-center justify-center">
         <h1 reveal class="font-bold md:text-2xl text-xl mb-12"><span class="text-purple-600">{{ form.Name
-                }}</span> Admin
+                }}</span> {{ 'admin.admin' |
+            translate }}
         </h1>
 
         <!-- Admin Search -->
         <div reveal class="flex flex-col md:w-3/5 w-full mb-12">
             <div class="flex flex-row items-center gap-2 justify-center">
-                <app-searchbar placeholder="Search user by name..." (onSearchClick)="onSearch($event)"
-                    class="w-full font-medium">
+                <app-searchbar placeholder="{{ 'admin.searchbyname' |
+            translate }}" (onSearchClick)="onSearch($event)" class="w-full font-medium">
                 </app-searchbar>
                 @if (isLoading) {
                 <div class="flex items-center">
@@ -45,7 +46,8 @@
                 <div class="flex md:flex-row flex-col md:gap-1">
                     <div class="flex flex-row gap-1">
                         <h2 class="font-bold md:text-lg text-base text-black">
-                            <span class="text-purple-500">{{result.name}}</span>'s Profile
+                            <span class="text-purple-500">{{result.name}}</span>{{ 'admin.name' |
+                            translate }}
                         </h2>
                         @if (result.blueTick == "Yes"){
                         <div>
@@ -55,82 +57,92 @@
                     </div>
 
                     <h2 class="font-bold md:text-lg text-base text-black">
-                        [ <span class="text-purple-500">{{result.viewNum}}</span> views ]
+                        [ <span class="text-purple-500">{{result.viewNum}}</span> {{ 'admin.views' |
+                        translate }} ]
                     </h2>
 
                 </div>
                 @if (result.status == "Private") {
                 <p class="text-red-500 md:text-lg text-base font-bold">
-                    🔒 {{result.status}}
+                    🔒 {{ 'admin.private' |
+                    translate }}
                 </p>
                 } @else {
                 <p class="text-green-500 md:text-lg text-base font-bold">
-                    🌍 {{result.status}}
+                    🌍 {{ 'admin.public' |
+                    translate }}
                 </p>
                 }
             </div>
             @if (result.intro) {
             <div class="show-section">
                 <p class="text-black md:text-base text-sm font-bold mt-3">
-                    Bio: <span class="text-purple-500">{{ result.intro }}</span>
+                    {{ 'admin.bio' |
+                    translate }}: <span class="text-purple-500">{{ result.intro }}</span>
                 </p>
             </div>
             }
             <div class="mt-4 flex flex-col gap-1">
-                <p class="text-black md:text-base text-sm font-bold">Age: <span
-                        class="text-purple-500">{{result.age}}</span></p>
-                <p class="text-black md:text-base text-sm font-bold">Sex: <span
-                        class="text-purple-500">{{result.sex}}</span></p>
-                <p class="text-black md:text-base text-sm font-bold">Email: <span
-                        class="text-purple-500">{{result.email}}</span></p>
-                <p class="text-black md:text-base text-sm font-bold">Country: <span
-                        class="text-purple-500">{{result.country}}</span></p>
+                <p class="text-black md:text-base text-sm font-bold">{{ 'admin.age' |
+                    translate }}: <span class="text-purple-500">{{result.age}}</span></p>
+                <p class="text-black md:text-base text-sm font-bold">{{ 'admin.sex' |
+                    translate }}: <span class="text-purple-500">{{result.sex}}</span></p>
+                <p class="text-black md:text-base text-sm font-bold">{{ 'admin.email' |
+                    translate }}: <span class="text-purple-500">{{result.email}}</span></p>
+                @if (result.country == "Malaysia"){
+                <p class="text-black md:text-base text-sm font-bold">{{ 'admin.country' |
+                    translate }}: <span class="text-purple-500">{{ 'admin.malaysia' |
+                        translate }}</span></p>
+                }
             </div>
             <div class="show-section flex md:flex-row flex-col justify-center md:gap-6">
                 @if (result.admin == "Yes"){
                 <p
                     class="flex rounded-lg justify-center items-center text-white bg-gray-400 md:text-base text-sm font-medium py-1 w-full mt-5 ">
-                    MyProfile Admin
+                    {{ 'admin.myprofileadmin' |
+                    translate }}
                 </p>
                 } @else{
-                <app-button [label]="isLoading2 ? 'Loading...' : 'Add Admin'" size="sm" (click)="addAdmin(result)"
-                    class=" flex flex-col mt-5 w-full">
+                <app-button [label]="isLoading2 ? ('admin.loading' | translate) : ('admin.button1' | translate)"
+                    size="sm" (click)="addAdmin(result)" class=" flex flex-col mt-5 w-full">
                 </app-button>
                 }
                 @if (result.id == form.Id){
                 <p
                     class="flex rounded-lg justify-center items-center text-white bg-gray-400 md:text-base text-sm font-medium py-1 w-full mt-5">
-                    Can't Block
+                    {{ 'admin.cantblock' |
+                    translate }}
                 </p>
                 }@else if (result.block=="Yes"){
-                <app-button [label]="isLoading5 ? 'Loading...' : 'Unblock Account'" size="sm"
-                    (click)="unblockUser(result)" variant="danger" class=" flex flex-col mt-5 w-full">
+                <app-button [label]="isLoading5 ? ('admin.loading' | translate) : ('admin.button8' | translate)"
+                    size="sm" (click)="unblockUser(result)" variant="danger" class=" flex flex-col mt-5 w-full">
                 </app-button>
                 } @else if (result.block == "No"){
-                <app-button [label]="isLoading5 ? 'Loading...' : 'Block Account'" size="sm" (click)="blockUser(result)"
-                    class=" flex flex-col mt-5 w-full">
+                <app-button [label]="isLoading5 ? ('admin.loading' | translate) : ('admin.button2' | translate)"
+                    size="sm" (click)="blockUser(result)" class=" flex flex-col mt-5 w-full">
                 </app-button>
                 }
             </div>
             <div class="show-section flex md:flex-row flex-col justify-center md:gap-6">
                 @if (result.blueTick == "Yes"){
-                <app-button [label]="isLoading3 ? 'Loading...' : 'Remove BlueTick'" (click)="removeBlueTick(result)"
-                    size="sm" variant="danger" class="flex flex-col mt-5 w-full">
+                <app-button [label]="isLoading3 ? ('admin.loading' | translate) : ('admin.button9' | translate)"
+                    (click)="removeBlueTick(result)" size="sm" variant="danger" class="flex flex-col mt-5 w-full">
                 </app-button>
                 }@else{
-                <app-button [label]="isLoading3 ? 'Loading...' : 'Apply BlueTick'" (click)="acceptBlueTick(result)"
-                    size="sm" class="flex flex-col mt-5 w-full">
+                <app-button [label]="isLoading3 ? ('admin.loading' | translate) : ('admin.button3' | translate)"
+                    (click)="acceptBlueTick(result)" size="sm" class="flex flex-col mt-5 w-full">
                 </app-button>
 
                 }
                 @if (result.id == form.Id){
                 <p
                     class="flex rounded-lg justify-center items-center text-white bg-gray-400 md:text-base text-sm font-medium py-1 w-full mt-5 ">
-                    Can't Remove
+                    {{ 'admin.cantremove' |
+                    translate }}
                 </p>
                 }@else{
-                <app-button [label]="isLoading6 ? 'Loading...' : 'Remove Account'" (click)="removeAccount(result)"
-                    size="sm" class="flex flex-col mt-5 w-full">
+                <app-button [label]="isLoading6 ? ('admin.loading' | translate) : ('admin.button4' | translate)"
+                    (click)="removeAccount(result)" size="sm" class="flex flex-col mt-5 w-full">
                 </app-button>
 
                 }
@@ -139,8 +151,8 @@
         }
         @if (showMoreButton) {
         <div class="flex justify-center mb-12">
-            <app-button [label]="isLoadingMore ? 'Loading...' : 'Show More'" (click)="showMoreResults()"
-                class="flex flex-col">
+            <app-button [label]="isLoadingMore ? ('admin.loading' | translate) : ('admin.button10' | translate)"
+                (click)="showMoreResults()" class="flex flex-col">
             </app-button>
         </div>
         }
@@ -151,11 +163,10 @@
         <div reveal class="admin-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mb-12">
             <div class="flex flex-col items-center justify-center p-8">
                 <img src="notfound.jpg" alt="No Related User Found" class="md:w-50 w-25 mb-6">
-                <p class="font-medium md:text-lg text-base text-black mb-6">No User Found.</p>
-                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">Sorry, we couldn't find any
-                    user
-                    that you're
-                    looking for.
+                <p class="font-medium md:text-lg text-base text-black mb-6">{{ 'admin.nouser' |
+                    translate }}</p>
+                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">{{ 'admin.nouserdescription' |
+                    translate }}
                 </p>
             </div>
         </div>
@@ -163,7 +174,8 @@
 
         <!-- Admins -->
         <div reveal class="admin-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
-            <h2 class="font-bold md:text-lg text-base text-black mb-6">Admins</h2>
+            <h2 class="font-bold md:text-lg text-base text-black mb-6">{{ 'admin.header1' |
+                translate }}</h2>
             @if (admins.length > 0) {
             <div class="flex flex-col gap-4">
                 @for (ad of admins; track ad.id) {
@@ -178,27 +190,35 @@
                         </div>
                         }
                     </div>
-                    <p class="text-black md:text-base text-sm font-bold">Age: <span class="text-purple-500">
+                    <p class="text-black md:text-base text-sm font-bold">{{ 'admin.age' |
+                        translate }}: <span class="text-purple-500">
                             {{ ad.age }}</span>
                     </p>
-                    <p class="text-black md:text-base text-sm font-bold">Sex: <span class="text-purple-500">
+                    <p class="text-black md:text-base text-sm font-bold">{{ 'admin.sex' |
+                        translate }}: <span class="text-purple-500">
                             {{ ad.sex }}</span>
                     </p>
-                    <p class="text-black md:text-base text-sm font-bold">Email: <span class="text-purple-500">
+                    <p class="text-black md:text-base text-sm font-bold">{{ 'admin.email' |
+                        translate }}: <span class="text-purple-500">
                             {{ ad.email }}</span>
                     </p>
-                    <p class="text-black md:text-base text-sm font-bold">Country: <span class="text-purple-500">
-                            {{ ad.country }}</span>
+                    @if (ad.country == "Malaysia"){
+                    <p class="text-black md:text-base text-sm font-bold">{{ 'admin.country' |
+                        translate }}: <span class="text-purple-500">
+                            {{ 'admin.malaysia' |
+                            translate }}</span>
                     </p>
+                    }
                     <div class="flex justify-end mt-4">
                         @if (ad.id == form.Id){
                         <p
                             class="flex rounded-lg items-center text-white bg-gray-400 md:text-base text-sm font-medium md:px-5 px-3 py-2">
-                            Can't Remove
+                            {{ 'admin.cantremove' |
+                            translate }}
                         </p>
                         } @else{
-                        <app-button [label]="isLoading4 ? 'Loading...' : 'Remove'" (click)="deleteAdmin(ad.id)"
-                            variant="danger" class="flex justify-end">
+                        <app-button [label]="isLoading4 ? ('admin.loading' | translate) : ('admin.button5' | translate)"
+                            (click)="deleteAdmin(ad.id)" variant="danger" class="flex justify-end">
                         </app-button>
                         }
                     </div>
@@ -208,11 +228,10 @@
             } @else {
             <div class="flex flex-col items-center justify-center p-8">
                 <img src="nofriend.jpg" alt="No Friend Found" class="md:w-50 w-25 mb-6">
-                <p class="font-medium md:text-lg text-base text-black mb-6">No Admin Found.</p>
-                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">Sorry, we couldn't find any
-                    admin
-                    that you're
-                    looking for.
+                <p class="font-medium md:text-lg text-base text-black mb-6">{{ 'admin.noadmin' |
+                    translate }}</p>
+                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">{{ 'admin.noadmindescription' |
+                    translate }}
                 </p>
             </div>
             }
@@ -220,7 +239,8 @@
 
         <!-- BlueTick Pending Users -->
         <div reveal class="admin-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mt-12">
-            <h2 class="font-bold md:text-lg text-base text-black mb-6">BlueTick Pending</h2>
+            <h2 class="font-bold md:text-lg text-base text-black mb-6">{{ 'admin.header2' |
+                translate }}</h2>
             @if (blueTicks.length > 0) {
             <div class="flex flex-col gap-4">
                 @for (blue of blueTicks; track blue.id) {
@@ -228,30 +248,38 @@
                     <p class="font-bold text-purple-500 md:text-lg text-base mb-4">
                         {{ blue.name }}<span class="text-black"></span>
                     </p>
-                    <p class="text-black md:text-base text-sm font-bold">Age: <span class="text-purple-500">
+                    <p class="text-black md:text-base text-sm font-bold">{{ 'admin.age' |
+                        translate }}: <span class="text-purple-500">
                             {{ blue.age }}</span>
                     </p>
-                    <p class="text-black md:text-base text-sm font-bold">Sex: <span class="text-purple-500">
+                    <p class="text-black md:text-base text-sm font-bold">{{ 'admin.sex' |
+                        translate }}: <span class="text-purple-500">
                             {{ blue.sex }}</span>
                     </p>
-                    <p class="text-black md:text-base text-sm font-bold">Email: <span class="text-purple-500">
+                    <p class="text-black md:text-base text-sm font-bold">{{ 'admin.email' |
+                        translate }}: <span class="text-purple-500">
                             {{ blue.email }}</span>
                     </p>
-                    <p class="text-black md:text-base text-sm font-bold">Country: <span class="text-purple-500">
-                            {{ blue.country }}</span>
+                    @if (blue.country == "Malaysia"){
+                    <p class="text-black md:text-base text-sm font-bold">{{ 'admin.country' |
+                        translate }}: <span class="text-purple-500">
+                            {{ 'admin.malaysia' |
+                            translate }}</span>
                     </p>
+                    }
                     <div class="flex flex-row justify-end w-full gap-4 mt-4">
-                        <app-button [label]="isLoading7 ? 'Loading...' : 'Reject'" (click)="rejectBlueTick(blue)"
-                            variant="danger" class="flex">
+                        <app-button [label]="isLoading7 ? ('admin.loading' | translate) : ('admin.button6' | translate)"
+                            (click)="rejectBlueTick(blue)" variant="danger" class="flex">
                         </app-button>
                         @if (blue.id == form.Id){
                         <p
                             class="flex rounded-lg items-center text-white bg-gray-400 md:text-base text-sm font-medium md:px-5 px-3 py-2">
-                            Can't Accept
+                            {{ 'admin.cantaccept' |
+                            translate }}
                         </p>
                         } @else{
-                        <app-button [label]="isLoading8 ? 'Loading...' : 'Accept'" (click)="acceptBlueTick(blue)"
-                            class="flex">
+                        <app-button [label]="isLoading7 ? ('admin.loading' | translate) : ('admin.button7' | translate)"
+                            (click)="acceptBlueTick(blue)" class="flex">
                         </app-button>
                         }
                     </div>
@@ -261,11 +289,11 @@
             } @else {
             <div class="flex flex-col items-center justify-center p-8">
                 <img src="nofriend.jpg" alt="No Friend Found" class="md:w-50 w-25 mb-6">
-                <p class="font-medium md:text-lg text-base text-black mb-6">No BlueTick Pending User Found.</p>
-                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">Sorry, we couldn't find any
-                    BlueTick pending user
-                    that you're
-                    looking for.
+                <p class="font-medium md:text-lg text-base text-black mb-6">{{ 'admin.nobluetick' |
+                    translate }}</p>
+                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">{{ 'admin.nobluetickdescription'
+                    |
+                    translate }}
                 </p>
             </div>
             }
@@ -277,12 +305,20 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Added!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{
+                        'admin.modalheader1'
+                        |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        New admin is added.
+                        {{ 'admin.modealdescription1'
+                        |
+                        translate }}
                     </p>
-                    <app-button label="Thanks" (click)="closeAddAdminSuccessModal()" />
+                    <app-button label="{{
+                        'admin.button11'
+                        |
+                        translate }}" (click)="closeAddAdminSuccessModal()" />
                 </div>
             </div>
         </div>
@@ -292,12 +328,21 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Removed!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{
+                        'admin.modalheader2'
+                        |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        This admin is removed.
+                        {{
+                        'admin.modaldescription2'
+                        |
+                        translate }}
                     </p>
-                    <app-button label="Thanks" (click)="closeDeleteAdminModal()" />
+                    <app-button label="{{
+                        'admin.button11'
+                        |
+                        translate }}" (click)="closeDeleteAdminModal()" />
                 </div>
             </div>
         </div>
@@ -307,12 +352,21 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Blocked!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{
+                        'admin.modalheader3'
+                        |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        This account is blocked.
+                        {{
+                        'admin.modaldescription3'
+                        |
+                        translate }}
                     </p>
-                    <app-button label="Thanks" (click)="closeBlockUserModal()" />
+                    <app-button label="{{
+                        'admin.button11'
+                        |
+                        translate }}" (click)="closeBlockUserModal()" />
                 </div>
             </div>
         </div>
@@ -322,12 +376,21 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Unblocked!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{
+                        'admin.modalheader4'
+                        |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        This account is unblocked.
+                        {{
+                        'admin.modaldescription4'
+                        |
+                        translate }}
                     </p>
-                    <app-button label="Thanks" (click)="closeUnblockUserModal()" />
+                    <app-button label="{{
+                        'admin.button11'
+                        |
+                        translate }}" (click)="closeUnblockUserModal()" />
                 </div>
             </div>
         </div>
@@ -337,12 +400,21 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Rejected!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{
+                        'admin.modalheader5'
+                        |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        This BlueTick is rejected.
+                        {{
+                        'admin.modaldescription5'
+                        |
+                        translate }}
                     </p>
-                    <app-button label="Thanks" (click)="closeRejectBlueTickModal()" />
+                    <app-button label="{{
+                        'admin.button11'
+                        |
+                        translate }}" (click)="closeRejectBlueTickModal()" />
                 </div>
             </div>
         </div>
@@ -352,12 +424,21 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Applied!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{
+                        'admin.modalheader6'
+                        |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        This BlueTick is applied successfully.
+                        {{
+                        'admin.modaldescription6'
+                        |
+                        translate }}
                     </p>
-                    <app-button label="Thanks" (click)="closeAcceptBlueTickModal()" />
+                    <app-button label="{{
+                        'admin.button11'
+                        |
+                        translate }}" (click)="closeAcceptBlueTickModal()" />
                 </div>
             </div>
         </div>
@@ -367,12 +448,21 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Removed!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{
+                        'admin.modalheader7'
+                        |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        This BlueTick is removed successfully.
+                        {{
+                        'admin.modaldescription7'
+                        |
+                        translate }}
                     </p>
-                    <app-button label="Thanks" (click)="closeRemoveBlueTickModal()" />
+                    <app-button label="{{
+                        'admin.button11'
+                        |
+                        translate }}" (click)="closeRemoveBlueTickModal()" />
                 </div>
             </div>
         </div>
@@ -382,12 +472,21 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white register-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Deleted!
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{
+                        'admin.modalheader8'
+                        |
+                        translate }}
                     </h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        This user is removed successfully.
+                        {{
+                        'admin.modaldescription8'
+                        |
+                        translate }}
                     </p>
-                    <app-button label="Thanks" (click)="closeRemoveUserModal()" />
+                    <app-button label="{{
+                        'admin.button11'
+                        |
+                        translate }}" (click)="closeRemoveUserModal()" />
                 </div>
             </div>
         </div>

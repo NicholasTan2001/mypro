@@ -9,11 +9,13 @@ import { CommonModule, DatePipe } from '@angular/common';
 import { Button } from '../../component/button/button';
 import { InputComponent } from '../../component/input/input';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
   selector: 'app-activity',
-  imports: [Reveal, DatePipe, CommonModule, Button, InputComponent, FormsModule],
+  imports: [Reveal, DatePipe, CommonModule, Button, InputComponent, FormsModule, TranslateModule],
   standalone: true,
   templateUrl: './activity.html',
   styleUrl: './activity.css',
@@ -39,7 +41,7 @@ export class Activity implements OnInit {
   passwordError: string = '';
   deleteHistoryModal: boolean = false;
 
-  constructor(private authService: AuthService, private http: HttpClient, private cd: ChangeDetectorRef,
+  constructor(private authService: AuthService, private http: HttpClient, private cd: ChangeDetectorRef, private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -134,12 +136,12 @@ export class Activity implements OnInit {
     this.passwordError = "";
     try {
       if (!this.form2.password) {
-        this.passwordError = 'Password is required.';
+        this.passwordError = this.translate.instant('activity.errorpassword1');
         this.isLoading = false;
         return;
       }
       if (this.form2.password.length < 8) {
-        this.passwordError = 'Password must be at least 8 characters long.';
+        this.passwordError = this.translate.instant('activity.errorpassword2');
         this.isLoading = false;
         return;
       }
@@ -167,7 +169,8 @@ export class Activity implements OnInit {
     } catch (error: any) {
       this.isLoading = false;
       const message = error?.error?.message || 'Failed to delete account. Please try again.';
-      this.passwordError = message;
+      if (message == "Invalid password.")
+        this.passwordError = this.translate.instant('activity.errorpassword3');
       this.cd.detectChanges();
     } finally {
       this.isLoading = false;
@@ -178,5 +181,20 @@ export class Activity implements OnInit {
 
   deleteHistory() {
     this.deleteHistoryModal = false;
+  }
+
+  checkStartsWith(str: string, searchStr: string): boolean {
+    return str?.startsWith(searchStr) ?? false;
+  }
+
+  checkEndsWith(str: string, searchStr: string): boolean {
+    return str?.endsWith(searchStr) ?? false;
+  }
+
+  extractName(history: string, prefix: string): string {
+    return history
+      .replace(prefix, '')
+      .replace('.', '')
+      .trim();
   }
 }

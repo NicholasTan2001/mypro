@@ -44,6 +44,44 @@
     transition: all 0.3s ease-in-out;
 }
 
+.language-menu {
+    position: relative;
+}
+
+.language-menu-options {
+    border: 1px solid rgb(215, 171, 255);
+    border-radius: 0.8rem;
+    display: flex;
+    flex-direction: column;
+    left: 0;
+    min-width: 8rem;
+    overflow: hidden;
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    z-index: 10;
+}
+
+.language-menu-option {
+    background-color: black;
+    border: 0;
+    color: rgb(255, 255, 255);
+    cursor: pointer;
+    font-weight: 700;
+    padding: 0.55rem 0.75rem;
+    text-align: left;
+    transition: background-color 200ms ease-in-out, color 200ms ease-in-out;
+}
+
+.language-menu-option:hover,
+.language-menu-option:focus {
+    color: rgb(216 180 254);
+    outline: none;
+}
+
+.selected-language {
+    color: rgb(168 85 247);
+}
+
 /* Mobile Active Link */
 .mobile-active-link {
     background-color: rgb(139, 23, 248);

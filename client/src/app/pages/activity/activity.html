@@ -11,38 +11,246 @@
     <!-- Activity Page Title -->
     <div class=" flex flex-col items-center justify-center">
         <h1 reveal class="font-bold md:text-2xl text-xl mb-12"><span class="text-purple-600">{{ form.name
-                }}</span> Activity
+                }}</span> {{ 'activity.title' | translate }}
         </h1>
 
         <!-- History -->
         <div reveal class="activity-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full">
             @if (activities.length>0){
-            <h2 class="font-bold md:text-lg text-base text-black mb-2">History</h2>
+            <h2 class="font-bold md:text-lg text-base text-black mb-2">{{ 'activity.header1' | translate }}</h2>
             @for (activity of displayedResults; track activity.id) {
             <div class="flex justify-between rounded-lg p-4 bg-purple-100  hover:bg-gray-100 mt-4 gap-5">
+                @if (activity.history == "New account is registered."){
                 <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
-                    {{ activity.history }}
+                    {{ 'history.des1' | translate }}
                 </p>
+                }
+                @if (activity.history == "Account password is changed."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des2' | translate }}
+                </p>
+                }
+                @if (activity.history == "Account password is changed into temporary password."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des3' | translate }}
+                </p>
+                }
+                @if (activity.history == "General Personal Information is updated."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des4' | translate }}
+                </p>
+                }
+                @if (activity.history == "Introduction is updated."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des5' | translate }}
+                </p>
+                }
+                @if (activity.history == "Private Profile Visibility settings is updated."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des6' | translate }}
+                </p>
+                }
+                @if (activity.history == "OTP Verification settings is updated."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des7' | translate }}
+                </p>
+                }
+                @if (activity.history == "Notification settings is updated."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des8' | translate }}
+                </p>
+                }
+                @if (activity.history == "Conclusion is updated."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des9' | translate }}
+                </p>
+                }
+                @if (activity.history == "Profesional Information is updated."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des10' | translate }}
+                </p>
+                }
+                @if (activity.history == "Woking Experience is added."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des11' | translate }}
+                </p>
+                }
+                @if (activity.history == "Working Experience is deleted."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des12' | translate }}
+                </p>
+                } @if (activity.history == "Achievement is added."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des13' | translate }}
+                </p>
+                }
+                @if (activity.history == "Achievement is deleted."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des14' | translate }}
+                </p>
+                }
+                @if (activity.history == "Project is added."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des15' | translate }}
+                </p>
+                }
+                @if (activity.history == "Project is deleted."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des16' | translate }}
+                </p>
+                }
+                @if (activity.history == "Additional Information is updated."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des17' | translate }}
+                </p>
+                }
+                @if (checkStartsWith(activity.history, 'Friend Request is sent to')) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des18' | translate }} {{ extractName(activity.history, 'Friend Request is sent to') }}{{
+                    'history.des40' | translate }}
+                </p>
+                }
+                @if (checkStartsWith(activity.history, 'Friend Request is received from')) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des19' | translate }} {{ extractName(activity.history, 'Friend Request is received
+                    from') }}{{ 'history.des40' | translate }}
+                </p>
+                }
+                @if (checkEndsWith(activity.history, 'is your friend now.')) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ extractName(activity.history, 'is your friend now.') }} {{ 'history.des20' | translate }}
+                </p>
+                }
+                @if (checkStartsWith(activity.history, 'Friend Request is rejected by')) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des21' | translate }} {{ extractName(activity.history, 'Friend Request is rejected by')
+                    }}.
+                </p>
+                }
+                @if (checkEndsWith(activity.history, 'Friend Request is rejected.')) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ extractName(activity.history, 'Friend Request is rejected.') }} {{ 'history.des22' | translate }}
+                </p>
+                }
+                @if (checkEndsWith(activity.history, 'relationship is removed.')) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ extractName(activity.history, 'relationship is removed.') }} {{ 'history.des23' | translate }}
+                </p>
+                }
+                @if (activity.history == "Report is sent to MyProfile Team."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des24' | translate }}
+                </p>
+                }
+                @if (checkEndsWith(activity.history, 'is added as MyProfile admin.')) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ extractName(activity.history, 'is added as MyProfile admin.') }} {{ 'history.des25' | translate
+                    }}
+                </p>
+                }
+                @if (activity.history == "Account added as MyProfile admin."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des26' | translate }}
+                </p>
+                }
+                @if (checkEndsWith(activity.history, 'is removed from MyProfile admin.')) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ extractName(activity.history, 'is removed from MyProfile admin.') }} {{ 'history.des27' |
+                    translate
+                    }}
+                </p>
+                }
+                @if (activity.history == "Account removed from MyProfile admin."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des28' | translate }}
+                </p>
+                }
+                @if (checkEndsWith(activity.history, "'s account is unblocked.")) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ extractName(activity.history, ''s account is unblocked.') }} {{ 'history.des29' |
+                    translate
+                    }}
+                </p>
+                }
+                @if (activity.history == "Account is unblocked."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des30' | translate }}
+                </p>
+                }
+                @if (checkEndsWith(activity.history, "'s account is blocked.")) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ extractName(activity.history, "'s account is blocked.") }} {{ 'history.des31' |
+                    translate
+                    }}
+                </p>
+                }
+                @if (activity.history == "Account is blocked."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des32' | translate }}
+                </p>
+                }
+                @if (activity.history == "Links are updated."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des33' | translate }}
+                </p>
+                }
+                @if (activity.history == "BlueTick Badge request is sent."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des34' | translate }}
+                </p>
+                }
+                @if (checkEndsWith(activity.history, "'s BlueTick Badge is rejected.")) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ extractName(activity.history, "'s BlueTick Badge is rejected.") }} {{ 'history.des35' |
+                    translate
+                    }}
+                </p>
+                }
+                @if (activity.history == "BlueTick Badge is rejected."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des36' | translate }}
+                </p>
+                }
+                @if (checkEndsWith(activity.history, "'s BlueTick Badge is applied.")) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ extractName(activity.history, "'s BlueTick Badge is applied.") }} {{ 'history.des37' |
+                    translate
+                    }}
+                </p>
+                }
+                @if (activity.history == "BlueTick Badge is applied."){
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ 'history.des38' | translate }}
+                </p>
+                }
+                @if (checkEndsWith(activity.history, "'s account is removed.")) {
+                <p class="flex w-1/2 font-bold text-purple-500 md:text-base text-sm">
+                    {{ extractName(activity.history, "'s account is removed.") }} {{ 'history.des39' |
+                    translate
+                    }}
+                </p>
+                }
                 <p class="font-bold text-gray-400 md:text-base text-sm">
-                    {{ activity.createdAt | date:'h:mm a - d MMM, y' }}
+                    {{ activity.createdAt | date:'h:mm a - dd-MM-y' }}
                 </p>
             </div>
             }
             @if (showMoreButton) {
             <div class="flex justify-center">
-                <app-button [label]="isLoadingMore ? 'Loading...' : 'Show More'" (click)="showMoreResults()"
-                    class="flex flex-col mt-4">
+                <app-button
+                    [label]="isLoadingMore ? ('activity.loading' | translate) : ('activity.button1' | translate)"
+                    (click)="showMoreResults()" class="flex flex-col mt-4">
                 </app-button>
             </div>
             }
             }@else{
             <div class="flex flex-col items-center justify-center p-8">
                 <img src="notfound.jpg" alt="No History Found" class="md:w-50 w-25 mb-6">
-                <p class="font-medium md:text-lg text-base text-black mb-6">No History Found.</p>
-                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">Sorry, we couldn't find any
-                    history
-                    that you're
-                    looking for.
+                <p class="font-medium md:text-lg text-base text-black mb-6">{{ 'activity.nohistory' | translate }}</p>
+                <p class="font-medium md:text-sm text-xs text-gray-500 leading-relaxed">{{
+                    'activity.nohistorydescription' |
+                    translate
+                    }}
                 </p>
             </div>
             }
@@ -50,19 +258,16 @@
 
         <!-- Delete History Form-->
         <div reveal class="activity-card flex flex-col bg-white rounded-lg p-6 md:w-4/5 w-full mt-12">
-            <h2 class="font-bold md:text-lg text-base text-red-500">Delete History</h2>
-            <p class="text-black font-medium md:text-base text-sm mt-4 leading-relaxed text-justify">Are you sure
-                you
-                want to
-                delete
-                history from your activity? If needed, please insert your password to ensure that the right user is
-                deleting the history.</p>
+            <h2 class="font-bold md:text-lg text-base text-red-500">{{ 'activity.header2' | translate }}</h2>
+            <p class="text-black font-medium md:text-base text-sm mt-4 leading-relaxed text-justify">{{
+                'activity.description' | translate }}</p>
             <form (ngSubmit)="onSubmit()" class="flex flex-row justify-between items-end gap-6 mt-3">
-                <app-input class="w-full" [(model)]="form2.password" label="Password" type="password"
-                    placeholder="Qwer1234.">
+                <app-input class="w-full" [(model)]="form2.password" label="{{ 'activity.password' | translate }}"
+                    type="password" placeholder="Qwer1234.">
                 </app-input>
-                <app-button type="submit" [label]="isLoading ? 'Loading...' : 'Confirm'" variant="danger"
-                    class=" flex flex-col md:w-1/5">
+                <app-button type="submit"
+                    [label]="isLoading ? ('activity.loading' | translate) : ('activity.button2' | translate)"
+                    variant="danger" class=" flex flex-col md:w-1/5">
                 </app-button>
             </form>
             <p *ngIf="passwordError" class="text-red-500 md:text-sm text-xs font-medium mt-4">
@@ -75,9 +280,10 @@
             <div reveal class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
                 <div class="bg-white activity-card rounded-lg p-6 md:w-100 w-full mx-20 shadow-lg text-center">
                     <div class="mb-4 md:text-4xl text-3xl text-green-500 font-bold">✓</div>
-                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">Successfully Deleted!</h2>
+                    <h2 class="font-bold md:text-xl text-base font-bold text-black mb-2">{{ 'activity.modalheader' |
+                        translate }}</h2>
                     <p class="text-gray-600 md:text-base text-sm font-medium mb-6">
-                        History from your activity is completely deleted.
+                        {{ 'activity.modaldescription' | translate }}
                     </p>
                     <app-button label="Thanks" (click)="deleteHistory()" />
                 </div>

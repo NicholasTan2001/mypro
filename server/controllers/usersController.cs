@@ -88,7 +88,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult> Login([FromBody] User login)
+    public async Task<ActionResult> Login([FromBody] LoginRequest login)
     {
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.IdentityNumber == login.IdentityNumber);
@@ -104,7 +104,7 @@ public class UsersController : ControllerBase
         }
         if (login.Country != user.Country)
         {
-            return Unauthorized(new { message = "Invalid credentials" });
+            return Unauthorized(new { message = "Invalid credentials. " });
         }
         if (user.Block == "Yes")
         {
@@ -130,7 +130,15 @@ public class UsersController : ControllerBase
 
         if (user.Notification == "Yes")
         {
-            await SendNotificationEmail(user.Name ?? "", user.IdentityNumber ?? "", user.Email ?? "");
+            if (login.Language == "en")
+            {
+                await SendEnglishNotificationEmail(user.Name ?? "", user.IdentityNumber ?? "", user.Email ?? "");
+            }
+            if (login.Language == "zh")
+            {
+                await SendChineseNotificationEmail(user.Name ?? "", user.IdentityNumber ?? "", user.Email ?? "");
+
+            }
         }
         return Ok(new
         {
@@ -155,7 +163,7 @@ public class UsersController : ControllerBase
         });
     }
 
-    private async Task SendNotificationEmail(string name, string identityNumber, string email)
+    private async Task SendEnglishNotificationEmail(string name, string identityNumber, string email)
     {
         try
         {
@@ -185,6 +193,49 @@ Thanks.
 
 Best regards,
 MyProfile Team
+            ";
+
+                mailMessage.IsBodyHtml = false;
+                await client.SendMailAsync(mailMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Email sending failed: {ex.Message}");
+            throw;
+        }
+    }
+
+    private async Task SendChineseNotificationEmail(string name, string identityNumber, string email)
+    {
+        try
+        {
+            using (var client = new System.Net.Mail.SmtpClient("smtp.gmail.com"))
+            {
+                client.Port = 587;
+                client.Credentials = new System.Net.NetworkCredential("nicholastankaejer2001@gmail.com", "tefk njkh merf nwik");
+                client.EnableSsl = true;
+
+                var mailMessage = new System.Net.Mail.MailMessage();
+                mailMessage.From = new System.Net.Mail.MailAddress(
+                    "nicholastankaejer2001@gmail.com",
+                    "我的资料 开发者"
+                );
+
+                mailMessage.To.Add(email ?? "");
+                mailMessage.Subject = $"我的资料 - 通知";
+
+                mailMessage.Body = $@"
+亲爱的 {identityNumber} - {name}，
+
+有人刚刚登录了您在 我的资料 网站的账户，请确认该操作是否为本人。
+
+如果是您本人操作，请忽略此邮件。但如果不是您本人操作，请立即通知 我的资料 团队进行封锁处理。
+
+谢谢。
+
+此致，
+我的资料 团队
             ";
 
                 mailMessage.IsBodyHtml = false;
@@ -250,12 +301,12 @@ MyProfile Team
             .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
         if (user == null)
         {
-            return Unauthorized(new { message = "Invalid Password." });
+            return Unauthorized(new { message = "User not found." });
         }
         bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.Password);
         if (!isPasswordValid)
         {
-            return Unauthorized(new { message = "Invalid Password." });
+            return Unauthorized(new { message = "Invalid password." });
         }
         user.Password = BCrypt.Net.BCrypt.HashPassword(request.NewPassword);
         _context.Users.Update(user);
@@ -278,13 +329,20 @@ MyProfile Team
         user.Password = BCrypt.Net.BCrypt.HashPassword(tempPassword);
         _context.Users.Update(user);
         await _context.SaveChangesAsync();
-        await SendPasswordResetEmail(user, tempPassword);
+        if (request.Language == "en")
+        {
+            await SendEnglishPasswordResetEmail(user, tempPassword);
+        }
+        if (request.Language == "zh")
+        {
+            await SendChinesePasswordResetEmail(user, tempPassword);
+        }
         string history = "Account password is changed into temporary password.";
         await AddActivity(user.Id, history);
         return Ok(new { message = "Password reset instructions sent to your email." });
     }
 
-    private async Task SendPasswordResetEmail(User user, string tempPassword)
+    private async Task SendEnglishPasswordResetEmail(User user, string tempPassword)
     {
         try
         {
@@ -312,6 +370,46 @@ If you did not request this email, please ignore this email.
 
 Best regards,
 MyProfile Team
+            ";
+                mailMessage.IsBodyHtml = false;
+                await client.SendMailAsync(mailMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Email sending failed: {ex.Message}");
+        }
+    }
+
+    private async Task SendChinesePasswordResetEmail(User user, string tempPassword)
+    {
+        try
+        {
+            using (var client = new System.Net.Mail.SmtpClient("smtp.gmail.com"))
+            {
+                client.Port = 587;
+                client.Credentials = new System.Net.NetworkCredential("nicholastankaejer2001@gmail.com", "tefk njkh merf nwik");
+                client.EnableSsl = true;
+                var mailMessage = new System.Net.Mail.MailMessage();
+                mailMessage.From = new System.Net.Mail.MailAddress(
+                    "nicholastankaejer2001@gmail.com",
+                    "我的资料 开发者"
+                );
+                mailMessage.To.Add(user.Email ?? "");
+                mailMessage.Subject = "我的资料 - 临时密码通知";
+                mailMessage.Body = $@"
+亲爱的 {user.Name}，
+
+您已申请重置 MyProfile 账户密码。以下是您的临时密码：
+
+        临时密码：{tempPassword}
+
+为了保障您的账户安全，请在使用临时密码登录后立即修改密码。
+
+如果这不是您本人操作，请忽略此邮件。
+
+此致，
+我的资料 团队
             ";
                 mailMessage.IsBodyHtml = false;
                 await client.SendMailAsync(mailMessage);
@@ -1132,7 +1230,7 @@ MyProfile Team
         await AddActivity(idNum, history1);
         var friendId2 = await _context.Users
    .FirstOrDefaultAsync(u => u.Id == idNum);
-        string history2 = "Accepted friend request. " + friendId2?.Name + " is your friend now.";
+        string history2 = friendId2?.Name + " is your friend now.";
         await AddActivity(user.Id, history2);
         return Ok(new { message = "Friend request accepted." });
     }
@@ -1156,7 +1254,7 @@ MyProfile Team
         await AddActivity(idNum1, history1);
         var friendId2 = await _context.Users
 .FirstOrDefaultAsync(u => u.Id == relationship.UserId);
-        string history2 = "Friend Request from " + friendId2?.Name + " is rejected.";
+        string history2 = friendId2?.Name + "Friend Request is rejected.";
         int idNum2 = Convert.ToInt32(relationship.Permission);
         await AddActivity(idNum2, history2);
         return Ok(new { message = "Relationship deleted successfully." });
@@ -1218,12 +1316,12 @@ MyProfile Team
 
         var friendId1 = await _context.Users
    .FirstOrDefaultAsync(u => u.Id == relationship.Friend);
-        string history1 = "Friendship between you and " + friendId1?.Name + " is removed.";
+        string history1 = friendId1?.Name + " relationship is removed.";
         int idNum1 = Convert.ToInt32(relationship.UserId);
         await AddActivity(idNum1, history1);
         var friendId2 = await _context.Users
    .FirstOrDefaultAsync(u => u.Id == relationship.UserId);
-        string history2 = "Friendship between you and " + friendId2?.Name + " is removed.";
+        string history2 = friendId2?.Name + " relationship is removed.";
         int idNum2 = Convert.ToInt32(relationship.Friend);
         await AddActivity(idNum2, history2);
         return Ok(new { message = "Relationship deleted successfully." });
@@ -1270,9 +1368,9 @@ MyProfile Team
         return Ok(new { message = "Verification deleted successfully." });
     }
 
-    [HttpGet("verification/{id}")]
+    [HttpGet("verification/{id}/{language}")]
     [Authorize]
-    public async Task<ActionResult> GetVerificationChecking(int id)
+    public async Task<ActionResult> GetVerificationChecking(int id, string language)
     {
         var verification = await _context.Verifications
             .FirstOrDefaultAsync(a => a.UserId == id);
@@ -1295,8 +1393,14 @@ MyProfile Team
         {
             return BadRequest(new { message = "Identity number not found." });
         }
-
-        await SendSecondVerification(user, otp);
+        if (language == "en")
+        {
+            await SendEnglishSecondVerification(user, otp);
+        }
+        if (language == "zh")
+        {
+            await SendChineseSecondVerification(user, otp);
+        }
         return Ok(new
         {
             verify = "Yes",
@@ -1307,7 +1411,7 @@ MyProfile Team
         });
     }
 
-    private async Task SendSecondVerification(User user, string otp)
+    private async Task SendEnglishSecondVerification(User user, string otp)
     {
         try
         {
@@ -1347,6 +1451,46 @@ MyProfile Team
         }
     }
 
+    private async Task SendChineseSecondVerification(User user, string otp)
+    {
+        try
+        {
+            using (var client = new System.Net.Mail.SmtpClient("smtp.gmail.com"))
+            {
+                client.Port = 587;
+                client.Credentials = new System.Net.NetworkCredential("nicholastankaejer2001@gmail.com", "tefk njkh merf nwik");
+                client.EnableSsl = true;
+                var mailMessage = new System.Net.Mail.MailMessage();
+                mailMessage.From = new System.Net.Mail.MailAddress(
+                    "nicholastankaejer2001@gmail.com",
+                    "我的资料 开发者"
+                );
+                mailMessage.To.Add(user.Email ?? "");
+                mailMessage.Subject = "我的资料 - OTP 验证";
+                mailMessage.Body = $@"
+亲爱的 {user.Name}，
+
+您的账户已启用 OTP 验证功能。请查收以下一次性验证码，并妥善保管，不要泄露给他人。
+
+        OTP 验证码：{otp}
+
+该验证码仅在 60 秒内有效，请尽快使用。
+
+如果这不是您本人操作，请忽略此邮件。
+
+此致，
+我的资料 团队
+            ";
+                mailMessage.IsBodyHtml = false;
+                await client.SendMailAsync(mailMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Email sending failed: {ex.Message}");
+        }
+    }
+
     [HttpPost("report")]
     [Authorize]
     public async Task<ActionResult> SendReport([FromBody] SendReportRequest request)
@@ -1361,10 +1505,17 @@ MyProfile Team
 
         try
         {
-            await SendReportEmail(request.Email ?? "", request.Name ?? "", request.IdentityNumber ?? "", user.Email ?? "", user.Name ?? "", user.IdentityNumber ?? "", request.Report ?? "");
+            if (request.Language == "en")
+            {
+                await SendEnglishReportEmail(request.Email ?? "", request.Name ?? "", request.IdentityNumber ?? "", user.Email ?? "", user.Name ?? "", user.IdentityNumber ?? "", request.Report ?? "");
+            }
+            if (request.Language == "zh")
+            {
+                await SendChineseReportEmail(request.Email ?? "", request.Name ?? "", request.IdentityNumber ?? "", user.Email ?? "", user.Name ?? "", user.IdentityNumber ?? "", request.Report ?? "");
+            }
             var tmpUser = await _context.Users
                         .FirstOrDefaultAsync(u => u.IdentityNumber == request.IdentityNumber);
-            string history = "Friendship between you and is removed.";
+            string history = "Report is sent to MyProfile Team.";
             int idNum = Convert.ToInt32(tmpUser?.Id);
             await AddActivity(idNum, history);
             return Ok(new { message = "Report sent successfully." });
@@ -1375,7 +1526,7 @@ MyProfile Team
         }
     }
 
-    private async Task SendReportEmail(string reporterEmail, string reporterName, string reporterIdentity, string reportedUserEmail, string reportedUserName, string reportedUserIdentity, string reportMessage)
+    private async Task SendEnglishReportEmail(string reporterEmail, string reporterName, string reporterIdentity, string reportedUserEmail, string reportedUserName, string reportedUserIdentity, string reportMessage)
     {
         try
         {
@@ -1412,6 +1563,56 @@ Report Message:
 
 ---
 Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
+            ";
+
+                mailMessage.IsBodyHtml = false;
+                await client.SendMailAsync(mailMessage);
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Email sending failed: {ex.Message}");
+            throw;
+        }
+    }
+
+    private async Task SendChineseReportEmail(string reporterEmail, string reporterName, string reporterIdentity, string reportedUserEmail, string reportedUserName, string reportedUserIdentity, string reportMessage)
+    {
+        try
+        {
+            using (var client = new System.Net.Mail.SmtpClient("smtp.gmail.com"))
+            {
+                client.Port = 587;
+                client.Credentials = new System.Net.NetworkCredential("nicholastankaejer2001@gmail.com", "tefk njkh merf nwik");
+                client.EnableSsl = true;
+
+                var mailMessage = new System.Net.Mail.MailMessage();
+                mailMessage.From = new System.Net.Mail.MailAddress(
+                    "nicholastankaejer2001@gmail.com",
+                    "我的资料 开发者"
+                );
+
+                mailMessage.To.Add("nicholastankaejer2001@gmail.com");
+                mailMessage.Subject = $"我的资料 - 举报用户 {reportedUserName}";
+
+                mailMessage.Body = $@"
+新举报已提交
+
+举报人详情：
+姓名：{reporterName}
+身份证号：{reporterIdentity}
+电邮：{reporterEmail}
+
+被举报用户：
+姓名：{reportedUserName}
+身份证号：{reportedUserIdentity}
+电邮：{reportedUserEmail}
+
+举报信息：
+{reportMessage}
+
+---
+发送时间：{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
             ";
 
                 mailMessage.IsBodyHtml = false;
@@ -1701,7 +1902,7 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         string history2 = "BlueTick Badge is rejected.";
         int idNum2 = Convert.ToInt32(user?.Id);
         await AddActivity(idNum2, history2);
-        return Ok(new { message = "BlueTick  updated successfully." });
+        return Ok(new { message = "BlueTick is updated successfully." });
     }
 
     [HttpPut("accept-bluetick")]
@@ -1750,7 +1951,7 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
         }
         _context.Users.Remove(user);
         await _context.SaveChangesAsync();
-        string history = user.Name + "'s account is removed";
+        string history = user.Name + "'s account is removed.";
         int idNum = Convert.ToInt32(admin?.Id);
         await AddActivity(idNum, history);
         return Ok(new { message = "Account deleted successfully." });

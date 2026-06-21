@@ -3,41 +3,45 @@
 
         <!-- Logo Name -->
         <div class="footer-brand">
-            <div class="logo md:text-lg text-base"><span>My</span>Profile</div>
-            <p class="font-medium md:text-sm text-xs">A digital platform for showcasing user profiles, enabling
-                individuals to present
-                their
-                information to a global audience.</p>
+            <div class="logo md:text-lg text-base"><span>{{ 'nav.my' | translate }}</span>{{ 'nav.profile' | translate
+                }}</div>
+            <p class="font-medium md:text-sm text-xs">{{ 'foot.description' | translate }}</p>
         </div>
 
         <!-- Navigation -->
         <div class="footer-col">
-            <h4 class="md:text-lg text-base">Navigation</h4>
+            <h4 class="md:text-lg text-base">{{ 'foot.navigation' | translate }}</h4>
             <ul>
-                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/home">Home</a></li>
-                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/about">About</a></li>
+                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/home">{{ 'foot.home' |
+                        translate }}</a></li>
+                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/about">{{ 'foot.about' |
+                        translate }}t</a></li>
                 @if (isUser){
-                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/myprofile">MyProfile</a></li>
-                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/search">Search</a></li>
-                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/setting">Settings</a></li>
+                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/myprofile">{{ 'foot.myprofile'
+                        | translate }}</a></li>
+                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/search">{{ 'foot.search' |
+                        translate }}</a></li>
+                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/setting">{{ 'foot.settings' |
+                        translate }}</a></li>
                 }
                 @if (isUser && isAdmin){
-                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/admin">Admin</a></li>
+                <li class="cursor-pointer font-medium md:text-sm text-xs"><a routerLink="/admin">{{ 'foot.admin' |
+                        translate }}</a></li>
                 }
             </ul>
         </div>
 
         <!-- Contact -->
         <div class="footer-col">
-            <h4 class="md:text-lg text-base">Contact Us</h4>
+            <h4 class="md:text-lg text-base">{{ 'foot.contactus' | translate }}</h4>
             <ul>
                 <li class="cursor-pointer font-medium md:text-sm text-xs"><a
                         href="mailto:nicholastankaejer2001@gmail.com?subject=MyProfile Support"><i
                             class="ti ti-mail"></i>
-                        Email Us</a></li>
+                        {{ 'foot.emailus' | translate }}</a></li>
                 <li class="cursor-pointer font-medium md:text-sm text-xs"><a
                         href="https://www.google.com/maps/search/Selangor,Malaysia"><i class="ti ti-map-pin"></i>
-                        Our Location</a></li>
+                        {{ 'foot.ourlocation' | translate }}</a></li>
             </ul>
         </div>
 
@@ -47,6 +51,7 @@
 
     <!-- Copyright -->
     <div class="footer-bottom font-medium md:text-sm text-xs">
-        <p>© 2026 <span><a routerLink="/home">MyProfile</a></span>. All rights reserved.</p>
+        <p>© 2026 <span><a routerLink="/home">{{ 'foot.myprofile' | translate }}</a></span>. {{ 'foot.ourlocation' |
+            translate }}</p>
     </div>
 </footer>

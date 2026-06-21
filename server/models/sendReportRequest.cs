@@ -4,6 +4,9 @@ namespace MyProfile.Models
 {
     public class SendReportRequest
     {
+        [JsonPropertyName("language")]
+        public string? Language { get; set; }
+
         [JsonPropertyName("email")]
         public string? Email { get; set; }
 

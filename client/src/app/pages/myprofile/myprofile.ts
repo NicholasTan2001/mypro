@@ -9,6 +9,8 @@ import { InputComponent } from '../../component/input/input';
 import { ChangeDetectorRef } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { API_CONFIG } from '../../config/api.config';
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 interface UpdateProfileResponse {
   message: string;
@@ -28,7 +30,7 @@ interface UpdateProfileResponse {
 
 @Component({
   selector: 'app-myprofile',
-  imports: [CommonModule, Button, Reveal, FormsModule, InputComponent],
+  imports: [CommonModule, Button, Reveal, FormsModule, InputComponent, TranslateModule],
   standalone: true,
   templateUrl: './myprofile.html',
   styleUrl: './myprofile.css',
@@ -160,7 +162,8 @@ export class Myprofile implements OnInit {
   constructor(
     private authService: AuthService,
     private http: HttpClient,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private translate: TranslateService
   ) { }
 
   ngOnInit() {
@@ -436,55 +439,55 @@ export class Myprofile implements OnInit {
     this.birthDateError = '';
     try {
       if (!this.form.Name) {
-        this.nameError = 'Name is required.';
+        this.nameError = this.translate.instant('myprofile.errorname');
         this.isLoading = false;
         this.cd.detectChanges();
         return;
       }
       if (!this.form.Age) {
-        this.ageError = 'Age is required.';
+        this.ageError = this.translate.instant('myprofile.errorage1');
         this.isLoading = false;
         this.cd.detectChanges();
         return;
       }
       if (Number(this.form.Age) <= 0 || Number(this.form.Age) > 120 || isNaN(Number(this.form.Age))) {
-        this.ageError = 'Valid age is required.';
+        this.ageError = this.translate.instant('myprofile.errorage2');
         this.isLoading = false;
         this.cd.detectChanges();
         return;
       }
       if (!this.form.BirthDate) {
-        this.birthDateError = 'Date of Birth is required.';
+        this.birthDateError = this.translate.instant('myprofile.errordatebirth');
         this.isLoading = false;
         this.cd.detectChanges();
         return;
       }
       if (!this.form.Email) {
-        this.emailError = 'Email is required.';
+        this.emailError = this.translate.instant('myprofile.erroremail1');
         this.isLoading = false;
         this.cd.detectChanges();
         return;
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(this.form.Email)) {
-        this.emailError = 'Valid email is required.';
+        this.emailError = this.translate.instant('myprofile.erroremail2');
         this.isLoading = false;
         this.cd.detectChanges();
         return;
       }
       if (!this.form.PhoneNumber) {
-        this.phoneNumberError = 'Phone number is required.';
+        this.phoneNumberError = this.translate.instant('myprofile.errorphone1');
         this.isLoading = false;
         this.cd.detectChanges();
         return;
       }
       if (!/^\d{10}$/.test(this.form.PhoneNumber)) {
-        this.phoneNumberError = 'Valid phone number is required.';
+        this.phoneNumberError = this.translate.instant('myprofile.errorphone2');
         this.isLoading = false;
         this.cd.detectChanges();
         return;
       }
       if (!this.form.Address) {
-        this.addressError = 'Address is required.';
+        this.addressError = this.translate.instant('myprofile.erroraddress');
         this.isLoading = false;
         this.cd.detectChanges();
         return;
@@ -627,19 +630,19 @@ export class Myprofile implements OnInit {
     if (position === 'Student') {
       try {
         if (!this.form5.Course) {
-          this.courseError = 'Course is required.';
+          this.courseError = this.translate.instant('myprofile.errorcourse');
           this.isLoading4 = false;
           this.cd.detectChanges();
           return;
         }
         if (!this.form5.Location) {
-          this.locationError = 'Location is required.';
+          this.locationError = this.translate.instant('myprofile.errorlocation');
           this.isLoading4 = false;
           this.cd.detectChanges();
           return;
         }
         if (!this.form5.StartDate || !this.form5.EndDate || this.form5.StartDate >= this.form5.EndDate) {
-          this.studentDateError = 'Valid dates are required.';
+          this.studentDateError = this.translate.instant('myprofile.errordates');
           this.isLoading4 = false;
           this.cd.detectChanges();
           return;
@@ -679,25 +682,25 @@ export class Myprofile implements OnInit {
     else if (position === 'Employee' || position === 'Employer') {
       try {
         if (!this.form6.Role) {
-          this.roleError = 'Role is required.';
+          this.roleError = this.translate.instant('myprofile.errorrole');
           this.isLoading4 = false;
           this.cd.detectChanges();
           return;
         }
         if (!this.form6.Responsible) {
-          this.responsibleError = 'Responsibilities are required.';
+          this.responsibleError = this.translate.instant('myprofile.errorresponsibilities');
           this.isLoading4 = false;
           this.cd.detectChanges();
           return;
         }
         if (!this.form6.Company) {
-          this.companyError = 'Company is required.';
+          this.companyError = this.translate.instant('myprofile.errorcompany');
           this.isLoading4 = false;
           this.cd.detectChanges();
           return;
         }
         if (!this.form6.StartDate || !this.form6.EndDate || this.form6.StartDate >= this.form6.EndDate) {
-          this.empDateError = 'Valid dates are required.';
+          this.empDateError = this.translate.instant('myprofile.errordates');
           this.isLoading4 = false;
           this.cd.detectChanges();
           return;
@@ -748,25 +751,25 @@ export class Myprofile implements OnInit {
       const user = this.authService.getCurrentUser();
       if (!user) return;
       if (!this.form7.Position) {
-        this.positionError = 'Position is required.';
+        this.positionError = this.translate.instant('myprofile.errorposition');
         this.isLoading5 = false;
         this.cd.detectChanges();
         return;
       }
       if (!this.form7.Responsible) {
-        this.workingResponsibleError = 'Responsibilities are required.';
+        this.workingResponsibleError = this.translate.instant('myprofile.errorresponsibilities');
         this.isLoading5 = false;
         this.cd.detectChanges();
         return;
       }
       if (!this.form7.Company) {
-        this.workingCompanyError = 'Company is required.';
+        this.workingCompanyError = this.translate.instant('myprofile.errorcompany');
         this.isLoading5 = false;
         this.cd.detectChanges();
         return;
       }
       if (!this.form7.StartDate || !this.form7.EndDate || this.form7.StartDate >= this.form7.EndDate) {
-        this.workingDateError = 'Valid working dates are required.';
+        this.workingDateError = this.translate.instant('myprofile.errordates');
         this.isLoading5 = false;
         this.cd.detectChanges();
         return;
@@ -843,25 +846,25 @@ export class Myprofile implements OnInit {
       if (!user) return;
 
       if (!this.form8.Title) {
-        this.projectTitleError = "Title is required."
+        this.projectTitleError = this.translate.instant('myprofile.errortitle');
         this.isLoading6 = false;
         this.cd.detectChanges();
         return;
       }
       if (!this.form8.Type) {
-        this.projectTypeError = "Type is required."
+        this.projectTypeError = this.translate.instant('myprofile.errortype');
         this.isLoading6 = false;
         this.cd.detectChanges();
         return;
       }
       if (!this.form8.Feature) {
-        this.projectFeatureError = "Feature is required."
+        this.projectFeatureError = this.translate.instant('myprofile.errorfeature');
         this.isLoading6 = false;
         this.cd.detectChanges();
         return;
       }
       if (!this.form8.StartDate || !this.form8.EndDate || this.form8.StartDate >= this.form8.EndDate) {
-        this.projectDateError = 'Valid dates are required.';
+        this.projectDateError = this.translate.instant('myprofile.errordates');
         this.isLoading6 = false;
         this.cd.detectChanges();
         return;
@@ -935,21 +938,21 @@ export class Myprofile implements OnInit {
       if (!user) return;
 
       if (!this.form9.Date) {
-        this.achiveDateError = "Valid date is required.";
+        this.achiveDateError = this.translate.instant('myprofile.errordate');
         this.isLoading7 = false;
         this.cd.detectChanges();
         return;
       }
 
       if (!this.form9.Title) {
-        this.titleError = "Title is required.";
+        this.titleError = this.translate.instant('myprofile.errortitle');
         this.isLoading7 = false;
         this.cd.detectChanges();
         return;
       }
 
       if (!this.form9.Link) {
-        this.linkError = "Link is required.";
+        this.linkError = this.translate.instant('myprofile.errorlink');
         this.isLoading7 = false;
         this.cd.detectChanges();
         return;
@@ -1023,19 +1026,19 @@ export class Myprofile implements OnInit {
     this.skillError = '';
     this.languageError = '';
     if (!this.form10.Hobby) {
-      this.hobbyError = "Hobby is required.";
+      this.hobbyError = this.translate.instant('myprofile.errorhobby');
       this.isLoading8 = false;
       this.cd.detectChanges();
       return;
     }
     if (!this.form10.Skill) {
-      this.skillError = "Skill is required.";
+      this.skillError = this.translate.instant('myprofile.errorhobby');
       this.isLoading8 = false;
       this.cd.detectChanges();
       return;
     }
     if (!this.form10.Language) {
-      this.languageError = "Language is required.";
+      this.languageError = this.translate.instant('myprofile.errorlanguage');
       this.isLoading8 = false;
       this.cd.detectChanges();
       return;

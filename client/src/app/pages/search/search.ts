@@ -9,11 +9,11 @@ import { API_CONFIG } from '../../config/api.config';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Button } from '../../component/button/button';
 import { AuthService } from '../../services/auth.service';
-
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-search',
-  imports: [Searchbar, Reveal, CommonModule, Button],
+  imports: [Searchbar, Reveal, CommonModule, Button, TranslateModule],
   standalone: true,
   templateUrl: './search.html',
   styleUrl: './search.css',

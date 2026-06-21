@@ -9,5 +9,11 @@ namespace MyProfile.Models
         {
             get; set;
         }
+
+        [JsonPropertyName("language")]
+        public string? Language
+        {
+            get; set;
+        }
     }
 }

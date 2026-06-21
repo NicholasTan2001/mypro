@@ -12,10 +12,12 @@ import { firstValueFrom } from 'rxjs';
 import { DeleteAcccountService } from '../../services/delete-account.service';
 import { API_CONFIG } from '../../config/api.config';
 import { Toggleswitch } from '../../component/toggleswitch/toggleswitch';
+import { TranslateModule } from '@ngx-translate/core';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-setting',
-  imports: [Reveal, InputComponent, Button, CommonModule, FormsModule, Toggleswitch],
+  imports: [Reveal, InputComponent, Button, CommonModule, FormsModule, Toggleswitch, TranslateModule],
   standalone: true,
   templateUrl: './setting.html',
   styleUrl: './setting.css',
@@ -57,7 +59,9 @@ export class Setting implements OnInit {
     private router: Router,
     private cd: ChangeDetectorRef,
     private authService: AuthService,
-    private deleteAccountService: DeleteAcccountService
+    private deleteAccountService: DeleteAcccountService,
+    private translate: TranslateService
+
   ) { }
 
   ngOnInit() {
@@ -101,12 +105,12 @@ export class Setting implements OnInit {
     this.passwordError = "";
     try {
       if (!this.form.Password) {
-        this.passwordError = 'Password is required.';
+        this.passwordError = this.translate.instant('setting.errorpassword1');
         this.isLoading = false;
         return;
       }
       if (this.form.Password.length < 8) {
-        this.passwordError = 'Password must be at least 8 characters long.';
+        this.passwordError = this.translate.instant('setting.errorpassword2');
         this.isLoading = false;
         return;
       }
@@ -132,7 +136,9 @@ export class Setting implements OnInit {
     } catch (error: any) {
       this.isLoading = false;
       const message = error?.error?.message || 'Failed to delete account. Please try again.';
-      this.passwordError = message;
+      if (message == "Invalid password.") {
+        this.passwordError = this.translate.instant('setting.errorpassword5');
+      }
       this.cd.detectChanges();
     } finally {
       this.isLoading = false;
@@ -146,32 +152,32 @@ export class Setting implements OnInit {
     this.confirmNewPasswordError = "";
     try {
       if (!this.form2.Password) {
-        this.passwordError2 = 'Current password is required.';
+        this.passwordError2 = this.translate.instant('setting.errorpassword3');
         this.isLoading2 = false;
         return;
       }
       if (this.form2.Password.length < 8) {
-        this.passwordError2 = 'Password must be at least 8 characters long.';
+        this.passwordError2 = this.translate.instant('setting.errorpassword4');
         this.isLoading2 = false;
         return;
       }
       if (!this.form2.NewPassword) {
-        this.newPasswordError = 'New password is required.';
+        this.newPasswordError = this.translate.instant('setting.errornewpassword1');
         this.isLoading2 = false;
         return;
       }
       if (this.form2.NewPassword.length < 8) {
-        this.newPasswordError = 'New password must be at least 8 characters long.';
+        this.newPasswordError = this.translate.instant('setting.errornewpassword2');
         this.isLoading2 = false;
         return;
       }
       if (!this.form2.ConfirmNewPassword) {
-        this.confirmNewPasswordError = 'Confirm password is required.';
+        this.confirmNewPasswordError = this.translate.instant('setting.errorconfirmpassword1');
         this.isLoading2 = false;
         return;
       }
       if (this.form2.NewPassword !== this.form2.ConfirmNewPassword) {
-        this.confirmNewPasswordError = 'Passwords do not match.';
+        this.confirmNewPasswordError = this.translate.instant('setting.errorconfirmpassword2');
         this.isLoading2 = false;
         return;
       }
@@ -203,8 +209,9 @@ export class Setting implements OnInit {
     } catch (error: any) {
       this.isLoading2 = false;
       const message = error?.error?.message || 'Failed to change password. Please try again.';
-      this.passwordError2 = message;
-      this.cd.detectChanges();
+      if (message == "Invalid password.") {
+        this.passwordError2 = this.translate.instant('setting.errorpassword5');
+      } this.cd.detectChanges();
     } finally {
       this.isLoading2 = false;
       this.cd.detectChanges();
