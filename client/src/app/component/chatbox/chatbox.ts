@@ -8,11 +8,12 @@ import { HttpClient } from '@angular/common/http';
 import { API_CONFIG } from '../../config/api.config';
 import { ChangeDetectorRef } from '@angular/core';
 import { ElementRef, ViewChild } from '@angular/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-chatbox',
   standalone: true,
-  imports: [CommonModule, Reveal, Button, FormsModule],
+  imports: [CommonModule, Reveal, Button, FormsModule, TranslateModule],
   templateUrl: './chatbox.html',
   styleUrl: './chatbox.css',
 })

@@ -505,5 +505,13 @@
         "des38": "BlueTick Badge is applied.",
         "des39": "'s account is removed.",
         "des40": "."
+    },
+    "chatbot": {
+        "myprofile": "MyProfile's",
+        "title": "ChatBot",
+        "chat1": "Your Question",
+        "button1": "Send",
+        "button2": "Sending ...",
+        "chat2": "Type your question here ..."
     }
 }

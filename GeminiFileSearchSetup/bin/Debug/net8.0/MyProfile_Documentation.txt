@@ -1,0 +1,34 @@
+MyProfile Documentation
+
+1. What is MyProfile?
+MyProfile is a web application that allows users to manage their profiles and can be share to public.
+
+2. Can i change any language in MyProfile?
+Yes, you can change any language at the right side of navigation bar.
+
+3. How to login in MyProfile?
+You may click login button on the right side of navigation bar. Then, insert your identity number and passwword to login.
+
+4. How to register in MyProfile?
+You may click the register button at login button. The, insert some user's information to register as new user in MyProfile.
+
+5. What is home page in MyProfile?
+Home Page in MyProfile is about the introduction for MyProfile web application.
+
+6. What is about us page in MyProfile?
+About Us Page in MyProfile is about the MyProfile web application's details.
+
+7. What is MyProfile page in MyProfile?
+You may insert, update and delete your information. So, public can view it.
+
+8. What is search page in MyProfile?
+You may find another user's information by searching their name.
+
+9. What is Friends Page in MyProfile?
+You can view your friend's profile without any visibility settings. Meanwhile, you can accpect/reject their friend's requests and remove them from friends list.
+
+10. What is Settings Page in MyProfile?
+You can send bluetick badge verification request, active notification, modify visibility settings, update new password and delete your account permanently at Settings Page.
+
+11. What is Activity History Page in Myprofile?
+You may check your account's activity history record in this page. So, you will know what happen to this account previously.

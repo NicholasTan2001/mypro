@@ -1,0 +1,15 @@
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\bin\Debug\net8.0\GeminiFileSearchSetup.exe
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\bin\Debug\net8.0\GeminiFileSearchSetup.deps.json
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\bin\Debug\net8.0\GeminiFileSearchSetup.runtimeconfig.json
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\bin\Debug\net8.0\GeminiFileSearchSetup.dll
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\bin\Debug\net8.0\GeminiFileSearchSetup.pdb
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\obj\Debug\net8.0\GeminiFileSearchSetup.GeneratedMSBuildEditorConfig.editorconfig
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\obj\Debug\net8.0\GeminiFileSearchSetup.AssemblyInfoInputs.cache
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\obj\Debug\net8.0\GeminiFileSearchSetup.AssemblyInfo.cs
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\obj\Debug\net8.0\GeminiFileSearchSetup.csproj.CoreCompileInputs.cache
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\obj\Debug\net8.0\GeminiFileSearchSetup.sourcelink.json
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\obj\Debug\net8.0\GeminiFileSearchSetup.dll
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\obj\Debug\net8.0\refint\GeminiFileSearchSetup.dll
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\obj\Debug\net8.0\GeminiFileSearchSetup.pdb
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\obj\Debug\net8.0\GeminiFileSearchSetup.genruntimeconfig.cache
+C:\myAngular.Net\myProfile\server\GeminiFileSearchSetup\obj\Debug\net8.0\ref\GeminiFileSearchSetup.dll

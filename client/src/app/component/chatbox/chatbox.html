@@ -9,7 +9,9 @@
         class="chatbox-card flex flex-col bg-white rounded-lg p-6 md:w-120 w-80 max-h-[80vh]">
 
         <h2 class=" text-center font-bold md:text-lg text-base text-purple-600">
-            MyProfile's Chatbot
+            {{ 'chatbot.myprofile' |
+            translate }} {{ 'chatbot.title' |
+            translate }}
         </h2>
 
         <div #chatHistory class="flex-1 min-h-0 overflow-y-auto my-6">
@@ -54,12 +56,15 @@
 
         <!-- Input Message -->
         <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
-            <label class="md:text-base text-sm text-gray-400 font-medium">Your Question</label>
-            <textarea [(ngModel)]="form.message" name="message" placeholder="Type your question here..." rows="2"
+            <label class="md:text-base text-sm text-gray-400 font-medium">{{ 'chatbot.chat1' |
+                translate }}</label>
+            <textarea [(ngModel)]="form.message" name="message" placeholder="{{ 'chatbot.chat2' | translate }}" rows="2"
                 class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium resize-none">
             </textarea>
 
-            <app-button type="submit" [label]="isLoading ? 'Sending...' : 'Send'" class="flex flex-col">
+            <app-button type="submit"
+                [label]="isLoading ? ('chatbot.button2' | translate) : ('chatbot.button1' | translate)"
+                class="flex flex-col">
             </app-button>
         </form>
 
