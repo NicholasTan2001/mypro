@@ -265,7 +265,7 @@ MyProfile Team
             issuer: jwtSettings["Issuer"],
             audience: jwtSettings["Audience"],
             claims: claims,
-            expires: DateTime.UtcNow.AddMinutes(int.Parse(jwtSettings["ExpirationMinutes"] ?? "")),
+            expires: DateTime.Now.AddMinutes(int.Parse(jwtSettings["ExpirationMinutes"] ?? "")),
             signingCredentials: creds
         );
         return new JwtSecurityTokenHandler().WriteToken(token);
@@ -1383,8 +1383,8 @@ MyProfile Team
             });
         }
         verification.Password = otp;
-        verification.CreatedAt = DateTime.UtcNow;
-        verification.ExpiredAt = DateTime.UtcNow.AddSeconds(60);
+        verification.CreatedAt = DateTime.Now;
+        verification.ExpiredAt = DateTime.Now.AddSeconds(60);
         await _context.SaveChangesAsync();
         var user = await _context.Users
     .FirstOrDefaultAsync(u => u.Id == verification.UserId);
@@ -1562,7 +1562,7 @@ Report Message:
 {reportMessage}
 
 ---
-Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
+Sent at: {DateTime.Now:yyyy-MM-dd HH:mm:ss}
             ";
 
                 mailMessage.IsBodyHtml = false;
@@ -1612,7 +1612,7 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
 {reportMessage}
 
 ---
-发送时间：{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
+发送时间：{DateTime.Now:yyyy-MM-dd HH:mm:ss}
             ";
 
                 mailMessage.IsBodyHtml = false;
@@ -1965,7 +1965,7 @@ Sent at: {DateTime.UtcNow:yyyy-MM-dd HH:mm:ss} UTC
             {
                 UserId = userId,
                 History = activity,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.Now
             };
 
             _context.Activities.Add(activityLog);

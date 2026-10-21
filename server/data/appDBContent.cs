@@ -27,6 +27,9 @@ public class AppDbContext : DbContext
 
     public DbSet<Activity> Activities { get; set; }
 
+    public DbSet<Chat> Chats { get; set; }
+
+
 
 
 }
