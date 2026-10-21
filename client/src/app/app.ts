@@ -6,11 +6,12 @@ import { RouterOutlet } from '@angular/router';
 import { Scrolltop } from './component/scrolltop/scrolltop';
 import { ChangeDetectorRef } from '@angular/core';
 import { Button } from './component/button/button';
+import { Chatbox } from './component/chatbox/chatbox';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Navbar, Footer, Scrolltop, Button],
+  imports: [RouterOutlet, Navbar, Footer, Scrolltop, Button, Chatbox],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })

@@ -1,0 +1,67 @@
+<div class="flex flex-col">
+    <!-- Chatbox Toggle Button -->
+    <button class="chatbox-btn" aria-label="Toggle Chatbox" (click)="openChatbox()">
+        <i class="ti ti-message-circle"></i>
+    </button>
+
+    <!-- Chatbox Content -->
+    <div reveal *ngIf="isChatboxOpen"
+        class="chatbox-card flex flex-col bg-white rounded-lg p-6 md:w-120 w-80 max-h-[80vh]">
+
+        <h2 class=" text-center font-bold md:text-lg text-base text-purple-600">
+            MyProfile's Chatbot
+        </h2>
+
+        <div #chatHistory class="flex-1 min-h-0 overflow-y-auto my-6">
+            @if (messages.length === 0) {
+            <p class="flex flex-col items-center justify-center text-gray-300 md:text-base text-sm font-medium">
+                Start your conversation now.
+            </p>
+            } @else {
+            <div class="flex flex-col gap-4">
+                <div *ngFor="let message of messages">
+
+                    <!-- Bot Message -->
+                    <div *ngIf="message.botChat" class="flex justify-start">
+                        <div class="max-w-[80%]">
+                            <p class="bg-gray-200 text-gray-800 rounded-3xl rounded-bl-sm
+                                  p-3 break-words whitespace-pre-wrap">
+                                {{ message.information }}
+                            </p>
+                            <p class="text-xs text-gray-400 mt-1">
+                                {{ message.createdAt | date:'dd/MM/yyyy, h:mm a' }}
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- User Message -->
+                    <div *ngIf="!message.botChat" class="flex justify-end">
+                        <div class="max-w-[80%]">
+                            <p class="bg-purple-400 text-white rounded-3xl rounded-br-sm
+                                  p-3 break-words whitespace-pre-wrap">
+                                {{ message.information }}
+                            </p>
+                            <p class="text-xs text-gray-400 mt-1 text-right">
+                                {{ message.createdAt | date:'dd/MM/yyyy, h:mm a' }}
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            }
+        </div>
+
+        <!-- Input Message -->
+        <form (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+            <label class="md:text-base text-sm text-gray-400 font-medium">Your Question</label>
+            <textarea [(ngModel)]="form.message" name="message" placeholder="Type your question here..." rows="2"
+                class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium resize-none">
+            </textarea>
+
+            <app-button type="submit" [label]="isLoading ? 'Sending...' : 'Send'" class="flex flex-col">
+            </app-button>
+        </form>
+
+    </div>
+</div>
