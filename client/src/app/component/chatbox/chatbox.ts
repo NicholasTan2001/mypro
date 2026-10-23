@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, Output, EventEmitter } from '@angular/core';
 import { Reveal } from '../../directive/reveal';
 import { Button } from '../../component/button/button';
 import { FormsModule } from '@angular/forms';
@@ -9,17 +9,22 @@ import { API_CONFIG } from '../../config/api.config';
 import { ChangeDetectorRef } from '@angular/core';
 import { ElementRef, ViewChild } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
+import { Aibutton } from '../../component/aibutton/aibutton';
 
 @Component({
   selector: 'app-chatbox',
   standalone: true,
-  imports: [CommonModule, Reveal, Button, FormsModule, TranslateModule],
+  imports: [CommonModule, Reveal, Button, FormsModule, TranslateModule, Aibutton],
   templateUrl: './chatbox.html',
   styleUrl: './chatbox.css',
 })
 export class Chatbox {
 
+  @Output() showAiLoadingEvent = new EventEmitter<void>();
+
+  isChatboxVisible: boolean = true;
   isLoading: boolean = false;
+  isLoading2: boolean = false;
   isChatboxOpen = false;
   form = {
     message: '',
@@ -133,6 +138,46 @@ export class Chatbox {
         element.scrollTop = element.scrollHeight;
       }
     });
+  }
+
+  hideChatboxTemporarily(): void {
+
+    this.isChatboxVisible = false;
+
+    setTimeout(() => {
+      this.isChatboxVisible = true;
+
+      this.cd.detectChanges();
+    }, 7000);
+  }
+
+  async deleteHistory(): Promise<void> {
+
+    this.isLoading2 = true;
+
+    const guestId = localStorage.getItem('guestId');
+
+    if (!guestId) {
+      return;
+    }
+
+    try {
+      await firstValueFrom(
+        this.http.delete(
+          `${API_CONFIG.chatsEndpointBase}/history/${guestId}`
+        )
+      );
+
+      await this.loadChatHistory();
+      this.cd.detectChanges();
+
+    } catch (error) {
+      console.error('Failed to delete chat history:', error);
+    } finally {
+      this.isLoading2 = false;
+
+      this.cd.detectChanges();
+    }
   }
 
 }

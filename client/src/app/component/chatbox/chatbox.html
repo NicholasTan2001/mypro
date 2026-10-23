@@ -1,4 +1,4 @@
-<div class="flex flex-col">
+<div class="flex flex-col" [style.opacity]="isChatboxVisible ? '1' : '0'">
     <!-- Chatbox Toggle Button -->
     <button class="chatbox-btn" aria-label="Toggle Chatbox" (click)="openChatbox()">
         <i class="ti ti-message-circle"></i>
@@ -62,10 +62,21 @@
                 class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium resize-none">
             </textarea>
 
-            <app-button type="submit"
-                [label]="isLoading ? ('chatbot.button2' | translate) : ('chatbot.button1' | translate)"
-                class="flex flex-col">
-            </app-button>
+            <div class="flex justify-between items-center gap-6">
+                <app-button type="submit"
+                    [label]="isLoading ? ('chatbot.button2' | translate) : ('chatbot.button1' | translate)"
+                    class="flex flex-col w-full">
+                </app-button>
+
+                <app-button [label]="isLoading2 ? ('chatbot.button6' | translate) : ('chatbot.button5' | translate)"
+                    variant="danger" (click)="deleteHistory()" class="flex flex-col w-full">
+                </app-button>
+            </div>
+
+
+            <app-aibutton (click)="hideChatboxTemporarily()" (loadChatHistoryEvent)="loadChatHistory()"
+                (showAiLoadingEvent)="showAiLoadingEvent.emit()" class="w-full">
+            </app-aibutton>
         </form>
 
     </div>

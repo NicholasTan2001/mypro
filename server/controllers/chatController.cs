@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.Identity.Client;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.IO;
 
 
 [Route("api/chats")]
@@ -244,8 +245,6 @@ public class ChatsController : ControllerBase
 
         var finalAnswer = answer.ToString().Trim();
 
-        // Avoid displaying an uncited answer as if it came from
-        // the MyProfile documentation.
         if (!hasFileCitation || string.IsNullOrWhiteSpace(finalAnswer))
         {
             return fallback;
@@ -274,5 +273,200 @@ public class ChatsController : ControllerBase
             .ToListAsync();
 
         return Ok(messages);
+    }
+
+    [HttpPost("analyze-screenshot")]
+    public async Task<IActionResult> AnalyzeScreenshot(
+        [FromBody] ScreenshotRequest? request)
+    {
+        if (request == null ||
+            string.IsNullOrWhiteSpace(request.ImageBase64))
+        {
+            return BadRequest("Screenshot is required.");
+        }
+
+        string promptPath = Path.Combine(
+            AppContext.BaseDirectory,
+            "Prompts",
+            "ScreenshotAnalysisPrompt.txt"
+        );
+
+        if (!System.IO.File.Exists(promptPath))
+        {
+            return StatusCode(500, "Prompt file not found.");
+        }
+
+        string prompt =
+            await System.IO.File.ReadAllTextAsync(promptPath);
+
+        string? apiKey =  _config["Gemini:ApiKey"];
+
+        if (string.IsNullOrWhiteSpace(apiKey))
+        {
+            return StatusCode(500, "Gemini API key is not configured.");
+        }
+
+        var geminiRequest = new
+        {
+            model = "gemini-3.5-flash-lite",
+            input = new object[]
+            {
+                new
+                {
+                    type = "text",
+                    text = prompt
+                },
+                new
+                {
+                    type = "image",
+                    data = request.ImageBase64,
+                    mime_type = "image/png"
+                }
+            }
+        };
+
+        using var client = _httpClientFactory.CreateClient();
+
+        client.DefaultRequestHeaders.Add(
+            "x-goog-api-key",
+            apiKey
+        );
+
+        using var response = await client.PostAsJsonAsync(
+            "https://generativelanguage.googleapis.com/v1beta/interactions",
+            geminiRequest
+        );
+
+        string responseBody = await response.Content.ReadAsStringAsync();
+
+        string userMessage = "";
+
+        if (request.Language == "zh"){
+
+            userMessage = "我已经截图了。这页面关于什么呢？";
+
+        }else{
+
+            userMessage = "I took a screenshot. What page is this?";
+
+        }
+
+        var userChat = new Chat
+            {
+                Information = userMessage,
+                GuestId = request.GuestId,
+                CreatedAt = DateTime.Now,
+                BotChat = false
+            };
+
+            _context.Chats.Add(userChat);
+        await _context.SaveChangesAsync();
+
+        if (!response.IsSuccessStatusCode)
+        {
+            string errorMessage;
+
+            if (response.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+            {
+                errorMessage =
+                    "Unable to analyze the screenshot right now. Please try again later.";
+            }
+            else if ((int)response.StatusCode == 400)
+            {
+                errorMessage =
+                    "The screenshot could not be analyzed. It may be too large or exceed the AI input limit.";
+            }
+            else
+            {
+                errorMessage =
+                    "Unable to analyze the screenshot right now. Please try again later.";
+            }
+
+            var errorChat = new Chat
+            {
+                Information = errorMessage,
+                GuestId = request.GuestId,
+                CreatedAt = DateTime.Now,
+                BotChat = true
+            };
+
+            _context.Chats.Add(errorChat);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                guestId = request.GuestId,
+                analysis = errorMessage
+            });
+        }
+
+        using var json = JsonDocument.Parse(responseBody);
+
+        string? analysis = null;
+
+        if (json.RootElement.TryGetProperty("steps", out var steps) &&
+            steps.ValueKind == JsonValueKind.Array)
+        {
+            foreach (var step in steps.EnumerateArray())
+            {
+                if (step.TryGetProperty("type", out var type) &&
+                    type.GetString() == "model_output" &&
+                    step.TryGetProperty("content", out var content) &&
+                    content.ValueKind == JsonValueKind.Array)
+                {
+                    foreach (var item in content.EnumerateArray())
+                    {
+                        if (item.TryGetProperty("text", out var textElement))
+                        {
+                            analysis = textElement.GetString();
+                            break;
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(analysis))
+                {
+                    break;
+                }
+            }
+        }
+
+        if (string.IsNullOrWhiteSpace(analysis))
+        {
+            return StatusCode(502, new
+            {
+                message = "Gemini returned no text analysis."
+            });
+        }
+
+        var chat = new Chat
+        {
+            Information = analysis,
+            GuestId = request.GuestId,
+            CreatedAt = DateTime.Now,
+            BotChat = true
+        };
+
+        _context.Chats.Add(chat);
+        await _context.SaveChangesAsync();
+
+        return Ok(new
+        {
+            guestId = request.GuestId,
+            analysis = analysis
+        });
+    }
+
+    [HttpDelete("history/{guestId}")]
+    public async Task<IActionResult> DeleteHistory(int guestId)
+    {
+        var chats = await _context.Chats
+            .Where(c => c.GuestId == guestId)
+            .ToListAsync();
+
+        _context.Chats.RemoveRange(chats);
+        await _context.SaveChangesAsync();
+
+        return Ok(new { message = "Chat history deleted successfully." });
     }
 }

@@ -15,7 +15,12 @@
         <main class="max-w-7xl mx-auto py-10 px-10">
             <router-outlet></router-outlet>
             <app-scrolltop />
-            <app-chatbox />
+            <app-chatbox (showAiLoadingEvent)="showAiLoading()" />
+
+            @if (isAiLoading) {
+            <app-ailoading [visible]="isAiLoading">
+            </app-ailoading>
+            }
 
             <!-- Token Expired Modal -->
             @if (expireTokenModal == true){

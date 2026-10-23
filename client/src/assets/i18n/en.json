@@ -28,7 +28,7 @@
         "rights": "All rights reserved."
     },
     "home": {
-        "myprofile": "Myprofile",
+        "myprofile": "MyProfile",
         "header1": "What is ",
         "description1": "MyProfile is a digital platform that allows you to create and manage your personal profile, showcasing your information, skills, experiences, and achievements. Whether you're a student, professional, or freelancer. MyProfile helps you present yourself in the best light to public.",
         "header2": "Why Choose ",
@@ -512,6 +512,10 @@
         "chat1": "Your Question",
         "button1": "Send",
         "button2": "Sending ...",
+        "button3": "AI Screenshot",
+        "button4": "Loading ...",
+        "button5": "Delete",
+        "button6": "Deleting ...",
         "chat2": "Type your question here ..."
     }
 }
