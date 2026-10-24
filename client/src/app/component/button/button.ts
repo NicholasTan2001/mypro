@@ -12,6 +12,7 @@ import { CommonModule } from '@angular/common';
 export class Button {
 
   @Input() label: string = 'Button';
+  @Input() type: 'button' | 'submit' | 'reset' = 'button';
   @Input() variant: 'primary' | 'outline' | 'danger' | 'light-primary' | 'light-danger' | 'heavy-danger' = 'primary';
   @Input() size: 'sm' | 'md' | 'lg' = 'md';
   @Input() href?: string;

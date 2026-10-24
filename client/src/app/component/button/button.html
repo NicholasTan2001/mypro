@@ -1,4 +1,4 @@
-<button type="button" [class]="classes" (click)="onClick.emit($event)">
+<button [type]="type" [class]="classes" (click)="onClick.emit($event)">
 
     <lucide-icon *ngIf="icon === 'mic'" [img]="icons.Mic" [size]="20">
     </lucide-icon>
