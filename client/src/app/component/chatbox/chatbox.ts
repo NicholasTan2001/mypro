@@ -10,11 +10,13 @@ import { ChangeDetectorRef } from '@angular/core';
 import { ElementRef, ViewChild } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import { Aibutton } from '../../component/aibutton/aibutton';
+import { LucideAngularModule, Mic, Square } from 'lucide-angular';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-chatbox',
   standalone: true,
-  imports: [CommonModule, Reveal, Button, FormsModule, TranslateModule, Aibutton],
+  imports: [CommonModule, Reveal, Button, FormsModule, TranslateModule, Aibutton, LucideAngularModule],
   templateUrl: './chatbox.html',
   styleUrl: './chatbox.css',
 })
@@ -25,6 +27,7 @@ export class Chatbox {
   isChatboxVisible: boolean = true;
   isLoading: boolean = false;
   isLoading2: boolean = false;
+  isLoading3: boolean = false;
   isChatboxOpen = false;
   form = {
     message: '',
@@ -32,7 +35,11 @@ export class Chatbox {
 
   messages: any[] = [];
 
-  constructor(private http: HttpClient, private cd: ChangeDetectorRef) { }
+  private recognition: any;
+  private recognizedTranscript: string = '';
+  private insertTranscriptOnEnd: boolean = false;
+
+  constructor(private http: HttpClient, private cd: ChangeDetectorRef, private translate: TranslateService) { }
 
   openChatbox(): void {
     this.isChatboxOpen = !this.isChatboxOpen;
@@ -180,4 +187,98 @@ export class Chatbox {
     }
   }
 
+  toggleRecording(): void {
+
+    if (!this.isLoading3) {
+
+      const currentLanguage = this.translate.currentLang;
+      const speechLanguages: { [key: string]: string } = {
+        en: 'en-US',
+        zh: 'zh-CN',
+      }
+
+      const browser = window as any;
+      const SpeechRecognition =
+        browser.SpeechRecognition || browser.webkitSpeechRecognition;
+
+      if (!SpeechRecognition) {
+        alert('Speech recognition is not supported by your browser.');
+        return;
+      }
+
+      this.recognition = new SpeechRecognition();
+      this.recognition.lang =
+        speechLanguages[currentLanguage] || 'en-US';
+      this.recognition.continuous = true;
+      this.recognition.interimResults = true;
+
+      this.recognizedTranscript = '';
+      this.insertTranscriptOnEnd = false;
+
+      this.recognition.onresult = (event: any) => {
+        let transcript = '';
+
+        for (let i = 0; i < event.results.length; i++) {
+          if (event.results[i].isFinal) {
+            transcript += event.results[i][0].transcript + ' ';
+          }
+        }
+
+        this.recognizedTranscript = transcript.trim();
+      };
+
+      this.recognition.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+      };
+
+      this.recognition.onend = async () => {
+        if (this.insertTranscriptOnEnd) {
+          const transcript = this.recognizedTranscript;
+          this.insertTranscriptOnEnd = false;
+
+          if (transcript) {
+            this.isLoading3 = true;
+
+            this.form.message = await this.formatTranscript(transcript, currentLanguage);
+          }
+        }
+        this.isLoading3 = false;
+        this.cd.detectChanges();
+      }
+
+      try {
+        this.recognition.start();
+        this.isLoading3 = true;
+        this.cd.detectChanges();
+      } catch (error) {
+        this.isLoading3 = false;
+        this.cd.detectChanges();
+        console.error('Failed to start recording:', error);
+      }
+
+    } else {
+      this.insertTranscriptOnEnd = true;
+      this.recognition.stop();
+    }
+  }
+
+  private async formatTranscript(transcript: string, currentLanguage: string): Promise<string> {
+    try {
+      const response: any = await firstValueFrom(
+        this.http.post(
+          `${API_CONFIG.chatsEndpointBase}/format-transcript`,
+          {
+            transcript: transcript,
+            language: currentLanguage
+          }
+        )
+      );
+
+      return response.formattedTranscript || transcript;
+    } catch (error) {
+      console.error('Failed to format transcript:', error);
+
+      return transcript;
+    }
+  }
 }

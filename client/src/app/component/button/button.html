@@ -1,3 +1,10 @@
-<button [class]="classes" (click)="onClick.emit($event)">
-    {{ label }}
+<button type="button" [class]="classes" (click)="onClick.emit($event)">
+
+    <lucide-icon *ngIf="icon === 'mic'" [img]="icons.Mic" [size]="20">
+    </lucide-icon>
+
+    <lucide-icon *ngIf="icon === 'pause'" [img]="icons.Pause" [size]="20">
+    </lucide-icon>
+
+    <span *ngIf="!iconOnly">{{ label }}</span>
 </button>

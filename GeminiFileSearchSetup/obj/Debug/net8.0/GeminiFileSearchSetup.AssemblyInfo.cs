@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GeminiFileSearchSetup")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ef0c9c2a7248a911c06d8b480be9c151514667c8")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
 [assembly: System.Reflection.AssemblyProductAttribute("GeminiFileSearchSetup")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GeminiFileSearchSetup")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

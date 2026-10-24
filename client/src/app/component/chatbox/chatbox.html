@@ -62,10 +62,15 @@
                 class="border border-gray-600 text-black rounded-lg p-3 md:text-base text-sm w-full focus:outline-none focus:ring-1 focus:ring-purple-500 font-medium resize-none">
             </textarea>
 
-            <div class="flex justify-between items-center gap-6">
+            <div class="flex justify-between items-center gap-4">
                 <app-button type="submit"
                     [label]="isLoading ? ('chatbot.button2' | translate) : ('chatbot.button1' | translate)"
                     class="flex flex-col w-full">
+                </app-button>
+
+                <app-button [icon]="isLoading3 ? 'pause' : 'mic'" [iconOnly]="true"
+                    [variant]="isLoading3 ? 'heavy-danger' : 'light-danger'" (onClick)="toggleRecording()"
+                    class="flex flex-col">
                 </app-button>
 
                 <app-button [label]="isLoading2 ? ('chatbot.button6' | translate) : ('chatbot.button5' | translate)"

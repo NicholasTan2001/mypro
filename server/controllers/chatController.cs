@@ -40,7 +40,7 @@ public class ChatsController : ControllerBase
         return Ok(new { exists });
     }
 
-    
+
     [HttpPost("messages")]
     public async Task<IActionResult> CreateMessage(
         [FromBody] CreateChatRequest request)
@@ -84,9 +84,9 @@ public class ChatsController : ControllerBase
         }
         catch (Exception ex)
         {
-                Console.WriteLine("Chatbot error type: " + ex.GetType().FullName);
-                Console.WriteLine("Chatbot error message: " + ex.Message);
-                Console.WriteLine("Chatbot error details: " + ex);
+            Console.WriteLine("Chatbot error type: " + ex.GetType().FullName);
+            Console.WriteLine("Chatbot error message: " + ex.Message);
+            Console.WriteLine("Chatbot error details: " + ex);
 
             botAnswer =
                 "Sorry, I'm unable to answer right now. Please try again later.";
@@ -111,7 +111,7 @@ public class ChatsController : ControllerBase
         });
     }
 
-    
+
     private async Task<string> GetGeminiAnswerAsync(string question)
     {
         var apiKey = _config["Gemini:ApiKey"];
@@ -299,7 +299,7 @@ public class ChatsController : ControllerBase
         string prompt =
             await System.IO.File.ReadAllTextAsync(promptPath);
 
-        string? apiKey =  _config["Gemini:ApiKey"];
+        string? apiKey = _config["Gemini:ApiKey"];
 
         if (string.IsNullOrWhiteSpace(apiKey))
         {
@@ -341,25 +341,28 @@ public class ChatsController : ControllerBase
 
         string userMessage = "";
 
-        if (request.Language == "zh"){
+        if (request.Language == "zh")
+        {
 
             userMessage = "我已经截图了。这页面关于什么呢？";
 
-        }else{
+        }
+        else
+        {
 
             userMessage = "I took a screenshot. What page is this?";
 
         }
 
         var userChat = new Chat
-            {
-                Information = userMessage,
-                GuestId = request.GuestId,
-                CreatedAt = DateTime.Now,
-                BotChat = false
-            };
+        {
+            Information = userMessage,
+            GuestId = request.GuestId,
+            CreatedAt = DateTime.Now,
+            BotChat = false
+        };
 
-            _context.Chats.Add(userChat);
+        _context.Chats.Add(userChat);
         await _context.SaveChangesAsync();
 
         if (!response.IsSuccessStatusCode)
@@ -469,4 +472,126 @@ public class ChatsController : ControllerBase
 
         return Ok(new { message = "Chat history deleted successfully." });
     }
+
+
+    [HttpPost("format-transcript")]
+    public async Task<IActionResult> FormatTranscript(
+        [FromBody] TranscriptRequest request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Transcript))
+        {
+            return BadRequest(new
+            {
+                message = "Transcript cannot be empty."
+            });
+        }
+
+        try
+        {
+            string promptPath = Path.Combine(
+                AppContext.BaseDirectory,
+                "Prompts",
+                "TranscriptFormattingPrompt.txt"
+            );
+
+            string prompt = await System.IO.File.ReadAllTextAsync(promptPath);
+
+            prompt += $"""
+
+                Language: {request.Language}
+
+                Transcript to format:
+                {request.Transcript}
+                """;
+
+            var apiKey = _config["Gemini:ApiKey"];
+
+            if (string.IsNullOrWhiteSpace(apiKey))
+            {
+                return StatusCode(500, new
+                {
+                    message = "Gemini API key is not configured."
+                });
+            }
+
+            var geminiRequest = new
+            {
+                model = "gemini-3.5-flash-lite",
+                input = prompt
+            };
+
+            using var client = _httpClientFactory.CreateClient();
+
+            client.DefaultRequestHeaders.Add(
+                "x-goog-api-key", apiKey);
+
+            using var response = await client.PostAsJsonAsync(
+                "https://generativelanguage.googleapis.com/v1beta/interactions",
+                geminiRequest);
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return StatusCode(502, new
+                {
+                    message = "Gemini could not format the transcript."
+                });
+            }
+
+            using var json = JsonDocument.Parse(responseBody);
+
+            string? formattedTranscript = null;
+
+            if (json.RootElement.TryGetProperty("steps", out var steps)
+                && steps.ValueKind == JsonValueKind.Array)
+            {
+                foreach (var step in steps.EnumerateArray())
+                {
+                    if (step.TryGetProperty("type", out var type)
+                        && type.GetString() == "model_output"
+                        && step.TryGetProperty("content", out var content)
+                        && content.ValueKind == JsonValueKind.Array)
+                    {
+                        foreach (var item in content.EnumerateArray())
+                        {
+                            if (item.TryGetProperty("text", out var textElement))
+                            {
+                                formattedTranscript = textElement.GetString();
+                                break;
+                            }
+                        }
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(formattedTranscript))
+                    {
+                        break;
+                    }
+                }
+            }
+
+            if (string.IsNullOrWhiteSpace(formattedTranscript))
+            {
+                return StatusCode(502, new
+                {
+                    message = "Gemini returned no formatted transcript."
+                });
+            }
+
+            return Ok(new
+            {
+                formattedTranscript = formattedTranscript.Trim()
+            });
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+
+            return StatusCode(500, new
+            {
+                message = "An error occurred while formatting the transcript."
+            });
+        }
+    }
+
 }
